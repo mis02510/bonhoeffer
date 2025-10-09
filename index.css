@@ -86,7 +86,6 @@ html {
 html, body {
   margin: 0;
   height: 100%;
-  overflow: hidden;
   font-family: var(--font-family);
   background-color: var(--background-color);
   color: var(--text-color);
@@ -98,7 +97,7 @@ html, body {
 #root {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 /* --- Custom Scrollbar --- */
@@ -120,12 +119,12 @@ html, body {
 .dashboard-container {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   padding: clamp(1rem, 2vw, 2rem) clamp(1.5rem, 4vw, 4rem);
   max-width: 1800px;
   margin: 0 auto;
   width: 100%;
   animation: fadeIn 0.8s ease-out;
-  height: 100%;
   gap: 1.5rem;
 }
 
@@ -135,12 +134,14 @@ header {
   align-items: center;
   animation: slideUp 0.6s ease-out forwards;
   flex-shrink: 0;
+  gap: 1.5rem; /* Add gap for spacing when wrapping */
 }
 
 .header-title {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-shrink: 0; /* Prevent title from shrinking */
 }
 
 .client-logo {
@@ -172,7 +173,7 @@ header {
 }
 
 header h1 {
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
   font-weight: 600;
   margin: 0;
   background: linear-gradient(90deg, var(--secondary-accent), var(--primary-accent) 80%);
@@ -180,18 +181,20 @@ header h1 {
   background-clip: text;
   color: transparent;
   animation: slideUp 0.6s ease-out forwards, text-focus-in 1s cubic-bezier(0.550, 0.085, 0.680, 0.530) 0.4s both;
+  white-space: nowrap; /* Ensure title stays on one line */
 }
 
 .filters {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: center;
-  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .view-switcher-label {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text-color-muted);
+    white-space: nowrap;
 }
 
 .select-container {
@@ -203,8 +206,8 @@ header h1 {
   color: var(--text-color);
   border: 1px solid var(--card-border);
   border-radius: 8px;
-  padding: 0.5rem 2.5rem 0.5rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.4rem 2.2rem 0.4rem 0.8rem;
+  font-size: 0.85rem;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
@@ -215,7 +218,7 @@ header h1 {
 .select-container::after {
   content: '';
   position: absolute;
-  right: 1rem;
+  right: 0.8rem;
   top: 50%;
   transform: translateY(-50%) rotate(45deg);
   width: 6px;
@@ -263,11 +266,11 @@ header h1 {
     color: var(--text-color);
     border: 1px solid var(--card-border);
     border-radius: 8px;
-    padding: 0.5rem 1rem 0.5rem 2.75rem; /* Left padding for icon */
-    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem 0.4rem 2.5rem;
+    font-size: 0.85rem;
     font-family: var(--font-family);
     transition: all 0.2s ease-in-out;
-    width: 300px; /* Default width */
+    width: 250px;
 }
 
 .search-bar-container input:hover {
@@ -278,7 +281,7 @@ header h1 {
     outline: none;
     border-color: var(--primary-accent);
     box-shadow: 0 0 0 3px rgba(249, 156, 30, 0.3);
-    width: 350px; /* Expand on focus */
+    width: 300px;
 }
 
 .search-bar-container input::placeholder {
@@ -291,8 +294,8 @@ header h1 {
   border: 1px solid var(--text-color-muted);
   color: var(--text-color-muted);
   border-radius: 8px;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
   cursor: pointer;
   font-family: var(--font-family);
   font-weight: 500;
@@ -300,6 +303,7 @@ header h1 {
   align-items: center;
   gap: 0.5rem;
   transition: all 0.2s ease-in-out;
+  white-space: nowrap;
 }
 
 .never-bought-button:hover {
@@ -347,13 +351,8 @@ header h1 {
 
 main {
   display: grid;
-  grid-template-rows: auto 1fr;
   gap: 1.5rem;
-  flex: 1;
-  min-height: 0;
   min-width: 0; /* Prevents wide grid content from breaking layout */
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .main-content {
@@ -366,20 +365,20 @@ main {
 
 .kpi-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  gap: 1rem;
 }
 
 .kpi-card {
     background: var(--card-background);
     border: 1px solid var(--card-border);
     border-radius: 12px;
-    padding: 1.5rem;
+    padding: 0.75rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.3rem;
     text-align: center;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     position: relative;
@@ -415,8 +414,8 @@ main {
 }
 
 .kpi-card .icon {
-    width: 48px;
-    height: 48px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -427,8 +426,8 @@ main {
 }
 
 .kpi-card .icon svg {
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
     stroke: var(--primary-accent);
     transition: all 0.3s ease;
 }
@@ -471,7 +470,7 @@ main {
 
 .kpi-card-content h3 {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.65rem;
   color: var(--text-color-muted);
   font-weight: 400;
   white-space: nowrap;
@@ -479,14 +478,14 @@ main {
 
 .kpi-card-content p {
   margin: 0.25rem 0 0 0;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--text-color);
   transition: font-size 0.3s ease;
 }
 
 .kpi-card.active .kpi-card-content p {
-    font-size: 1.7rem;
+    font-size: 1.3rem;
 }
 
 .charts-container {
@@ -502,12 +501,11 @@ main {
   background: var(--card-background);
   border: 1px solid var(--card-border);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1rem;
   animation: slideUp 0.6s ease-out forwards;
   opacity: 0;
   display: flex;
   flex-direction: column;
-  min-height: 0;
   min-width: 0; /* Prevents grid blowout from wide table */
   transition: all 0.3s ease-in-out;
 }
@@ -543,7 +541,7 @@ main {
   margin: 0;
   flex-shrink: 0;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .data-table-header {
@@ -581,7 +579,6 @@ main {
 }
 
 .table-wrapper {
-    flex: 1; 
     overflow: auto; 
     min-height: 0;
 }
@@ -601,10 +598,10 @@ thead {
 }
 
 th {
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
   text-align: left;
   font-weight: 500;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-color-muted);
@@ -617,7 +614,8 @@ tbody tr {
 }
 
 .summary-row,
-.detail-row {
+.detail-row,
+.catalog-row {
   animation: tableRowIn 0.5s ease-out forwards;
   opacity: 0;
 }
@@ -631,7 +629,8 @@ tbody tr:last-child {
 }
 
 .summary-row:hover,
-.detail-row:hover {
+.detail-row:hover,
+.catalog-row:hover {
   background-color: rgba(255, 255, 255, 0.05);
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0,0,0,0.3);
@@ -654,8 +653,8 @@ tbody tr:last-child {
 }
 
 td {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
   text-align: left;
   vertical-align: middle;
 }
@@ -669,14 +668,14 @@ td {
 }
 
 .product-image-cell {
-    width: 60px;
-    padding: 0.5rem;
+    width: 50px;
+    padding: 0.25rem;
     text-align: center;
 }
 
 .product-image {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
     border-radius: 6px;
     border: 1px solid var(--card-border);
@@ -694,8 +693,8 @@ tbody tr:hover .product-image {
 }
 
 .product-image-placeholder {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: 6px;
     background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--card-border);
@@ -748,7 +747,7 @@ tbody tr:hover .product-image {
 }
 
 .pagination span {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-color-muted);
 }
 
@@ -757,7 +756,7 @@ tbody tr:hover .product-image {
     border: 1px solid var(--card-border);
     color: var(--text-color-muted);
     border-radius: 6px;
-    padding: 0.5rem 1rem;
+    padding: 0.35rem 0.8rem;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     display: flex;
@@ -795,7 +794,6 @@ tbody tr:hover .product-image {
     right: 2rem;
     width: 60px;
     height: 60px;
-    background-color: var(--primary-accent);
     border-radius: 50%;
     border: none;
     cursor: pointer;
@@ -805,17 +803,26 @@ tbody tr:hover .product-image {
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
     z-index: 1000;
+    padding: 0;
+    background-color: var(--card-background);
 }
 
 .chat-fab:hover {
     transform: scale(1.1);
-    box-shadow: 0 8px 25px var(--glow-color);
+    box-shadow: 0 8px 25px rgba(142, 45, 226, 0.6);
 }
 
 .chat-fab svg {
     width: 32px;
     height: 32px;
     color: white;
+}
+
+.chat-fab img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .chat-assistant {
@@ -1027,11 +1034,22 @@ tbody tr:hover .product-image {
 
 @media (min-width: 768px) {
     .kpi-card-content p {
-        font-size: 1.85rem;
+        font-size: 1.4rem;
     }
     .kpi-card.active .kpi-card-content p {
-        font-size: 2.1rem;
+        font-size: 1.5rem;
     }
+}
+
+@media (max-width: 1120px) {
+  header {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .filters {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1039,10 +1057,32 @@ tbody tr:hover .product-image {
         padding: 1.5rem 1rem;
     }
 
+    .data-table-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .data-table-header h3 {
+       grid-column: auto;
+    }
+
+    .data-table-header .back-button {
+        grid-column: auto;
+        justify-self: center;
+    }
+
     header {
         flex-direction: column;
         align-items: flex-start;
         gap: 1.5rem;
+    }
+
+    header h1 {
+        white-space: normal; /* Allow title to wrap on small screens */
+        line-height: 1.2;
     }
 
     .filters {
@@ -1052,6 +1092,10 @@ tbody tr:hover .product-image {
         gap: 1rem;
     }
     
+    .filters select {
+        width: 100%;
+    }
+
     .search-bar-container input,
     .search-bar-container input:focus {
         width: 100%;
@@ -1081,5 +1125,9 @@ tbody tr:hover .product-image {
         right: 1rem;
         bottom: 4.5rem;
         max-height: 60vh;
+    }
+
+    .data-table-header {
+      flex-direction: column;
     }
 }
