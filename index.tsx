@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect, useRef, useLayoutEffect } from 'react';
+
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Area, ResponsiveContainer, LabelList, Cell } from 'recharts';
@@ -18,6 +19,7 @@ const Icons = {
   nextArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>,
   chevron: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>,
   chat: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.76 9.76 0 0 1-2.53-.388A5.864 5.864 0 0 1 5.4 12.006c.482.55.994.995 1.524 1.372a11.942 11.942 0 0 0 7.26-1.742 1.25 1.25 0 0 0 .332-.307 12.448 12.448 0 0 0-1.618-1.579 11.912 11.912 0 0 0-6.064-1.785 1.25 1.25 0 0 0-.97.242 12.45 12.45 0 0 0-1.328 1.28c-.318.332-.637.672-.94 1.018a5.864 5.864 0 0 1-.42-2.32C3 7.444 7.03 3.75 12 3.75s9 3.694 9 8.25z" /></svg>,
+  robot: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H13.5" /><path strokeLinecap="round" strokeLinejoin="round" d="M5.25 4.5h13.5A2.25 2.25 0 0 1 21 6.75v10.5A2.25 2.25 0 0 1 18.75 19.5H5.25A2.25 2.25 0 0 1 3 17.25V6.75A2.25 2.25 0 0 1 5.25 4.5z" /><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 12h7.5" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 16.5h6" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 9.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 9.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0z" /></svg>,
   plan: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" /></svg>,
   shipped: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>,
   shoppingCart: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c.51 0 .962-.343 1.087-.835l1.823-6.836a.75.75 0 0 0-.44-.898l-7.458-2.61a.75.75 0 0 0-.915.658l-1.006 5.031c-.12.603-.635 1.036-1.254 1.036H3.75" /></svg>,
@@ -67,41 +69,6 @@ interface Filter {
 const formatCurrency = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
 const formatCompactNumber = (value: number) => new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value);
 const formatNa = (value: string) => (value && value.toLowerCase() !== '#n/a' ? value : '~');
-const debounce = (func: (...args: any[]) => void, delay: number) => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    return (...args: any[]) => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => func(...args), delay);
-    };
-};
-
-// --- Custom Hooks ---
-const useResponsiveRowCount = (containerRef: React.RefObject<HTMLElement>, rowHeight: number, minRows: number = 5) => {
-    const [rowCount, setRowCount] = useState(minRows);
-
-    useLayoutEffect(() => {
-        const calculateRows = () => {
-            if (containerRef.current) {
-                const availableHeight = containerRef.current.clientHeight;
-                const newCount = Math.floor(availableHeight / rowHeight);
-                setRowCount(Math.max(minRows, newCount > 0 ? newCount : 1));
-            }
-        };
-
-        const debouncedCalculateRows = debounce(calculateRows, 250);
-        const initialCalcTimeout = setTimeout(calculateRows, 50);
-
-        window.addEventListener('resize', debouncedCalculateRows);
-        
-        return () => {
-            clearTimeout(initialCalcTimeout);
-            window.removeEventListener('resize', debouncedCalculateRows);
-        };
-    }, [containerRef, rowHeight, minRows]);
-
-    return rowCount;
-};
-
 
 // --- Components ---
 const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filterValue = null, activeFilter, onClick = null, className = '' }) => {
@@ -165,7 +132,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
         });
     }, [data, isDetailedView]);
 
-    const rowsPerPage = useResponsiveRowCount(tableWrapperRef, 53, 8); // Base row height
+    const rowsPerPage = 10;
     const totalItems = isDetailedView ? data.length : groupedData.length;
     const totalPages = useMemo(() => Math.ceil(totalItems / rowsPerPage), [totalItems, rowsPerPage]);
 
@@ -287,7 +254,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
 const NeverBoughtDataTable = ({ data, currentUser }: { data: OrderData[], currentUser: string }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
-  const rowsPerPage = useResponsiveRowCount(tableWrapperRef, 90, 4); // Taller rows (~90px)
+  const rowsPerPage = 10;
 
   const totalPages = useMemo(() => Math.ceil(data.length / rowsPerPage), [data, rowsPerPage]);
 
@@ -320,7 +287,7 @@ const NeverBoughtDataTable = ({ data, currentUser }: { data: OrderData[], curren
           </thead>
           <tbody>
             {paginatedData.map((row, index) => (
-              <tr key={row.productCode + index} style={{ animationDelay: `${index * 0.05}s`}}>
+              <tr key={row.productCode + index} className="catalog-row" style={{ animationDelay: `${index * 0.05}s`}}>
                 <td className="text-center">
                   <div className="status-cell">
                       <span className={`status-dot ${row.status.toLowerCase()}`}></span>
@@ -350,6 +317,91 @@ const NeverBoughtDataTable = ({ data, currentUser }: { data: OrderData[], curren
       </div>
     </div>
   );
+};
+
+const ChatAssistant = ({ data, clientName, contextType = 'orders' }: { data: OrderData[], clientName: string, contextType?: 'orders' | 'catalog' }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [input, setInput] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const placeholder = contextType === 'orders' ? "Ask about your orders..." : "Ask about the product catalog...";
+    const initialMessage = contextType === 'orders' ? "Hello! How can I help you with your order data today?" : "Hello! How can I help you with the product catalog?";
+    const dataDescription = contextType === 'orders' 
+        ? "Analyze the following JSON data which contains all their recent orders and answer their question concisely."
+        : "Analyze the following JSON data which contains product catalog information and answer their question concisely.";
+
+
+    const handleSend = async () => {
+        if (!input.trim()) return;
+
+        const userMessage = { role: 'user', text: input };
+        setMessages(prev => [...prev, userMessage]);
+        setInput('');
+        setIsLoading(true);
+
+        try {
+            const dataContext = JSON.stringify(data.slice(0, 50), null, 2); // Send a subset of data
+            const prompt = `You are an expert data analyst for an international shipping company. A client is asking a question about their data.
+            ${dataDescription}
+            If the question is unrelated to the data, politely decline to answer.
+            The current client's name is: ${clientName}.
+            Data:
+            ${dataContext}
+
+            Client's Question: "${input}"`;
+
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash',
+                contents: prompt,
+            });
+
+            const assistantMessage = { role: 'assistant', text: response.text };
+            setMessages(prev => [...prev, assistantMessage]);
+        } catch (error) {
+            console.error("Error calling Gemini API:", error);
+            const errorMessage = { role: 'assistant', text: "Sorry, I'm having trouble connecting to my brain right now. Please try again later." };
+            setMessages(prev => [...prev, errorMessage]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <>
+            <button className="chat-fab" onClick={() => setIsOpen(true)} aria-label="Open AI Assistant">
+                <img src="https://lh3.googleusercontent.com/d/1u_pfsfaDqq9XiPhr6qUbVEX2HtWIrM6K" alt="AI Assistant" />
+            </button>
+            <div className={`chat-assistant ${isOpen ? 'open' : 'closed'}`}>
+                <div className="chat-header">
+                    <span>AI Data Assistant</span>
+                    <button onClick={() => setIsOpen(false)}>&times;</button>
+                </div>
+                <div className="chat-body">
+                    <div className="chat-message assistant">
+                        {initialMessage}
+                    </div>
+                     {messages.map((msg, index) => (
+                        <div key={index} className={`chat-message ${msg.role}`}>
+                            {msg.text}
+                        </div>
+                    ))}
+                    {isLoading && <div className="chat-message assistant thinking"><span></span><span></span><span></span></div>}
+                </div>
+                <div className="chat-input">
+                    <input 
+                        type="text" 
+                        value={input} 
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                        placeholder={placeholder}
+                        disabled={isLoading}
+                    />
+                    <button onClick={handleSend} disabled={isLoading}>Send</button>
+                </div>
+            </div>
+        </>
+    );
 };
 
 const NeverBoughtDashboard = ({ masterProductList, initialClientName, clientList, onClose }: { masterProductList: MasterProductData[], initialClientName: string, clientList: string[], onClose: () => void }) => {
@@ -389,36 +441,39 @@ const NeverBoughtDashboard = ({ masterProductList, initialClientName, clientList
   }, [catalogData, searchQuery]);
   
   return (
-    <div className="dashboard-container never-bought-dashboard">
-      <header>
-        <div className="header-title">
-          <h1>Full Product Catalog</h1>
-        </div>
-        <div className="filters">
-            <div className="search-bar-container">
-                {Icons.search}
-                <input
-                    type="text"
-                    placeholder="Search by Product, Customer, Country..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
+    <>
+        <div className="dashboard-container never-bought-dashboard">
+          <header>
+            <div className="header-title">
+              <h1>Full Product Catalog</h1>
             </div>
-             <label className="view-switcher-label" htmlFor="nb-view-switcher">Current View:</label>
-             <div className="select-container">
-                <select id="nb-view-switcher" value={selectedUser} onChange={e => {setSelectedUser(e.target.value); setSearchQuery('')}}>
-                  {clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)}
-                </select>
-             </div>
-            <button className="back-button" onClick={onClose}>
-                {Icons.prevArrow} Back to Dashboard
-            </button>
+            <div className="filters">
+                <div className="search-bar-container">
+                    {Icons.search}
+                    <input
+                        type="text"
+                        placeholder="Search by Product, Customer, Country..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
+                 <label className="view-switcher-label" htmlFor="nb-view-switcher">Current View:</label>
+                 <div className="select-container">
+                    <select id="nb-view-switcher" value={selectedUser} onChange={e => {setSelectedUser(e.target.value); setSearchQuery('')}}>
+                      {clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)}
+                    </select>
+                 </div>
+                <button className="back-button" onClick={onClose}>
+                    {Icons.prevArrow} Back to Dashboard
+                </button>
+            </div>
+          </header>
+          <main>
+             <NeverBoughtDataTable data={filteredData} currentUser={selectedUser} />
+          </main>
         </div>
-      </header>
-      <main>
-         <NeverBoughtDataTable data={filteredData} currentUser={selectedUser} />
-      </main>
-    </div>
+        <ChatAssistant data={filteredData} clientName={selectedUser} contextType="catalog" />
+    </>
   );
 };
 
@@ -521,84 +576,6 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilter }: { data: OrderData
         </ResponsiveContainer>
     )
 }
-
-const ChatAssistant = ({ data, clientName }: { data: OrderData[], clientName: string }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([]);
-    const [input, setInput] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleSend = async () => {
-        if (!input.trim()) return;
-
-        const userMessage = { role: 'user', text: input };
-        setMessages(prev => [...prev, userMessage]);
-        setInput('');
-        setIsLoading(true);
-
-        try {
-            const dataContext = JSON.stringify(data.slice(0, 50), null, 2); // Send a subset of data
-            const prompt = `You are an expert data analyst for an international shipping company. A client is asking a question about their data.
-            Analyze the following JSON data which contains all their recent orders and answer their question concisely.
-            If the question is unrelated to the data, politely decline to answer.
-            The current client's name is: ${clientName}.
-            Data:
-            ${dataContext}
-
-            Client's Question: "${input}"`;
-
-            const response = await ai.models.generateContent({
-                model: 'gemini-2.5-flash',
-                contents: prompt,
-            });
-
-            const assistantMessage = { role: 'assistant', text: response.text };
-            setMessages(prev => [...prev, assistantMessage]);
-        } catch (error) {
-            console.error("Error calling Gemini API:", error);
-            const errorMessage = { role: 'assistant', text: "Sorry, I'm having trouble connecting to my brain right now. Please try again later." };
-            setMessages(prev => [...prev, errorMessage]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <>
-            <button className="chat-fab" onClick={() => setIsOpen(true)} aria-label="Open AI Assistant">
-                {Icons.chat}
-            </button>
-            <div className={`chat-assistant ${isOpen ? 'open' : 'closed'}`}>
-                <div className="chat-header">
-                    <span>AI Data Assistant</span>
-                    <button onClick={() => setIsOpen(false)}>&times;</button>
-                </div>
-                <div className="chat-body">
-                    <div className="chat-message assistant">
-                        Hello! How can I help you with your order data today?
-                    </div>
-                     {messages.map((msg, index) => (
-                        <div key={index} className={`chat-message ${msg.role}`}>
-                            {msg.text}
-                        </div>
-                    ))}
-                    {isLoading && <div className="chat-message assistant thinking"><span></span><span></span><span></span></div>}
-                </div>
-                <div className="chat-input">
-                    <input 
-                        type="text" 
-                        value={input} 
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                        placeholder="Ask about your orders..."
-                        disabled={isLoading}
-                    />
-                    <button onClick={handleSend} disabled={isLoading}>Send</button>
-                </div>
-            </div>
-        </>
-    );
-};
 
 const SkeletonLoader = () => (
     <div className="dashboard-container skeleton-loader">
