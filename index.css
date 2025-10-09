@@ -85,7 +85,7 @@ html {
 
 html, body {
   margin: 0;
-  height: auto;
+  height: 100%;
   overflow: hidden;
   font-family: var(--font-family);
   background-color: var(--background-color);
@@ -98,7 +98,7 @@ html, body {
 #root {
   display: flex;
   flex-direction: column;
-  height: 200vh;
+  height: 100vh;
 }
 
 /* --- Custom Scrollbar --- */
@@ -352,6 +352,8 @@ main {
   flex: 1;
   min-height: 0;
   min-width: 0; /* Prevents wide grid content from breaking layout */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .main-content {
