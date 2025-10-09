@@ -366,7 +366,7 @@ main {
 
 .kpi-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1.5rem;
 }
 
@@ -479,14 +479,14 @@ main {
 
 .kpi-card-content p {
   margin: 0.25rem 0 0 0;
-  font-size: 1.85rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-color);
   transition: font-size 0.3s ease;
 }
 
 .kpi-card.active .kpi-card-content p {
-    font-size: 2.1rem;
+    font-size: 1.7rem;
 }
 
 .charts-container {
@@ -1025,10 +1025,61 @@ tbody tr:hover .product-image {
     }
 }
 
+@media (min-width: 768px) {
+    .kpi-card-content p {
+        font-size: 1.85rem;
+    }
+    .kpi-card.active .kpi-card-content p {
+        font-size: 2.1rem;
+    }
+}
+
 @media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1.5rem 1rem;
+    }
+
     header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
         gap: 1rem;
+    }
+    
+    .search-bar-container input,
+    .search-bar-container input:focus {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+    .client-logo, .client-logo-placeholder {
+        width: 48px;
+        height: 48px;
+    }
+    .chat-fab {
+        width: 50px;
+        height: 50px;
+        bottom: 1rem;
+        right: 1rem;
+    }
+    .chat-fab svg {
+        width: 28px;
+        height: 28px;
+    }
+    .chat-assistant {
+        width: calc(100vw - 2rem);
+        right: 1rem;
+        bottom: 4.5rem;
+        max-height: 60vh;
     }
 }
