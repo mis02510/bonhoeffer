@@ -874,7 +874,7 @@ const App = () => {
       </header>
       <main>
         <div className="kpi-container">
-            <KpiCard title={currentUser === 'admin' ? 'Total Export Value' : 'Total Invoice Value'} value={kpis.totalValue} icon="revenue" activeFilter={activeFilter} />
+            <KpiCard title={currentUser === 'admin' ? 'Total Export Value' : 'Total Order Value'} value={kpis.totalValue} icon="revenue" activeFilter={activeFilter} />
             <KpiCard title="Total Orders" value={formatCompactNumber(kpis.totalOrders)} icon="orders" activeFilter={activeFilter} />
             <KpiCard title="In Process" value={formatCompactNumber(kpis.totalInProcess)} icon="plan" onFilter={handleFilter} filterType="status" filterValue="PLAN" activeFilter={activeFilter}/>
             <KpiCard title="Shipped Orders" value={formatCompactNumber(kpis.totalShipped)} icon="shipped" onFilter={handleFilter} filterType="status" filterValue="SHIPPED" activeFilter={activeFilter}/>
