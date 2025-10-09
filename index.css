@@ -85,7 +85,7 @@ html {
 
 html, body {
   margin: 0;
-  height: 100%;
+  height: auto;
   overflow: hidden;
   font-family: var(--font-family);
   background-color: var(--background-color);
