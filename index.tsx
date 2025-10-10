@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -24,6 +23,8 @@ const Icons = {
   shipped: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>,
   shoppingCart: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c.51 0 .962-.343 1.087-.835l1.823-6.836a.75.75 0 0 0-.44-.898l-7.458-2.61a.75.75 0 0 0-.915.658l-1.006 5.031c-.12.603-.635 1.036-1.254 1.036H3.75" /></svg>,
   search: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>,
+  dashboard: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" /></svg>,
+  table: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125-1.125m-17.25 0h.008v.015h-.008v-.015Zm0 0v-2.25m17.25-10.5h-17.25a1.125 1.125 0 0 0-1.125 1.125v1.5c0 .621.504 1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v-1.5c0-.621-.504-1.125-1.125-1.125m-17.25 0v2.25m17.25 0h.008v.015h-.008v-.015Zm-17.25 0v-2.25m0 5.25h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125-1.125m-17.25 0h.008v.015h-.008v-.015Z" /></svg>,
 };
 
 // --- Data Types ---
@@ -99,7 +100,36 @@ const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filte
 
 const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrderView, currentUser }: { data: OrderData[], title: string, isDetailedView: boolean, onOrderDoubleClick: (orderNo: string) => void, onClearOrderView: () => void, currentUser: string }) => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const tableWrapperRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const ROW_HEIGHT_ESTIMATE = 42; // An estimated height for a single row in pixels
+
+        const calculateRows = () => {
+            if (tableWrapperRef.current) {
+                const tableHeight = tableWrapperRef.current.clientHeight;
+                if (tableHeight > 0) {
+                    const calculatedRows = Math.floor(tableHeight / ROW_HEIGHT_ESTIMATE);
+                    setRowsPerPage(Math.max(1, calculatedRows)); // Ensure at least 1 row
+                }
+            }
+        };
+
+        const resizeObserver = new ResizeObserver(calculateRows);
+        if (tableWrapperRef.current) {
+            resizeObserver.observe(tableWrapperRef.current);
+        }
+
+        const timeoutId = setTimeout(calculateRows, 0);
+
+        return () => {
+            clearTimeout(timeoutId);
+            if (tableWrapperRef.current) {
+                resizeObserver.unobserve(tableWrapperRef.current);
+            }
+        };
+    }, []);
 
     const groupedData = useMemo(() => {
         if (isDetailedView) return []; // Don't group in detailed view
@@ -132,7 +162,6 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
         });
     }, [data, isDetailedView]);
 
-    const rowsPerPage = 10;
     const totalItems = isDetailedView ? data.length : groupedData.length;
     const totalPages = useMemo(() => Math.ceil(totalItems / rowsPerPage), [totalItems, rowsPerPage]);
 
@@ -164,6 +193,11 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                     </button>
                 )}
             </div>
+            {!isDetailedView && (
+                <div className="instruction-container">
+                    <p>Tip: Double-click on any order to see a detailed summary.</p>
+                </div>
+            )}
             <div className="table-wrapper" ref={tableWrapperRef}>
                 <table>
                     <thead>
@@ -319,49 +353,103 @@ const NeverBoughtDataTable = ({ data, currentUser }: { data: OrderData[], curren
   );
 };
 
-const ChatAssistant = ({ data, clientName, contextType = 'orders' }: { data: OrderData[], clientName: string, contextType?: 'orders' | 'catalog' }) => {
+// --- START: AI Chat Assistant & Helpers ---
+
+const SimpleMarkdown = ({ text }: { text: string }) => {
+    // This is a very basic markdown renderer.
+    // It handles: **bold**, and lists starting with "- ".
+    const html = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/^- (.*$)/gm, '<li>$1</li>')
+        .replace(/((<li>.*<\/li>\s*)+)/g, '<ul>$1</ul>') // Wrap consecutive LIs in a UL
+        .replace(/\n/g, '<br />')
+        .replace(/<br \/><ul>/g, '<ul>') // Cleanup
+        .replace(/<\/ul><br \/>/g, '</ul>'); // Cleanup
+
+    return <div dangerouslySetInnerHTML={{ __html: html }} />;
+};
+
+
+const ChatAssistant = ({ orderData, catalogData, clientName, kpis }: { orderData: OrderData[], catalogData: any[], clientName: string, kpis: any }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState<{role: string, text: string}[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const chatBodyRef = useRef<HTMLDivElement>(null);
 
-    const placeholder = contextType === 'orders' ? "Ask about your orders..." : "Ask about the product catalog...";
-    const initialMessage = contextType === 'orders' ? "Hello! How can I help you with your order data today?" : "Hello! How can I help you with the product catalog?";
-    const dataDescription = contextType === 'orders' 
-        ? "Analyze the following JSON data which contains all their recent orders and answer their question concisely."
-        : "Analyze the following JSON data which contains product catalog information and answer their question concisely.";
+    const placeholder = "Ask about orders or products...";
+    const initialMessage = "Hello! I am a real-time AI assistant. How can I help you with your orders and our product catalog today?";
 
+    useEffect(() => {
+        if (chatBodyRef.current) {
+            chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+        }
+    }, [messages, isLoading]);
 
     const handleSend = async () => {
-        if (!input.trim()) return;
+        if (!input.trim() || isLoading) return;
 
         const userMessage = { role: 'user', text: input };
-        setMessages(prev => [...prev, userMessage]);
+        setMessages(prev => [...prev, userMessage, { role: 'assistant', text: '' }]);
         setInput('');
         setIsLoading(true);
 
         try {
-            const dataContext = JSON.stringify(data.slice(0, 50), null, 2); // Send a subset of data
-            const prompt = `You are an expert data analyst for an international shipping company. A client is asking a question about their data.
-            ${dataDescription}
-            If the question is unrelated to the data, politely decline to answer.
-            The current client's name is: ${clientName}.
-            Data:
-            ${dataContext}
+            // Limit the data sent to the API to improve performance
+            const orderDataContext = JSON.stringify(orderData.slice(0, 100));
+            const catalogDataContext = JSON.stringify(catalogData.slice(0, 100));
+            const kpiContext = JSON.stringify(kpis);
 
-            Client's Question: "${input}"`;
+            const roleInstructions = clientName === 'admin'
+                ? "The user is an admin and can see all data. You can answer questions about any client or perform cross-client analysis based on the provided data."
+                : `The user is the client named '${clientName}'. You MUST only answer questions related to this specific client's data. Do not reveal any information about other clients. If asked about another client, politely decline and state that you can only provide information about their own account.`;
 
-            const response = await ai.models.generateContent({
+            const systemInstruction = `You are an expert data analyst for an international shipping company. 
+Your goal is to provide accurate, concise, and helpful answers based on the context provided.
+Analyze the user's dashboard KPIs and the detailed order/catalog data to answer questions.
+${roleInstructions}
+Always be polite and professional. Keep your answers short and to the point unless the user asks for more detail. Respond using simple Markdown for formatting (bolding, lists).`;
+            
+            const contents = `
+                **CONTEXT - Dashboard KPIs Summary:**
+                ${kpiContext}
+
+                **CONTEXT - Detailed Order Data (A sample of up to 100 rows):**
+                ${orderDataContext}
+
+                **CONTEXT - Detailed Product Catalog Data (A sample of up to 100 rows):**
+                ${catalogDataContext}
+
+                **User's Question:** "${input}"
+            `;
+
+            const responseStream = await ai.models.generateContentStream({
                 model: 'gemini-2.5-flash',
-                contents: prompt,
+                contents,
+                config: {
+                    systemInstruction,
+                    thinkingConfig: { thinkingBudget: 0 } // Disable thinking for faster responses
+                }
             });
 
-            const assistantMessage = { role: 'assistant', text: response.text };
-            setMessages(prev => [...prev, assistantMessage]);
+            let fullResponse = '';
+            for await (const chunk of responseStream) {
+                fullResponse += chunk.text;
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    newMessages[newMessages.length - 1].text = fullResponse;
+                    return newMessages;
+                });
+            }
+
         } catch (error) {
             console.error("Error calling Gemini API:", error);
-            const errorMessage = { role: 'assistant', text: "Sorry, I'm having trouble connecting to my brain right now. Please try again later." };
-            setMessages(prev => [...prev, errorMessage]);
+            const errorMessage = "Sorry, I'm having trouble connecting to my brain right now. Please try again later.";
+            setMessages(prev => {
+                const newMessages = [...prev];
+                newMessages[newMessages.length - 1].text = errorMessage;
+                return newMessages;
+            });
         } finally {
             setIsLoading(false);
         }
@@ -377,16 +465,16 @@ const ChatAssistant = ({ data, clientName, contextType = 'orders' }: { data: Ord
                     <span>AI Data Assistant</span>
                     <button onClick={() => setIsOpen(false)}>&times;</button>
                 </div>
-                <div className="chat-body">
+                <div className="chat-body" ref={chatBodyRef}>
                     <div className="chat-message assistant">
-                        {initialMessage}
+                        <SimpleMarkdown text={initialMessage} />
                     </div>
                      {messages.map((msg, index) => (
                         <div key={index} className={`chat-message ${msg.role}`}>
-                            {msg.text}
+                            {msg.role === 'user' ? msg.text : <SimpleMarkdown text={msg.text} />}
+                            {isLoading && msg.role === 'assistant' && index === messages.length - 1 && msg.text.length > 0 && <span className="blinking-cursor"></span>}
                         </div>
                     ))}
-                    {isLoading && <div className="chat-message assistant thinking"><span></span><span></span><span></span></div>}
                 </div>
                 <div className="chat-input">
                     <input 
@@ -404,33 +492,22 @@ const ChatAssistant = ({ data, clientName, contextType = 'orders' }: { data: Ord
     );
 };
 
-const NeverBoughtDashboard = ({ masterProductList, initialClientName, clientList, onClose }: { masterProductList: MasterProductData[], initialClientName: string, clientList: string[], onClose: () => void }) => {
+// --- END: AI Chat Assistant & Helpers ---
+
+const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientName, clientList, onClose }: { allOrderData: OrderData[], masterProductList: MasterProductData[], initialClientName: string, clientList: string[], onClose: () => void }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState(initialClientName);
 
-  const catalogData = useMemo(() => {
-    if (masterProductList.length === 0) return [];
-
-    const catalogForView = selectedUser === 'admin'
+  const catalogForUser = useMemo(() => {
+    return selectedUser === 'admin'
         ? masterProductList
         : masterProductList.filter(p => p.customerName === selectedUser);
-
-    return catalogForView.map(p => ({
-        status: 'CATALOG', orderDate: '', stuffingMonth: '', orderNo: 'N/A',
-        customerName: p.customerName, country: p.country, productCode: p.productCode,
-        qty: 0, exportValue: 0, logoUrl: '', category: p.category, segment: p.segment,
-        product: p.product, imageLink: p.imageLink, unitPrice: 0, fobPrice: p.fobPrice,
-        moq: p.moq,
-    } as OrderData));
   }, [masterProductList, selectedUser]);
-
-
-  const filteredData = useMemo(() => {
-    if (!searchQuery.trim()) return catalogData;
+  
+  const filteredCatalogData = useMemo(() => { // This is MasterProductData[]
+    if (!searchQuery.trim()) return catalogForUser;
     const lowercasedQuery = searchQuery.toLowerCase().trim();
-    return catalogData.filter(p =>
-      (p.status && p.status.toLowerCase().includes(lowercasedQuery)) ||
-      (p.orderNo && p.orderNo.toLowerCase().includes(lowercasedQuery)) ||
+    return catalogForUser.filter(p =>
       (p.productCode && p.productCode.toLowerCase().includes(lowercasedQuery)) ||
       (p.category && p.category.toLowerCase().includes(lowercasedQuery)) ||
       (p.segment && p.segment.toLowerCase().includes(lowercasedQuery)) ||
@@ -438,7 +515,25 @@ const NeverBoughtDashboard = ({ masterProductList, initialClientName, clientList
       (p.customerName && p.customerName.toLowerCase().includes(lowercasedQuery)) ||
       (p.country && p.country.toLowerCase().includes(lowercasedQuery))
     );
-  }, [catalogData, searchQuery]);
+  }, [catalogForUser, searchQuery]);
+
+  // Data formatted for the NeverBoughtDataTable component
+  const tableData = useMemo(() => {
+    return filteredCatalogData.map(p => ({
+        status: 'CATALOG', orderDate: '', stuffingMonth: '', orderNo: 'N/A',
+        customerName: p.customerName, country: p.country, productCode: p.productCode,
+        qty: 0, exportValue: 0, logoUrl: '', category: p.category, segment: p.segment,
+        product: p.product, imageLink: p.imageLink, unitPrice: 0, fobPrice: p.fobPrice,
+        moq: p.moq,
+    } as OrderData));
+  }, [filteredCatalogData]);
+
+  const relevantOrderData = useMemo(() => {
+    if (selectedUser === 'admin') {
+        return allOrderData;
+    }
+    return allOrderData.filter(o => o.customerName === selectedUser);
+  }, [allOrderData, selectedUser]);
   
   return (
     <>
@@ -469,10 +564,15 @@ const NeverBoughtDashboard = ({ masterProductList, initialClientName, clientList
             </div>
           </header>
           <main>
-             <NeverBoughtDataTable data={filteredData} currentUser={selectedUser} />
+             <NeverBoughtDataTable data={tableData} currentUser={selectedUser} />
           </main>
         </div>
-        <ChatAssistant data={filteredData} clientName={selectedUser} contextType="catalog" />
+        <ChatAssistant 
+          orderData={relevantOrderData} 
+          catalogData={filteredCatalogData} 
+          clientName={selectedUser} 
+          kpis={{}}
+        />
     </>
   );
 };
@@ -615,6 +715,7 @@ const App = () => {
   const [viewedOrder, setViewedOrder] = useState<string | null>(null);
   const [showNeverBought, setShowNeverBought] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table'>('dashboard');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -793,6 +894,13 @@ const App = () => {
     return countries.length === 1 ? countries[0] : null;
   }, [clientFilteredData]);
   
+  const relevantCatalogData = useMemo(() => {
+    if (currentUser === 'admin') {
+        return masterProductList;
+    }
+    return masterProductList.filter(p => p.customerName === currentUser);
+  }, [masterProductList, currentUser]);
+
   const handleFilter = (filter: Filter, source: string) => {
       if (activeFilter && activeFilter.type === filter.type && activeFilter.value === filter.value) {
           setActiveFilter(null);
@@ -806,6 +914,7 @@ const App = () => {
 
   if (showNeverBought) {
     return <NeverBoughtDashboard 
+        allOrderData={data}
         masterProductList={masterProductList}
         initialClientName={currentUser}
         clientList={clientList}
@@ -840,7 +949,7 @@ const App = () => {
             </div>
             <label className="view-switcher-label" htmlFor="view-switcher">Current View:</label>
              <div className="select-container">
-                <select id="view-switcher" value={currentUser} onChange={e => {setCurrentUser(e.target.value); setActiveFilter(null); setViewedOrder(null); setSearchQuery('');}}>
+                <select id="view-switcher" value={currentUser} onChange={e => {setCurrentUser(e.target.value); setActiveFilter(null); setViewedOrder(null); setSearchQuery(''); setAdminViewMode('dashboard');}}>
                   {clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)}
                 </select>
              </div>
@@ -872,8 +981,32 @@ const App = () => {
             />
             {currentUser === 'admin' && <KpiCard title="Active Clients" value={formatCompactNumber(kpis.activeClients)} icon="clients" activeFilter={activeFilter}/>}
         </div>
-        <div className={`main-content ${currentUser !== 'admin' ? 'client-view' : ''}`}>
-            {currentUser === 'admin' && (
+        {currentUser === 'admin' && (
+            <div className="view-toggle-buttons">
+                <button 
+                    className={adminViewMode === 'dashboard' ? 'active' : ''}
+                    onClick={() => setAdminViewMode('dashboard')}
+                    aria-label="Switch to Dashboard View"
+                >
+                    {Icons.dashboard} Dashboard
+                </button>
+                <button 
+                    className={adminViewMode === 'table' ? 'active' : ''}
+                    onClick={() => setAdminViewMode('table')}
+                    aria-label="Switch to Table View"
+                >
+                    {Icons.table} Table
+                </button>
+            </div>
+        )}
+        <div className={`main-content ${
+            currentUser !== 'admin' 
+                ? 'client-view' 
+                : adminViewMode === 'table' 
+                    ? 'table-only-view' 
+                    : 'dashboard-only-view'
+        }`}>
+            {currentUser === 'admin' && adminViewMode === 'dashboard' && (
               <div className="charts-container">
                 <div className={`chart-container ${activeFilter?.source === 'countryChart' ? 'active-filter-source' : ''}`}>
                   <h3>{singleCountryName ? `Total Export Value to ${singleCountryName}` : 'Export Value by Country'}</h3>
@@ -885,17 +1018,25 @@ const App = () => {
                 </div>
               </div>
             )}
-            <DataTable 
-                data={tableData} 
-                title={viewedOrder ? `Order Summary: ${viewedOrder}` : 'Recent Orders'}
-                isDetailedView={!!viewedOrder}
-                onOrderDoubleClick={setViewedOrder}
-                onClearOrderView={() => setViewedOrder(null)}
-                currentUser={currentUser}
-            />
+            
+            {(currentUser !== 'admin' || adminViewMode === 'table') && (
+                <DataTable 
+                    data={tableData} 
+                    title={viewedOrder ? `Order Summary: ${viewedOrder}` : 'All Orders'}
+                    isDetailedView={!!viewedOrder}
+                    onOrderDoubleClick={setViewedOrder}
+                    onClearOrderView={() => setViewedOrder(null)}
+                    currentUser={currentUser}
+                />
+            )}
         </div>
       </main>
-      <ChatAssistant data={finalFilteredData} clientName={currentUser} />
+      <ChatAssistant 
+        orderData={finalFilteredData} 
+        catalogData={relevantCatalogData} 
+        clientName={currentUser} 
+        kpis={kpis}
+      />
     </div>
   );
 };
