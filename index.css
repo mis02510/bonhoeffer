@@ -74,6 +74,11 @@
   }
 }
 
+@keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
 
 html {
   box-sizing: border-box;
@@ -350,10 +355,59 @@ header h1 {
 }
 
 main {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   gap: 1.5rem;
   min-width: 0; /* Prevents wide grid content from breaking layout */
+  min-height: 0;
 }
+
+.view-toggle-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  animation: slideUp 0.6s 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.view-toggle-buttons button {
+  background-color: var(--card-background);
+  border: 1px solid var(--card-border);
+  color: var(--text-color-muted);
+  border-radius: 8px;
+  padding: 0.4rem 1.2rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  white-space: nowrap;
+}
+
+.view-toggle-buttons button:hover {
+  color: var(--text-color);
+  border-color: var(--text-color-muted);
+}
+
+.view-toggle-buttons button.active {
+  background-color: var(--primary-accent);
+  border-color: var(--primary-accent);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(249, 156, 30, 0.4);
+  transform: translateY(-2px);
+}
+
+.view-toggle-buttons button svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+}
+
 
 .main-content {
   display: grid;
@@ -361,6 +415,7 @@ main {
   gap: 1.5rem;
   min-height: 0;
   min-width: 0; /* Prevents wide grid content from breaking layout */
+  flex-grow: 1;
 }
 
 .kpi-container {
@@ -496,6 +551,10 @@ main {
   min-height: 0;
 }
 
+.main-content.dashboard-only-view .charts-container {
+  height: 70vh; /* Set height for charts on mobile */
+}
+
 .chart-container,
 .data-table-container {
   background: var(--card-background);
@@ -579,8 +638,9 @@ main {
 }
 
 .table-wrapper {
-    overflow: auto; 
+    overflow: auto;
     min-height: 0;
+    flex: 1;
 }
 
 table {
@@ -788,6 +848,28 @@ tbody tr:hover .product-image {
     stroke: #fff;
 }
 
+.instruction-container {
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+    background-color: rgba(0,0,0,0.15);
+    border-radius: 6px;
+    border: 1px solid var(--card-border);
+}
+
+.instruction-container p {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee 20s linear infinite;
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-color-muted);
+    will-change: transform;
+}
+
 .chat-fab {
     position: fixed;
     bottom: 2rem;
@@ -967,11 +1049,19 @@ tbody tr:hover .product-image {
 }
 
 /* --- Never Bought Dashboard --- */
+.never-bought-dashboard {
+    height: 100vh;
+    overflow: hidden;
+}
+
 .never-bought-dashboard main {
     grid-template-rows: 1fr;
+    flex-grow: 1;
+    min-height: 0;
 }
 .never-bought-table {
     animation-delay: 0.2s;
+    height: 100%;
 }
 .never-bought-table .product-image-cell {
     width: 100px;
@@ -1029,6 +1119,16 @@ tbody tr:hover .product-image {
     }
     .main-content.client-view {
         grid-template-columns: 1fr;
+    }
+    .main-content.table-only-view,
+    .main-content.dashboard-only-view {
+      grid-template-columns: 1fr !important;
+    }
+
+    .main-content.dashboard-only-view .charts-container {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+        height: 65vh;
     }
 }
 
@@ -1130,4 +1230,30 @@ tbody tr:hover .product-image {
     .data-table-header {
       flex-direction: column;
     }
+}
+
+/* --- Chat Assistant Enhancements --- */
+.chat-message.assistant ul {
+    padding-left: 20px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.chat-message.assistant li {
+    margin-bottom: 0.25rem;
+}
+
+@keyframes blink {
+  from, to { opacity: 1 }
+  50% { opacity: 0 }
+}
+
+.blinking-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background-color: var(--primary-accent);
+    animation: blink 1s step-end infinite;
+    vertical-align: bottom;
+    margin-left: 2px;
 }
