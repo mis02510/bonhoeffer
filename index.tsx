@@ -307,7 +307,6 @@ const NeverBoughtDataTable = ({ data, currentUser }: { data: OrderData[], curren
         <table>
           <thead>
             <tr>
-              <th className="text-center">Status</th>
               <th className="text-center">Image</th>
               <th>Product Code</th>
               <th>Category</th>
@@ -322,12 +321,6 @@ const NeverBoughtDataTable = ({ data, currentUser }: { data: OrderData[], curren
           <tbody>
             {paginatedData.map((row, index) => (
               <tr key={row.productCode + index} className="catalog-row" style={{ animationDelay: `${index * 0.05}s`}}>
-                <td className="text-center">
-                  <div className="status-cell">
-                      <span className={`status-dot ${row.status.toLowerCase()}`}></span>
-                      <span className="status-text">{row.status}</span>
-                  </div>
-                </td>
                 <td className="product-image-cell">
                   {row.imageLink && row.imageLink.toLowerCase() !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                 </td>
@@ -376,9 +369,37 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis }: { orderData
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const chatBodyRef = useRef<HTMLDivElement>(null);
+    const [showHelpPopup, setShowHelpPopup] = useState(false);
 
     const placeholder = "Ask about orders or products...";
     const initialMessage = "Hello! I am a real-time AI assistant. How can I help you with your orders and our product catalog today?";
+
+    useEffect(() => {
+        let intervalId: number;
+        let timeoutId: number;
+
+        // Helper function to show the popup and set a timer to hide it
+        const showAndHide = () => {
+            setShowHelpPopup(true);
+            timeoutId = window.setTimeout(() => {
+                setShowHelpPopup(false);
+            }, 10000); // Hide after 10 seconds
+        };
+
+        if (isOpen) {
+            setShowHelpPopup(false);
+        } else {
+            // Show popup immediately when the component is ready and chat is closed
+            showAndHide();
+            // Then set an interval to show it periodically
+            intervalId = window.setInterval(showAndHide, 60000); // Every minute
+        }
+
+        return () => {
+            clearInterval(intervalId);
+            clearTimeout(timeoutId);
+        };
+    }, [isOpen]);
 
     useEffect(() => {
         if (chatBodyRef.current) {
@@ -457,7 +478,13 @@ Always be polite and professional. Keep your answers short and to the point unle
 
     return (
         <>
-            <button className="chat-fab" onClick={() => setIsOpen(true)} aria-label="Open AI Assistant">
+            {showHelpPopup && !isOpen && (
+                <div className="chat-help-popup">
+                    How may I help you?
+                    <div className="chat-help-popup-arrow"></div>
+                </div>
+            )}
+            <button className="chat-fab" onClick={() => { setIsOpen(true); setShowHelpPopup(false); }} aria-label="Open AI Assistant">
                 <img src="https://lh3.googleusercontent.com/d/1u_pfsfaDqq9XiPhr6qUbVEX2HtWIrM6K" alt="AI Assistant" />
             </button>
             <div className={`chat-assistant ${isOpen ? 'open' : 'closed'}`}>
