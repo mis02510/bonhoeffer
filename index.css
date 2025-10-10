@@ -870,6 +870,43 @@ tbody tr:hover .product-image {
     will-change: transform;
 }
 
+@keyframes popup-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-help-popup {
+    position: fixed;
+    bottom: 7rem;
+    right: 2rem;
+    background-color: var(--primary-accent);
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 998;
+    font-size: 0.9rem;
+    font-weight: 500;
+    animation: popup-fade-in 0.3s ease-out;
+}
+
+.chat-help-popup-arrow {
+    position: absolute;
+    bottom: -8px;
+    right: 22px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid var(--primary-accent);
+}
+
 .chat-fab {
     position: fixed;
     bottom: 2rem;
