@@ -24,7 +24,14 @@ const Icons = {
   shoppingCart: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c.51 0 .962-.343 1.087-.835l1.823-6.836a.75.75 0 0 0-.44-.898l-7.458-2.61a.75.75 0 0 0-.915.658l-1.006 5.031c-.12.603-.635 1.036-1.254 1.036H3.75" /></svg>,
   search: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>,
   dashboard: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" /></svg>,
-  table: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125-1.125m-17.25 0h.008v.015h-.008v-.015Zm0 0v-2.25m17.25-10.5h-17.25a1.125 1.125 0 0 0-1.125 1.125v1.5c0 .621.504 1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v-1.5c0-.621-.504-1.125-1.125-1.125m-17.25 0v2.25m17.25 0h.008v.015h-.008v-.015Zm-17.25 0v-2.25m0 5.25h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125-1.125m-17.25 0h.008v.015h-.008v-.015Z" /></svg>,
+  table: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504-1.125-1.125-1.125m-17.25 0h.008v.015h-.008v-.015Zm0 0v-2.25m17.25-10.5h-17.25a1.125 1.125 0 0 0-1.125 1.125v1.5c0 .621.504 1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v-1.5c0-.621-.504-1.125-1.125-1.125m-17.25 0v2.25m17.25 0h.008v.015h-.008v-.015Zm-17.25 0v-2.25m0 5.25h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504-1.125-1.125-1.125m-17.25 0h.008v.015h-.008v-.015Z" /></svg>,
+  user: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>,
+  key: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" /></svg>,
+  copy: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H9.75" /></svg>,
+  logout: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3h12" /></svg>,
+  checkCircle: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
+  clock: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
+  circle: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
 };
 
 // --- Data Types ---
@@ -60,6 +67,19 @@ interface MasterProductData {
   moq: number;
 }
 
+interface StepData {
+  orderNo: string;
+  productionDate: string;
+  productionStatus: string;
+  sobDate: string;
+  sobStatus: string;
+  paymentPlannedDate: string;
+  paymentStatus: string;
+  qualityCheckPlannedDate: string;
+  qualityCheckInspection: string;
+  qualityCheckStatus: string;
+}
+
 interface Filter {
     type: 'status' | 'country' | 'month';
     value: string;
@@ -72,6 +92,117 @@ const formatCompactNumber = (value: number) => new Intl.NumberFormat('en-US', { 
 const formatNa = (value: string) => (value && value.toLowerCase() !== '#n/a' ? value : '~');
 
 // --- Components ---
+const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, key: string) => boolean, onClearSavedUser: () => void }) => {
+    const [name, setName] = useState('');
+    const [key, setKey] = useState('');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [savedUsername, setSavedUsername] = useState<string | null>(null);
+
+    useEffect(() => {
+        const user = localStorage.getItem('dashboard_username');
+        if (user) {
+            setSavedUsername(user);
+        }
+    }, []);
+
+    const handleLoginAttempt = (e: React.FormEvent, loginName?: string, loginKey?: string) => {
+        e.preventDefault();
+        const finalName = loginName || name;
+        const finalKey = loginKey || key;
+        
+        if (isLoading || !finalName || !finalKey) return;
+
+        setIsLoading(true);
+        setError('');
+
+        setTimeout(() => {
+            const loginSuccess = onLogin(finalName.trim(), finalKey.trim());
+            if (!loginSuccess) {
+                setError('Invalid name or secret key. Please try again.');
+                setIsLoading(false);
+            }
+        }, 500);
+    };
+    
+    const handleWelcomeBackLogin = (e: React.FormEvent) => {
+        const savedKey = localStorage.getItem('dashboard_apikey');
+        if (savedUsername && savedKey) {
+            handleLoginAttempt(e, savedUsername, savedKey);
+        } else {
+            setError('Could not find saved credentials. Please log in manually.');
+            handleUseDifferentAccount();
+        }
+    };
+    
+    const handleUseDifferentAccount = () => {
+        onClearSavedUser();
+        setSavedUsername(null);
+        setName('');
+        setKey('');
+        setError('');
+    };
+
+    if (savedUsername) {
+        return (
+            <div className="login-container">
+                <div className="login-box">
+                    <h1 className="login-title">Welcome Back!</h1>
+                    <p className="login-subtitle">Continue as <strong>{savedUsername}</strong> or log in as a different user.</p>
+                    <form className="login-form" onSubmit={handleWelcomeBackLogin}>
+                         {error && <p className="login-error">{error}</p>}
+                        <button type="submit" className="login-button" disabled={isLoading}>
+                            {isLoading ? 'Logging In...' : `Login as ${savedUsername}`}
+                        </button>
+                        <button type="button" className="secondary-login-button" onClick={handleUseDifferentAccount} disabled={isLoading}>
+                            Use a Different Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="login-container">
+            <div className="login-box">
+                <h1 className="login-title">Client Dashboard Access</h1>
+                <p className="login-subtitle">Please enter your credentials to continue</p>
+                <form className="login-form" onSubmit={handleLoginAttempt}>
+                    <div className="input-group">
+                        <label htmlFor="name">{Icons.user} Name</label>
+                        <input
+                            id="name"
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="e.g., admin"
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <div className="input-group">
+                        <label htmlFor="key">{Icons.key} Secret Key</label>
+                        <input
+                            id="key"
+                            type="password"
+                            value={key}
+                            onChange={(e) => setKey(e.target.value)}
+                            placeholder="••••••••••••"
+                            required
+                            disabled={isLoading}
+                        />
+                    </div>
+                    {error && <p className="login-error">{error}</p>}
+                    <button type="submit" className="login-button" disabled={isLoading}>
+                        {isLoading ? 'Verifying...' : 'Login'}
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+};
+
 const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filterValue = null, activeFilter, onClick = null, className = '' }) => {
     const isFilterable = !!filterType || !!onClick;
     const isActive = activeFilter && activeFilter.type === filterType && activeFilter.value === filterValue;
@@ -98,38 +229,10 @@ const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filte
     );
 };
 
-const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrderView, currentUser }: { data: OrderData[], title: string, isDetailedView: boolean, onOrderDoubleClick: (orderNo: string) => void, onClearOrderView: () => void, currentUser: string }) => {
+const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrderView, currentUser, authenticatedUser, onShowTracking }: { data: OrderData[], title: string, isDetailedView: boolean, onOrderDoubleClick: (orderNo: string) => void, onClearOrderView: () => void, currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const rowsPerPage = 10; // Use a fixed number of rows per page
     const tableWrapperRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const ROW_HEIGHT_ESTIMATE = 42; // An estimated height for a single row in pixels
-
-        const calculateRows = () => {
-            if (tableWrapperRef.current) {
-                const tableHeight = tableWrapperRef.current.clientHeight;
-                if (tableHeight > 0) {
-                    const calculatedRows = Math.floor(tableHeight / ROW_HEIGHT_ESTIMATE);
-                    setRowsPerPage(Math.max(1, calculatedRows)); // Ensure at least 1 row
-                }
-            }
-        };
-
-        const resizeObserver = new ResizeObserver(calculateRows);
-        if (tableWrapperRef.current) {
-            resizeObserver.observe(tableWrapperRef.current);
-        }
-
-        const timeoutId = setTimeout(calculateRows, 0);
-
-        return () => {
-            clearTimeout(timeoutId);
-            if (tableWrapperRef.current) {
-                resizeObserver.unobserve(tableWrapperRef.current);
-            }
-        };
-    }, []);
 
     const groupedData = useMemo(() => {
         if (isDetailedView) return []; // Don't group in detailed view
@@ -181,7 +284,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
     
     useEffect(() => {
         setCurrentPage(1); // Reset page on data change
-    }, [data, rowsPerPage, isDetailedView]);
+    }, [data, isDetailedView]);
 
     return (
         <div className="data-table-container">
@@ -195,7 +298,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
             </div>
             {!isDetailedView && (
                 <div className="instruction-container">
-                    <p>Tip: Double-click on any order to see a detailed summary.</p>
+                    <p>Tip: Double-click on any order to see a detailed summary. Single-click an Order Number to track its progress.</p>
                 </div>
             )}
             <div className="table-wrapper" ref={tableWrapperRef}>
@@ -208,8 +311,8 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                             {isDetailedView && <th>Product Code</th>}
                             <th>Category</th>
                             {isDetailedView && <th>Product</th>}
-                            {currentUser === 'admin' && <th>Customer</th>}
-                            {currentUser === 'admin' && <th>Country</th>}
+                            {authenticatedUser === 'admin' && <th>Customer</th>}
+                            {authenticatedUser === 'admin' && <th>Country</th>}
                             <th className="text-right">Qty</th>
                             <th className="text-right">Export Value</th>
                             {isDetailedView && (
@@ -231,15 +334,15 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                             <span className="status-text">{row.status}</span>
                                         </div>
                                     </td>
-                                    <td className="order-no-cell">{row.orderNo}</td>
+                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(row.orderNo); }}>{row.orderNo}</td>
                                     <td className="product-image-cell">
                                         {row.imageLink && row.imageLink.toLowerCase() !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                                     </td>
                                     <td>{row.productCode}</td>
                                     <td>{formatNa(row.category)}</td>
                                     <td>{formatNa(row.product)}</td>
-                                    {currentUser === 'admin' && <td>{row.customerName}</td>}
-                                    {currentUser === 'admin' && <td>{row.country}</td>}
+                                    {authenticatedUser === 'admin' && <td>{row.customerName}</td>}
+                                    {authenticatedUser === 'admin' && <td>{row.country}</td>}
                                     <td className="text-right">{formatCompactNumber(row.qty)}</td>
                                     <td className="value-text text-right">{row.exportValue > 0 ? formatCurrency(row.exportValue) : '-'}</td>
                                     <td className="value-text text-right">{row.unitPrice > 0 ? formatCurrency(row.unitPrice) : '-'}</td>
@@ -261,13 +364,13 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                             <span className="status-text">{group.status}</span>
                                         </div>
                                     </td>
-                                    <td className="order-no-cell">{group.orderNo}</td>
+                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(group.orderNo); }}>{group.orderNo}</td>
                                     <td className="product-image-cell">
                                         {group.imageLink && group.imageLink.toLowerCase() !== '#n/a' ? <img src={group.imageLink} alt={group.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                                     </td>
                                     <td>{group.productCount > 1 ? 'Multiple Items' : formatNa(group.category)}</td>
-                                    {currentUser === 'admin' && <td>{group.customerName}</td>}
-                                    {currentUser === 'admin' && <td>{group.country}</td>}
+                                    {authenticatedUser === 'admin' && <td>{group.customerName}</td>}
+                                    {authenticatedUser === 'admin' && <td>{group.country}</td>}
                                     <td className="text-right">{formatCompactNumber(group.totalQty)}</td>
                                     <td className="value-text text-right">{formatCurrency(group.totalExportValue)}</td>
                                 </tr>
@@ -285,7 +388,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
     );
 };
 
-const NeverBoughtDataTable = ({ data, currentUser }: { data: OrderData[], currentUser: string }) => {
+const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: OrderData[], currentUser: string, authenticatedUser: string }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
   const rowsPerPage = 10;
@@ -312,8 +415,8 @@ const NeverBoughtDataTable = ({ data, currentUser }: { data: OrderData[], curren
               <th>Category</th>
               <th>Segment</th>
               <th>Product</th>
-              {currentUser === 'admin' && <th>Customer</th>}
-              {currentUser === 'admin' && <th>Country</th>}
+              {authenticatedUser === 'admin' && <th>Customer</th>}
+              {authenticatedUser === 'admin' && <th>Country</th>}
               <th className="text-right">FOB Price</th>
               <th className="text-right">MOQ</th>
             </tr>
@@ -328,8 +431,8 @@ const NeverBoughtDataTable = ({ data, currentUser }: { data: OrderData[], curren
                 <td>{formatNa(row.category)}</td>
                 <td>{formatNa(row.segment)}</td>
                 <td>{formatNa(row.product)}</td>
-                {currentUser === 'admin' && <td>{row.customerName}</td>}
-                {currentUser === 'admin' && <td>{row.country}</td>}
+                {authenticatedUser === 'admin' && <td>{row.customerName}</td>}
+                {authenticatedUser === 'admin' && <td>{row.country}</td>}
                 <td className="value-text text-right">{row.fobPrice > 0 ? formatCurrency(row.fobPrice) : '-'}</td>
                 <td className="text-right">{row.moq > 0 ? formatCompactNumber(row.moq) : '-'}</td>
               </tr>
@@ -431,7 +534,7 @@ Analyze the user's dashboard KPIs and the detailed order/catalog data to answer 
 ${roleInstructions}
 Always be polite and professional. Keep your answers short and to the point unless the user asks for more detail. Respond using simple Markdown for formatting (bolding, lists).`;
             
-            const contents = `
+            const prompt = `
                 **CONTEXT - Dashboard KPIs Summary:**
                 ${kpiContext}
 
@@ -446,7 +549,7 @@ Always be polite and professional. Keep your answers short and to the point unle
 
             const responseStream = await ai.models.generateContentStream({
                 model: 'gemini-2.5-flash',
-                contents,
+                contents: prompt,
                 config: {
                     systemInstruction,
                     thinkingConfig: { thinkingBudget: 0 } // Disable thinking for faster responses
@@ -521,7 +624,7 @@ Always be polite and professional. Keep your answers short and to the point unle
 
 // --- END: AI Chat Assistant & Helpers ---
 
-const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientName, clientList, onClose }: { allOrderData: OrderData[], masterProductList: MasterProductData[], initialClientName: string, clientList: string[], onClose: () => void }) => {
+const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientName, clientList, onClose, authenticatedUser }: { allOrderData: OrderData[], masterProductList: MasterProductData[], initialClientName: string, clientList: string[], onClose: () => void, authenticatedUser: string }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState(initialClientName);
 
@@ -581,8 +684,11 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientNa
                 </div>
                  <label className="view-switcher-label" htmlFor="nb-view-switcher">Current View:</label>
                  <div className="select-container">
-                    <select id="nb-view-switcher" value={selectedUser} onChange={e => {setSelectedUser(e.target.value); setSearchQuery('')}}>
-                      {clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)}
+                    <select id="nb-view-switcher" value={selectedUser} onChange={e => {setSelectedUser(e.target.value); setSearchQuery('')}} disabled={authenticatedUser !== 'admin'}>
+                      {authenticatedUser === 'admin' ? 
+                          clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)
+                          : <option value={authenticatedUser}>{authenticatedUser}</option>
+                      }
                     </select>
                  </div>
                 <button className="back-button" onClick={onClose}>
@@ -591,7 +697,7 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientNa
             </div>
           </header>
           <main>
-             <NeverBoughtDataTable data={tableData} currentUser={selectedUser} />
+             <NeverBoughtDataTable data={tableData} currentUser={selectedUser} authenticatedUser={authenticatedUser}/>
           </main>
         </div>
         <ChatAssistant 
@@ -602,6 +708,100 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientNa
         />
     </>
   );
+};
+
+const OrderTrackingModal = ({ orderNo, stepData, onClose }: { orderNo: string, stepData: StepData | undefined, onClose: () => void }) => {
+    useEffect(() => {
+        const handleEsc = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
+        };
+        window.addEventListener('keydown', handleEsc);
+        return () => {
+            window.removeEventListener('keydown', handleEsc);
+        };
+    }, [onClose]);
+
+    const getStepState = (status: string, date: string): 'completed' | 'pending' | 'upcoming' => {
+        const s = status.toLowerCase();
+        if (s === 'yes' || s === 'done') {
+            return 'completed';
+        }
+        if (date && date.toLowerCase() !== '#n/a' && date.trim() !== '') {
+            return 'pending';
+        }
+        return 'upcoming';
+    };
+
+    const steps = stepData ? [
+        {
+            title: "Production Date Follow-up",
+            date: stepData.productionDate,
+            status: stepData.productionStatus,
+            state: getStepState(stepData.productionStatus, stepData.productionDate),
+            details: `Date: ${formatNa(stepData.productionDate)}`
+        },
+        {
+            title: "Final SOB",
+            date: stepData.sobDate,
+            status: stepData.sobStatus,
+            state: getStepState(stepData.sobStatus, stepData.sobDate),
+            details: `SOB/ETD: ${formatNa(stepData.sobDate)}`
+        },
+        {
+            title: "Payment Follow-up",
+            date: stepData.paymentPlannedDate,
+            status: stepData.paymentStatus,
+            state: getStepState(stepData.paymentStatus, stepData.paymentPlannedDate),
+            details: `Planned: ${formatNa(stepData.paymentPlannedDate)}`
+        },
+        {
+            title: "Quality Check",
+            date: stepData.qualityCheckPlannedDate,
+            status: stepData.qualityCheckStatus,
+            state: getStepState(stepData.qualityCheckStatus, stepData.qualityCheckPlannedDate),
+            details: `Planned: ${formatNa(stepData.qualityCheckPlannedDate)} | Inspection: ${formatNa(stepData.qualityCheckInspection)}`
+        },
+    ] : [];
+
+    const getIconForState = (state: 'completed' | 'pending' | 'upcoming') => {
+        switch (state) {
+            case 'completed': return Icons.checkCircle;
+            case 'pending': return Icons.clock;
+            case 'upcoming': return Icons.circle;
+            default: return Icons.circle;
+        }
+    };
+
+    return (
+        <div className="modal-backdrop" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h2>Order Tracking: <span className="modal-order-no">{orderNo}</span></h2>
+                    <button className="modal-close-button" onClick={onClose}>&times;</button>
+                </div>
+                <div className="modal-body">
+                    {stepData ? (
+                        <ul className="tracking-timeline">
+                            {steps.map((step, index) => (
+                                <li key={index} className={`tracking-step ${step.state}`}>
+                                    <div className="step-icon">{getIconForState(step.state)}</div>
+                                    <div className="step-content">
+                                        <h4 className="step-title">{step.title}</h4>
+                                        <p className="step-details">{step.details}</p>
+                                        <span className="step-status">{formatNa(step.status)}</span>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="no-tracking-info">No tracking information available for this order.</p>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
 };
 
 
@@ -698,7 +898,8 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilter }: { data: OrderData
                 <Line type="monotone" dataKey="orders" stroke="#36C5F0" strokeWidth={3} animationDuration={800} animationEasing="ease-out" dot={<CustomDot onFilter={onFilter} activeFilter={activeFilter} />} activeDot={{ r: 8 }}>
                     <LabelList dataKey="orders" position="top" fill="var(--text-color)" fontSize={16} fontWeight="bold" />
                 </Line>
-                <Area type="monotone" dataKey="orders" stroke={false} fill="url(#colorOrders)" />
+                {/* FIX: The 'stroke' prop for the Area component expects a string, but was receiving a boolean (false). Changed to "none" to correctly disable the stroke and fix the type error. */}
+                <Area type="monotone" dataKey="orders" stroke="none" fill="url(#colorOrders)" />
             </LineChart>
         </ResponsiveContainer>
     )
@@ -732,15 +933,179 @@ const SkeletonLoader = () => (
     </div>
   );
 
+const UserManagement = ({ allClientNames, currentCredentials, onClose }: { allClientNames: string[], currentCredentials: Record<string, string>, onClose: () => void }) => {
+    const [selectedClient, setSelectedClient] = useState<string>('');
+    const [apiKey, setApiKey] = useState<string>('');
+    const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
+    const [saveMessage, setSaveMessage] = useState('');
+
+    useEffect(() => {
+        if (selectedClient && currentCredentials[selectedClient]) {
+            setApiKey(currentCredentials[selectedClient]);
+        } else {
+            setApiKey('');
+        }
+         // Do not reset status here to allow success message to persist until a new client is selected
+        if (saveStatus !== 'success') {
+            setSaveStatus('idle');
+            setSaveMessage('');
+        }
+    }, [selectedClient, currentCredentials]);
+
+    const handleGenerateKey = () => {
+        if (!selectedClient) {
+            setSaveStatus('error');
+            setSaveMessage('Please select a client first.');
+            return;
+        }
+        const randomPart = Math.random().toString(36).substring(2, 10);
+        const newKey = `${selectedClient.toLowerCase().replace(/\s/g, '-')}-key-${randomPart}`;
+        setApiKey(newKey);
+        setSaveStatus('idle');
+        setSaveMessage('');
+    };
+
+    const handleSave = async () => {
+        if (!selectedClient || !apiKey) {
+            setSaveStatus('error');
+            setSaveMessage('Please select a client and generate a key before saving.');
+            return;
+        }
+
+        setSaveStatus('saving');
+        setSaveMessage('');
+        const webAppUrl = 'https://script.google.com/macros/s/AKfycbx39vRct-ETat-z56_KLr3ubBC2usHWqZKwYF2Fr9wmJYRxQkltk8oaaoJGG3kCfh6f/exec';
+        
+        const dataToSave = {
+            "name": selectedClient,
+            "apiKey": apiKey
+        };
+
+        try {
+            const response = await fetch(webAppUrl, {
+                method: 'POST',
+                // Sending as text/plain is a common workaround for Google Apps Script to avoid CORS pre-flight issues.
+                body: JSON.stringify(dataToSave),
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+            });
+    
+            const result = await response.json();
+
+            if (result.status !== 'success') {
+                throw new Error(result.message || 'An unknown error occurred on the server.');
+            }
+
+            setSaveStatus('success');
+            setSaveMessage(result.message || 'Credentials saved successfully! Please refresh the dashboard to see changes.');
+            
+            // Clear the form after a delay so the user can read the success message
+            setTimeout(() => {
+                setSelectedClient('');
+                setApiKey('');
+                setSaveStatus('idle');
+                setSaveMessage('');
+            }, 3000);
+    
+        } catch (error) {
+            console.error('Failed to save credentials:', error);
+            setSaveStatus('error');
+            const errorMessage = (error instanceof TypeError)
+                ? 'A network error occurred. This could be a CORS issue. Please check the browser console.'
+                : error.message;
+            setSaveMessage(`Save failed: ${errorMessage}`);
+        }
+    };
+
+    return (
+        <div className="dashboard-container user-management-dashboard">
+            <header>
+                <div className="header-title">
+                    <h1>User &amp; API Key Management</h1>
+                </div>
+                <div className="user-management-actions">
+                     <button className="back-button" onClick={onClose} disabled={saveStatus === 'saving'}>
+                        {Icons.prevArrow} Back to Dashboard
+                    </button>
+                </div>
+            </header>
+            <main>
+                <div className="user-management-form-container">
+                    <h2>Add/Update User API Key</h2>
+                    <p>Select a client to view, generate, or update their API key.</p>
+                    <div className="form-group">
+                        <label htmlFor="client-select">Client Name</label>
+                        <div className="select-container">
+                             <select 
+                                id="client-select" 
+                                value={selectedClient} 
+                                onChange={e => setSelectedClient(e.target.value)}
+                                disabled={saveStatus === 'saving'}
+                             >
+                                <option value="">-- Select a Client --</option>
+                                {allClientNames.map(client => (
+                                    <option key={client} value={client}>{client}</option>
+                                ))}
+                             </select>
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="api-key-input">API Key</label>
+                        <div className="api-key-input-wrapper">
+                             <input 
+                                id="api-key-input"
+                                type="text" 
+                                value={apiKey || 'Select a client to view or generate a key'} 
+                                readOnly 
+                                disabled={!apiKey}
+                             />
+                             <button 
+                                className="generate-key-button" 
+                                onClick={handleGenerateKey}
+                                disabled={!selectedClient || saveStatus === 'saving'}
+                             >
+                                {currentCredentials[selectedClient] || apiKey ? 'Regenerate Key' : 'Generate Key'}
+                             </button>
+                        </div>
+                    </div>
+                    <div className="form-actions">
+                        <button
+                            className="save-button"
+                            onClick={handleSave}
+                            disabled={saveStatus === 'saving' || !selectedClient || !apiKey}
+                        >
+                            {saveStatus === 'saving' ? 'Saving...' : 'Save'}
+                        </button>
+                    </div>
+                    {saveMessage && (
+                        <div className={`save-status-container ${saveStatus}`}>
+                            {saveMessage}
+                        </div>
+                    )}
+                </div>
+            </main>
+        </div>
+    );
+};
+
+
 const App = () => {
   const [data, setData] = useState<OrderData[]>([]);
   const [masterProductList, setMasterProductList] = useState<MasterProductData[]>([]);
+  const [stepData, setStepData] = useState<StepData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [authenticatedUser, setAuthenticatedUser] = useState<string | null>(null);
+  const [userCredentials, setUserCredentials] = useState<Record<string, string>>({
+      "admin": "admin-secret-key-123" // Hardcoded fallback for admin access
+  });
   const [currentUser, setCurrentUser] = useState('admin');
   const [activeFilter, setActiveFilter] = useState<Filter | null>(null);
   const [viewedOrder, setViewedOrder] = useState<string | null>(null);
+  const [selectedOrderForTracking, setSelectedOrderForTracking] = useState<string | null>(null);
   const [showNeverBought, setShowNeverBought] = useState(false);
+  const [showUserManagement, setShowUserManagement] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table'>('dashboard');
 
@@ -749,11 +1114,17 @@ const App = () => {
       const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
       const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Live`;
       const masterSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=MASTER`;
-      
+      const apiKeySheetGid = '817322209';
+      const apiKeySheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${apiKeySheetGid}`;
+      const stepSheetGid = '2023445010';
+      const stepSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${stepSheetGid}`;
+
       try {
-        const [liveResponse, masterResponse] = await Promise.all([
+        const [liveResponse, masterResponse, apiKeyResponse, stepResponse] = await Promise.all([
           fetch(liveSheetUrl),
           fetch(masterSheetUrl),
+          fetch(apiKeySheetUrl).catch(e => { console.warn("API Key sheet fetch failed, proceeding without it."); return null; }),
+          fetch(stepSheetUrl).catch(e => { console.warn("Step sheet fetch failed, proceeding without it."); return null; }),
         ]);
 
         if (!liveResponse.ok) throw new Error(`HTTP error! status: ${liveResponse.status} on Live sheet`);
@@ -773,7 +1144,7 @@ const App = () => {
             'Fob Price': 'fobPrice', 'MOQ': 'moq'
         };
         const liveRequiredHeaders = Object.keys(liveHeaderMapping);
-        const liveHeaderIndices = {};
+        const liveHeaderIndices: {[key: string]: number} = {};
         liveHeadersRaw.forEach((h, i) => { if (liveRequiredHeaders.includes(h.trim())) liveHeaderIndices[h.trim()] = i; });
         if (liveRequiredHeaders.some(h => !liveHeaderIndices.hasOwnProperty(h))) throw new Error('Live CSV is missing required columns. Please check sheet headers.');
 
@@ -800,7 +1171,7 @@ const App = () => {
             'Country': 'country', 'Fob Price': 'fobPrice', 'Moq Qty': 'moq'
         };
         const masterRequiredHeaders = Object.keys(masterHeaderMapping);
-        const masterHeaderIndices = {};
+        const masterHeaderIndices: {[key: string]: number} = {};
         masterHeadersRaw.forEach((h, i) => { if (masterRequiredHeaders.includes(h.trim())) masterHeaderIndices[h.trim()] = i; });
         if (masterRequiredHeaders.some(h => !masterHeaderIndices.hasOwnProperty(h))) throw new Error('MASTER CSV is missing required columns. Please check sheet headers.');
         
@@ -817,6 +1188,61 @@ const App = () => {
         }).filter(row => row.productCode);
         setMasterProductList(parsedMasterData);
 
+        // Parse Step Data
+        if (stepResponse && stepResponse.ok) {
+            const stepCsvText = await stepResponse.text();
+            const stepLines = stepCsvText.trim().split('\n');
+            const dataStartIndex = stepLines.findIndex(line => line.toLowerCase().includes('bg-0002'));
+            const dataLines = dataStartIndex !== -1 ? stepLines.slice(dataStartIndex) : [];
+            
+            const parsedStepData = dataLines.map(line => {
+                const values = line.slice(1, -1).split('","');
+                return {
+                    orderNo: values[0]?.trim() || '',
+                    productionDate: values[1]?.trim() || '',
+                    productionStatus: values[2]?.trim() || '',
+                    sobDate: values[3]?.trim() || '',
+                    sobStatus: values[4]?.trim() || '',
+                    paymentPlannedDate: values[5]?.trim() || '',
+                    paymentStatus: values[6]?.trim() || '',
+                    qualityCheckPlannedDate: values[7]?.trim() || '',
+                    qualityCheckInspection: values[8]?.trim() || '',
+                    qualityCheckStatus: values[9]?.trim() || '',
+                } as StepData;
+            }).filter(row => row.orderNo && row.orderNo.toLowerCase() !== '#n/a');
+            setStepData(parsedStepData);
+        }
+
+        // Parse API Key Data
+        const fetchedCredentials: Record<string, string> = {};
+        if (apiKeyResponse && apiKeyResponse.ok) {
+            const apiKeyCsvText = await apiKeyResponse.text();
+            const apiKeyLines = apiKeyCsvText.trim().split('\n').slice(1); // Skip header row
+            apiKeyLines.forEach(line => {
+                const values = line.slice(1, -1).split('","');
+                if (values.length >= 2) {
+                    const name = values[0]?.trim();
+                    const key = values[1]?.trim();
+                    if (name && key) {
+                        fetchedCredentials[name] = key;
+                    }
+                }
+            });
+        }
+        const allCredentials = { ...userCredentials, ...fetchedCredentials };
+        setUserCredentials(allCredentials);
+        
+        // Auto-login validation
+        const savedName = localStorage.getItem('dashboard_username');
+        const savedKey = localStorage.getItem('dashboard_apikey');
+        if (savedName && savedKey && allCredentials[savedName] === savedKey) {
+            setAuthenticatedUser(savedName);
+            setCurrentUser(savedName);
+        } else {
+            localStorage.removeItem('dashboard_username');
+            localStorage.removeItem('dashboard_apikey');
+        }
+
       } catch (e) {
         console.error("Failed to fetch or parse sheet data:", e);
         setError(`Failed to load live data. Please check sheet permissions and column headers. Error: ${e.message}`);
@@ -826,11 +1252,28 @@ const App = () => {
     };
     fetchData();
   }, []);
+  
+  const handleLogin = (name: string, key: string): boolean => {
+      const expectedKey = userCredentials[name];
+      if (expectedKey && expectedKey === key) {
+          localStorage.setItem('dashboard_username', name);
+          localStorage.setItem('dashboard_apikey', key);
+          setAuthenticatedUser(name);
+          setCurrentUser(name);
+          return true;
+      }
+      return false;
+  };
+
+  const handleLogout = () => {
+    setAuthenticatedUser(null);
+  };
 
   const clientLogos = useMemo(() => data.reduce((acc, row) => {
     if (row.customerName && row.logoUrl && !acc[row.customerName]) acc[row.customerName] = row.logoUrl;
     return acc;
-  }, {}), [data]);
+    // FIX: Explicitly type the initial value for the reduce function to avoid TypeScript inference issues.
+  }, {} as Record<string, string>), [data]);
 
   const clientList = useMemo(() => ['admin', ...new Set(data.map(d => d.customerName))], [data]);
   
@@ -939,6 +1382,22 @@ const App = () => {
   if (loading) return <SkeletonLoader />;
   if (error) return <div className="error">{error}</div>;
 
+  if (!authenticatedUser) {
+    const clearSavedUser = () => {
+        localStorage.removeItem('dashboard_username');
+        localStorage.removeItem('dashboard_apikey');
+    };
+    return <LoginScreen onLogin={handleLogin} onClearSavedUser={clearSavedUser} />;
+  }
+
+  if (showUserManagement) {
+      return <UserManagement 
+        allClientNames={clientList.filter(c => c !== 'admin')}
+        currentCredentials={userCredentials}
+        onClose={() => setShowUserManagement(false)}
+      />
+  }
+
   if (showNeverBought) {
     return <NeverBoughtDashboard 
         allOrderData={data}
@@ -946,125 +1405,153 @@ const App = () => {
         initialClientName={currentUser}
         clientList={clientList}
         onClose={() => setShowNeverBought(false)} 
+        authenticatedUser={authenticatedUser}
     />;
   }
 
   return (
-    <div className="dashboard-container" onDoubleClick={() => {setActiveFilter(null); setSearchQuery('');}}>
-      <header>
-        <div className="header-title">
-            {currentUser === 'admin' ? (
-                <img src="https://lh3.googleusercontent.com/d/1IPYJixe4KjQ3oY-9oOPdDyag98LND-qw" alt="Admin Logo" className="client-logo" />
-            ) : (
-                clientLogos[currentUser] ? (
-                    <img src={clientLogos[currentUser]} alt={`${currentUser} Logo`} className="client-logo" />
-                ) : (
-                    <div className="client-logo-placeholder">No Logo</div>
-                )
-            )}
-            <h1>{currentUser === 'admin' ? 'Global Operations Dashboard' : `Welcome, ${currentUser}`}</h1>
-        </div>
-        <div className="filters">
-            <div className="search-bar-container">
-                {Icons.search}
-                <input
-                    type="text"
-                    placeholder="Search by Order, Product, Customer..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-            </div>
-            <label className="view-switcher-label" htmlFor="view-switcher">Current View:</label>
-             <div className="select-container">
-                <select id="view-switcher" value={currentUser} onChange={e => {setCurrentUser(e.target.value); setActiveFilter(null); setViewedOrder(null); setSearchQuery(''); setAdminViewMode('dashboard');}}>
-                  {clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)}
-                </select>
-             </div>
-             <button className="never-bought-button" onClick={() => setShowNeverBought(true)}>
-                {Icons.placeholder} Never Bought Products
-             </button>
-        </div>
-      </header>
-      <main>
-        <div className="kpi-container">
-            <KpiCard title={currentUser === 'admin' ? 'Total Export Value' : 'Total Order Value'} value={kpis.totalValue} icon="revenue" activeFilter={activeFilter} />
-            <KpiCard title="Total Orders" value={formatCompactNumber(kpis.totalOrders)} icon="orders" activeFilter={activeFilter} />
-            <KpiCard title="In Process" value={formatCompactNumber(kpis.totalInProcess)} icon="plan" onFilter={handleFilter} filterType="status" filterValue="PLAN" activeFilter={activeFilter}/>
-            <KpiCard title="Shipped Orders" value={formatCompactNumber(kpis.totalShipped)} icon="shipped" onFilter={handleFilter} filterType="status" filterValue="SHIPPED" activeFilter={activeFilter}/>
-            <KpiCard 
-              title="Bought Products" 
-              value={formatCompactNumber(kpis.boughtProducts)} 
-              icon="shoppingCart" 
-              activeFilter={activeFilter}
-              className="bought-products-kpi"
-            />
-            <KpiCard 
-              title="Never Bought Products"
-              value={formatCompactNumber(kpis.neverBoughtCount)} 
-              icon="placeholder" 
-              onClick={() => setShowNeverBought(true)}
-              activeFilter={activeFilter}
-              className="never-bought-kpi"
-            />
-            {currentUser === 'admin' && <KpiCard title="Active Clients" value={formatCompactNumber(kpis.activeClients)} icon="clients" activeFilter={activeFilter}/>}
-        </div>
-        {currentUser === 'admin' && (
-            <div className="view-toggle-buttons">
-                <button 
-                    className={adminViewMode === 'dashboard' ? 'active' : ''}
-                    onClick={() => setAdminViewMode('dashboard')}
-                    aria-label="Switch to Dashboard View"
-                >
-                    {Icons.dashboard} Dashboard
-                </button>
-                <button 
-                    className={adminViewMode === 'table' ? 'active' : ''}
-                    onClick={() => setAdminViewMode('table')}
-                    aria-label="Switch to Table View"
-                >
-                    {Icons.table} Table
-                </button>
-            </div>
-        )}
-        <div className={`main-content ${
-            currentUser !== 'admin' 
-                ? 'client-view' 
-                : adminViewMode === 'table' 
-                    ? 'table-only-view' 
-                    : 'dashboard-only-view'
-        }`}>
-            {currentUser === 'admin' && adminViewMode === 'dashboard' && (
-              <div className="charts-container">
-                <div className={`chart-container ${activeFilter?.source === 'countryChart' ? 'active-filter-source' : ''}`}>
-                  <h3>{singleCountryName ? `Total Export Value to ${singleCountryName}` : 'Export Value by Country'}</h3>
-                  <SalesByCountryChart data={finalFilteredData} onFilter={handleFilter} activeFilter={activeFilter} />
-                </div>
-                <div className={`chart-container ${activeFilter?.source === 'monthChart' ? 'active-filter-source' : ''}`}>
-                  <h3>Monthly Order Volume</h3>
-                  <OrdersOverTimeChart data={finalFilteredData} onFilter={handleFilter} activeFilter={activeFilter} />
-                </div>
+    <>
+      <div className="dashboard-container" onDoubleClick={() => {setActiveFilter(null); setSearchQuery('');}}>
+        <header>
+          <div className="header-title">
+              {currentUser === 'admin' ? (
+                  <img src="https://lh3.googleusercontent.com/d/1IPYJixe4KjQ3oY-9oOPdDyag98LND-qw" alt="Admin Logo" className="client-logo" />
+              ) : (
+                  clientLogos[currentUser] ? (
+                      <img src={clientLogos[currentUser]} alt={`${currentUser} Logo`} className="client-logo" />
+                  ) : (
+                      <div className="client-logo-placeholder">No Logo</div>
+                  )
+              )}
+              <h1>{currentUser === 'admin' ? 'Global Operations Dashboard' : `Welcome, ${currentUser}`}</h1>
+          </div>
+          <div className="filters">
+              <div className="search-bar-container">
+                  {Icons.search}
+                  <input
+                      type="text"
+                      placeholder="Search by Order, Product, Customer..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                  />
               </div>
-            )}
-            
-            {(currentUser !== 'admin' || adminViewMode === 'table') && (
-                <DataTable 
-                    data={tableData} 
-                    title={viewedOrder ? `Order Summary: ${viewedOrder}` : 'All Orders'}
-                    isDetailedView={!!viewedOrder}
-                    onOrderDoubleClick={setViewedOrder}
-                    onClearOrderView={() => setViewedOrder(null)}
-                    currentUser={currentUser}
-                />
-            )}
-        </div>
-      </main>
-      <ChatAssistant 
-        orderData={finalFilteredData} 
-        catalogData={relevantCatalogData} 
-        clientName={currentUser} 
-        kpis={kpis}
-      />
-    </div>
+              <label className="view-switcher-label" htmlFor="view-switcher">Current View:</label>
+               <div className="select-container">
+                  <select id="view-switcher" value={currentUser} onChange={e => {setCurrentUser(e.target.value); setActiveFilter(null); setViewedOrder(null); setSearchQuery(''); setAdminViewMode('dashboard');}} disabled={authenticatedUser !== 'admin'}>
+                    {authenticatedUser === 'admin' ?
+                      clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)
+                      : <option value={authenticatedUser}>{authenticatedUser}</option>
+                    }
+                  </select>
+               </div>
+               <button className="never-bought-button" onClick={() => setShowNeverBought(true)}>
+                  {Icons.placeholder} Never Bought Products
+               </button>
+               {authenticatedUser === 'admin' && (
+                  <button className="user-management-button" onClick={() => setShowUserManagement(true)}>
+                      {Icons.clients} User Management
+                  </button>
+               )}
+               {authenticatedUser && (
+                  <button className="logout-button" onClick={handleLogout}>
+                      {Icons.logout} Logout
+                  </button>
+               )}
+          </div>
+        </header>
+        <main>
+          <div className="kpi-container">
+              <KpiCard title="Total Order Value" value={kpis.totalValue} icon="revenue" activeFilter={activeFilter} />
+              <KpiCard title="Total Orders" value={formatCompactNumber(kpis.totalOrders)} icon="orders" activeFilter={activeFilter} />
+              <KpiCard title="In Process" value={formatCompactNumber(kpis.totalInProcess)} icon="plan" onFilter={handleFilter} filterType="status" filterValue="PLAN" activeFilter={activeFilter}/>
+              <KpiCard title="Shipped Orders" value={formatCompactNumber(kpis.totalShipped)} icon="shipped" onFilter={handleFilter} filterType="status" filterValue="SHIPPED" activeFilter={activeFilter}/>
+              <KpiCard 
+                title="Bought Products" 
+                value={formatCompactNumber(kpis.boughtProducts)} 
+                icon="shoppingCart" 
+                activeFilter={activeFilter}
+                className="bought-products-kpi"
+              />
+              <KpiCard 
+                title="Never Bought Products"
+                value={formatCompactNumber(kpis.neverBoughtCount)} 
+                icon="placeholder" 
+                onClick={() => setShowNeverBought(true)}
+                activeFilter={activeFilter}
+                className="never-bought-kpi"
+              />
+              {currentUser === 'admin' && <KpiCard title="Active Clients" value={formatCompactNumber(kpis.activeClients)} icon="clients" activeFilter={activeFilter}/>}
+          </div>
+          {currentUser === 'admin' && (
+              <div className="view-toggle-buttons">
+                  <button 
+                      className={adminViewMode === 'dashboard' ? 'active' : ''}
+                      onClick={() => setAdminViewMode('dashboard')}
+                      aria-label="Switch to Dashboard View"
+                  >
+                      {Icons.dashboard} Dashboard
+                  </button>
+                  <button 
+                      className={adminViewMode === 'table' ? 'active' : ''}
+                      onClick={() => setAdminViewMode('table')}
+                      aria-label="Switch to Table View"
+                  >
+                      {Icons.table} Table
+                  </button>
+              </div>
+          )}
+          <div className={`main-content ${
+              // FIX: Refactored nested ternary to an IIFE to prevent a potential linter error.
+              (() => {
+                  if (currentUser !== 'admin') {
+                      return 'client-view';
+                  }
+                  if (adminViewMode === 'table') {
+                      return 'table-only-view';
+                  }
+                  return 'dashboard-only-view';
+              })()
+          }`}>
+              {currentUser === 'admin' && adminViewMode === 'dashboard' ? (
+                <div className="charts-container">
+                  <div className={`chart-container ${activeFilter?.source === 'countryChart' ? 'active-filter-source' : ''}`}>
+                    <h3>{singleCountryName ? `Total Export Value to ${singleCountryName}` : 'Export Value by Country'}</h3>
+                    <SalesByCountryChart data={finalFilteredData} onFilter={handleFilter} activeFilter={activeFilter} />
+                  </div>
+                  <div className={`chart-container ${activeFilter?.source === 'monthChart' ? 'active-filter-source' : ''}`}>
+                    <h3>Monthly Order Volume</h3>
+                    <OrdersOverTimeChart data={finalFilteredData} onFilter={handleFilter} activeFilter={activeFilter} />
+                  </div>
+                </div>
+              ) : (
+                  <DataTable 
+                      data={tableData} 
+                      title={viewedOrder ? `Order Summary: ${viewedOrder}` : 'All Orders'}
+                      isDetailedView={!!viewedOrder}
+                      onOrderDoubleClick={setViewedOrder}
+                      onClearOrderView={() => setViewedOrder(null)}
+                      currentUser={currentUser}
+                      authenticatedUser={authenticatedUser}
+                      onShowTracking={setSelectedOrderForTracking}
+                  />
+              )}
+          </div>
+        </main>
+        <ChatAssistant 
+          orderData={finalFilteredData} 
+          catalogData={relevantCatalogData} 
+          clientName={currentUser} 
+          kpis={kpis}
+        />
+      </div>
+      {selectedOrderForTracking && (
+        <OrderTrackingModal
+          orderNo={selectedOrderForTracking}
+          stepData={stepData.find(d => d.orderNo === selectedOrderForTracking)}
+          onClose={() => setSelectedOrderForTracking(null)}
+        />
+      )}
+    </>
   );
 };
 
