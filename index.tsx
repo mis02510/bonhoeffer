@@ -331,18 +331,18 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                     <td className="text-center">
                                         <div className="status-cell">
                                             <span className={`status-dot ${row.status.toLowerCase()}`}></span>
-                                            <span className="status-text">{row.status}</span>
+                                            <span className="status-text">{formatNa(row.status)}</span>
                                         </div>
                                     </td>
-                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(row.orderNo); }}>{row.orderNo}</td>
+                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(row.orderNo); }}>{formatNa(row.orderNo)}</td>
                                     <td className="product-image-cell">
                                         {row.imageLink && row.imageLink.toLowerCase() !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                                     </td>
-                                    <td>{row.productCode}</td>
+                                    <td>{formatNa(row.productCode)}</td>
                                     <td>{formatNa(row.category)}</td>
                                     <td>{formatNa(row.product)}</td>
-                                    {authenticatedUser === 'admin' && <td>{row.customerName}</td>}
-                                    {authenticatedUser === 'admin' && <td>{row.country}</td>}
+                                    {authenticatedUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
+                                    {authenticatedUser === 'admin' && <td>{formatNa(row.country)}</td>}
                                     <td className="text-right">{formatCompactNumber(row.qty)}</td>
                                     <td className="value-text text-right">{row.exportValue > 0 ? formatCurrency(row.exportValue) : '-'}</td>
                                     <td className="value-text text-right">{row.unitPrice > 0 ? formatCurrency(row.unitPrice) : '-'}</td>
@@ -361,16 +361,16 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                     <td className="text-center">
                                         <div className="status-cell">
                                             <span className={`status-dot ${group.status.toLowerCase()}`}></span>
-                                            <span className="status-text">{group.status}</span>
+                                            <span className="status-text">{formatNa(group.status)}</span>
                                         </div>
                                     </td>
-                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(group.orderNo); }}>{group.orderNo}</td>
+                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(group.orderNo); }}>{formatNa(group.orderNo)}</td>
                                     <td className="product-image-cell">
                                         {group.imageLink && group.imageLink.toLowerCase() !== '#n/a' ? <img src={group.imageLink} alt={group.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                                     </td>
                                     <td>{group.productCount > 1 ? 'Multiple Items' : formatNa(group.category)}</td>
-                                    {authenticatedUser === 'admin' && <td>{group.customerName}</td>}
-                                    {authenticatedUser === 'admin' && <td>{group.country}</td>}
+                                    {authenticatedUser === 'admin' && <td>{formatNa(group.customerName)}</td>}
+                                    {authenticatedUser === 'admin' && <td>{formatNa(group.country)}</td>}
                                     <td className="text-right">{formatCompactNumber(group.totalQty)}</td>
                                     <td className="value-text text-right">{formatCurrency(group.totalExportValue)}</td>
                                 </tr>
@@ -427,12 +427,12 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
                 <td className="product-image-cell">
                   {row.imageLink && row.imageLink.toLowerCase() !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                 </td>
-                <td>{row.productCode}</td>
+                <td>{formatNa(row.productCode)}</td>
                 <td>{formatNa(row.category)}</td>
                 <td>{formatNa(row.segment)}</td>
                 <td>{formatNa(row.product)}</td>
-                {authenticatedUser === 'admin' && <td>{row.customerName}</td>}
-                {authenticatedUser === 'admin' && <td>{row.country}</td>}
+                {authenticatedUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
+                {authenticatedUser === 'admin' && <td>{formatNa(row.country)}</td>}
                 <td className="value-text text-right">{row.fobPrice > 0 ? formatCurrency(row.fobPrice) : '-'}</td>
                 <td className="text-right">{row.moq > 0 ? formatCompactNumber(row.moq) : '-'}</td>
               </tr>
