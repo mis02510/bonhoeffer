@@ -14,6 +14,8 @@
   --status-pending: #ffc107;
   --status-plan: var(--primary-accent);
   --status-catalog: #A9A9A9;
+  --status-production: #ffc107;
+  --status-quality: #36C5F0;
   --error-color: #E53935; /* Red for errors */
 }
 
@@ -967,6 +969,17 @@ tbody tr:hover .product-image {
     line-height: 1.2;
 }
 
+/* Added to increase image size in client view for better space utilization */
+.client-view-table .product-image-cell {
+    width: 90px;
+}
+
+.client-view-table .product-image,
+.client-view-table .product-image-placeholder {
+    width: 60px;
+    height: 60px;
+}
+
 .status-cell {
     display: flex;
     align-items: center;
@@ -989,6 +1002,8 @@ tbody tr:hover .product-image {
 .status-dot.pending { background-color: var(--status-pending); }
 .status-dot.plan { background-color: var(--status-plan); }
 .status-dot.catalog { background-color: var(--status-catalog); }
+.status-dot.production { background-color: var(--status-production); }
+.status-dot.qualitycheck { background-color: var(--status-quality); }
 
 
 .value-text {
@@ -1597,6 +1612,16 @@ tbody tr:hover .product-image {
 .never-bought-table .product-image-placeholder {
     width: 80px;
     height: 80px;
+}
+
+.never-bought-table.client-view-table .product-image-cell {
+    width: 130px;
+}
+
+.never-bought-table.client-view-table .product-image,
+.never-bought-table.client-view-table .product-image-placeholder {
+    width: 100px;
+    height: 100px;
 }
 
 .user-management-actions {
