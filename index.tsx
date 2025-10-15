@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -12,7 +13,7 @@ const Icons = {
   revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   orders: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25l3.807-3.262a4.502 4.502 0 0 1 6.384 0L20.25 18" /></svg>,
   clients: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 0L5 11.529m10.232 2.234a3.75 3.75 0 0 0-4.493 0L10.5 11.529m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 16.25m10.232-2.234a3.75 3.75 0 0 1-4.493 0L7.5 13.763m7.5-4.515a3.753 3.753 0 0 0-4.493 0L10.5 6.5m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 11.25m10.232-2.234a3.75 3.75 0 0 0-4.493 0L7.5 8.763m7.5 4.515a3.75 3.75 0 0 1-4.493 0L10.5 13.75m5.007-4.515a3.75 3.75 0 0 0-4.493 0L13.5 8.763" /></svg>,
-  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
+  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898 1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
   placeholder: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>,
   prevArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>,
   nextArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>,
@@ -88,6 +89,7 @@ interface Filter {
 
 // --- Helper Functions ---
 const formatCurrency = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+const formatCurrencyNoDecimals = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
 const formatCompactNumber = (value: number) => new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value);
 const formatNumber = (value: number) => new Intl.NumberFormat('en-US').format(value);
 const formatNa = (value: string) => (value && value.toLowerCase() !== '#n/a' ? value : '~');
@@ -247,6 +249,8 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
     const rowsPerPage = 10; // Use a fixed number of rows per page
     const tableWrapperRef = useRef<HTMLDivElement>(null);
 
+    const getStatusKeyword = (status: string) => (status.split('(')[0] || '').trim().toLowerCase().replace(/\s+/g, '');
+
     const groupedData = useMemo(() => {
         if (isDetailedView) return []; // Don't group in detailed view
         
@@ -315,7 +319,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                 </div>
             )}
             <div className="table-wrapper" ref={tableWrapperRef}>
-                <table>
+                <table className={currentUser !== 'admin' ? 'client-view-table' : ''}>
                     <thead>
                         <tr>
                             <th className="text-center">Status</th>
@@ -328,8 +332,8 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                     <th>Product</th>
                                 </>
                             ) : null}
-                            {authenticatedUser === 'admin' && <th>Customer</th>}
-                            {authenticatedUser === 'admin' && <th>Country</th>}
+                            {currentUser === 'admin' && <th>Customer</th>}
+                            {currentUser === 'admin' && <th>Country</th>}
                             <th className="text-right">Qty</th>
                             {isDetailedView ? (
                                 <>
@@ -349,7 +353,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                 <tr key={row.productCode + index} className="detail-row" style={{ animationDelay: `${index * 0.05}s` }}>
                                     <td className="text-center">
                                         <div className="status-cell">
-                                            <span className={`status-dot ${row.status.toLowerCase()}`}></span>
+                                            <span className={`status-dot ${getStatusKeyword(row.status)}`}></span>
                                             <span className="status-text">{formatNa(row.status)}</span>
                                         </div>
                                     </td>
@@ -360,8 +364,8 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                     <td>{formatNa(row.productCode)}</td>
                                     <td>{formatNa(row.category)}</td>
                                     <td>{formatNa(row.product)}</td>
-                                    {authenticatedUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
-                                    {authenticatedUser === 'admin' && <td>{formatNa(row.country)}</td>}
+                                    {currentUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
+                                    {currentUser === 'admin' && <td>{formatNa(row.country)}</td>}
                                     <td className="text-right">{formatNumber(row.qty)}</td>
                                     <td className="value-text text-right">{row.unitPrice > 0 ? formatCurrency(row.unitPrice) : '-'}</td>
                                     <td className="value-text text-right">{row.exportValue > 0 ? formatCurrency(row.exportValue) : '-'}</td>
@@ -379,7 +383,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                 >
                                     <td className="text-center">
                                         <div className="status-cell">
-                                            <span className={`status-dot ${group.status.toLowerCase()}`}></span>
+                                            <span className={`status-dot ${getStatusKeyword(group.status)}`}></span>
                                             <span className="status-text">{formatNa(group.status)}</span>
                                         </div>
                                     </td>
@@ -387,8 +391,8 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                     <td className="product-image-cell">
                                         {group.imageLink && group.imageLink.toLowerCase() !== '#n/a' ? <img src={group.imageLink} alt={group.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                                     </td>
-                                    {authenticatedUser === 'admin' && <td>{formatNa(group.customerName)}</td>}
-                                    {authenticatedUser === 'admin' && <td>{formatNa(group.country)}</td>}
+                                    {currentUser === 'admin' && <td>{formatNa(group.customerName)}</td>}
+                                    {currentUser === 'admin' && <td>{formatNa(group.country)}</td>}
                                     <td className="text-right">{formatNumber(group.totalQty)}</td>
                                     <td className="value-text text-right">{formatCurrency(group.totalExportValue)}</td>
                                 </tr>
@@ -425,7 +429,7 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
   return (
     <div className="data-table-container never-bought-table">
       <div className="table-wrapper" ref={tableWrapperRef}>
-        <table>
+        <table className={currentUser !== 'admin' ? 'client-view-table' : ''}>
           <thead>
             <tr>
               <th className="text-center">Image</th>
@@ -433,8 +437,8 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
               <th>Category</th>
               <th>Segment</th>
               <th>Product</th>
-              {authenticatedUser === 'admin' && <th>Customer</th>}
-              {authenticatedUser === 'admin' && <th>Country</th>}
+              {currentUser === 'admin' && <th>Customer</th>}
+              {currentUser === 'admin' && <th>Country</th>}
               <th className="text-right">MOQ</th>
             </tr>
           </thead>
@@ -448,8 +452,8 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
                 <td>{formatNa(row.category)}</td>
                 <td>{formatNa(row.segment)}</td>
                 <td>{formatNa(row.product)}</td>
-                {authenticatedUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
-                {authenticatedUser === 'admin' && <td>{formatNa(row.country)}</td>}
+                {currentUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
+                {currentUser === 'admin' && <td>{formatNa(row.country)}</td>}
                 <td className="text-right">{row.moq > 0 ? formatCompactNumber(row.moq) : '-'}</td>
               </tr>
             ))}
@@ -623,10 +627,8 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
 
             const responseStream = await ai.models.generateContentStream({
                 model: 'gemini-2.5-flash',
-                contents: prompt,
-                config: {
-                    systemInstruction,
-                }
+                contents: { role: 'user', parts: [{ text: prompt }] },
+                systemInstruction: { role: 'system', parts: [{ text: systemInstruction }] },
             });
 
             let fullResponse = '';
@@ -818,6 +820,13 @@ const OrderTrackingModal = ({ orderNo, stepData, onClose }: { orderNo: string, s
             details: `Date: ${formatNa(stepData.productionDate)}`
         },
         {
+            title: "Quality Check",
+            date: stepData.qualityCheckPlannedDate,
+            status: stepData.qualityCheckStatus,
+            state: getStepState(stepData.qualityCheckStatus, stepData.qualityCheckPlannedDate),
+            details: `Planned: ${formatNa(stepData.qualityCheckPlannedDate)} | Inspection: ${formatNa(stepData.qualityCheckInspection)}`
+        },
+        {
             title: "Final SOB",
             date: stepData.sobDate,
             status: stepData.sobStatus,
@@ -830,13 +839,6 @@ const OrderTrackingModal = ({ orderNo, stepData, onClose }: { orderNo: string, s
             status: stepData.paymentStatus,
             state: getStepState(stepData.paymentStatus, stepData.paymentPlannedDate),
             details: `Planned: ${formatNa(stepData.paymentPlannedDate)}`
-        },
-        {
-            title: "Quality Check",
-            date: stepData.qualityCheckPlannedDate,
-            status: stepData.qualityCheckStatus,
-            state: getStepState(stepData.qualityCheckStatus, stepData.qualityCheckPlannedDate),
-            details: `Planned: ${formatNa(stepData.qualityCheckPlannedDate)} | Inspection: ${formatNa(stepData.qualityCheckInspection)}`
         },
     ] : [];
 
@@ -1231,6 +1233,7 @@ const App = () => {
         if (!liveResponse.ok) throw new Error(`HTTP error! status: ${liveResponse.status} on Live sheet`);
         if (!masterResponse.ok) throw new Error(`HTTP error! status: ${masterResponse.status} on MASTER sheet`);
 
+        // --- PARSE ALL DATA FIRST ---
         // Parse Live Data
         const liveCsvText = await liveResponse.text();
         const liveLines = liveCsvText.trim().split('\n');
@@ -1260,7 +1263,6 @@ const App = () => {
           }
           return row as OrderData;
         }).filter(row => row.orderNo && row.orderNo.includes('-'));
-        setData(parsedLiveData);
 
         // Parse Master Data
         const masterCsvText = await masterResponse.text();
@@ -1287,16 +1289,16 @@ const App = () => {
           }
           return row as MasterProductData;
         }).filter(row => row.productCode);
-        setMasterProductList(parsedMasterData);
-
+        
         // Parse Step Data
+        let parsedStepData: StepData[] = [];
         if (stepResponse && stepResponse.ok) {
             const stepCsvText = await stepResponse.text();
             const stepLines = stepCsvText.trim().split('\n');
             const dataStartIndex = stepLines.findIndex(line => line.toLowerCase().includes('bg-0002'));
             const dataLines = dataStartIndex !== -1 ? stepLines.slice(dataStartIndex) : [];
             
-            const parsedStepData = dataLines.map(line => {
+            parsedStepData = dataLines.map(line => {
                 const values = line.slice(1, -1).split('","');
                 return {
                     orderNo: values[0]?.trim() || '',
@@ -1311,8 +1313,34 @@ const App = () => {
                     qualityCheckStatus: values[9]?.trim() || '',
                 } as StepData;
             }).filter(row => row.orderNo && row.orderNo.toLowerCase() !== '#n/a');
-            setStepData(parsedStepData);
         }
+
+        // --- PROCESS DATA & SET STATE ---
+        const stepDataMap = new Map<string, StepData>(parsedStepData.map(d => [d.orderNo, d]));
+
+        const processedLiveData = parsedLiveData.map(order => {
+            const stepInfo = stepDataMap.get(order.orderNo);
+            if (stepInfo) {
+                const sobDone = (stepInfo.sobStatus?.toLowerCase() === 'yes' || stepInfo.sobStatus?.toLowerCase() === 'done');
+                const qualityDone = (stepInfo.qualityCheckStatus?.toLowerCase() === 'yes' || stepInfo.qualityCheckStatus?.toLowerCase() === 'done');
+                const productionDone = (stepInfo.productionStatus?.toLowerCase() === 'yes' || stepInfo.productionStatus?.toLowerCase() === 'done');
+                
+                const isValidDate = (dateStr: string) => dateStr && dateStr.trim().toLowerCase() !== '#n/a' && dateStr.trim() !== '';
+
+                if (sobDone && isValidDate(stepInfo.sobDate)) {
+                    return { ...order, status: `Shipped (${stepInfo.sobDate})` };
+                } else if (qualityDone && isValidDate(stepInfo.qualityCheckPlannedDate)) {
+                    return { ...order, status: `Quality Check (${stepInfo.qualityCheckPlannedDate})` };
+                } else if (productionDone && isValidDate(stepInfo.productionDate)) {
+                    return { ...order, status: `Production (${stepInfo.productionDate})` };
+                }
+            }
+            return order;
+        });
+
+        setData(processedLiveData);
+        setMasterProductList(parsedMasterData);
+        setStepData(parsedStepData);
 
         // Parse API Key Data
         const fetchedCredentials: Record<string, string> = {};
@@ -1450,10 +1478,12 @@ const App = () => {
   }, [masterProductList, currentUser, clientFilteredData]);
 
   const kpis = useMemo(() => ({
-    totalValue: formatCurrency(finalFilteredData.reduce((acc, item) => acc + item.exportValue, 0)),
+    // FIX: Explicitly specify the accumulator type for `reduce` as <number> to resolve a TypeScript
+    // error where it failed to infer the type correctly for the arithmetic operation.
+    totalValue: formatCurrencyNoDecimals(finalFilteredData.reduce<number>((acc, item) => acc + item.exportValue, 0)),
     totalOrders: new Set(finalFilteredData.map(item => item.orderNo)).size,
     totalInProcess: new Set(finalFilteredData.filter(item => item.status.toUpperCase() === 'PLAN').map(item => item.orderNo)).size,
-    totalShipped: new Set(finalFilteredData.filter(item => item.status.toUpperCase() === 'SHIPPED').map(item => item.orderNo)).size,
+    totalShipped: new Set(finalFilteredData.filter(item => item.status.toUpperCase().startsWith('SHIPPED')).map(item => item.orderNo)).size,
     boughtProducts: new Set(finalFilteredData.map(item => item.productCode)).size,
     activeClients: new Set(finalFilteredData.map(item => item.customerName)).size,
     countries: new Set(finalFilteredData.map(item => item.country)).size,
