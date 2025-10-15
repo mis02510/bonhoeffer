@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -87,8 +88,9 @@ interface Filter {
 }
 
 // --- Helper Functions ---
-const formatCurrency = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+const formatCurrency = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
 const formatCompactNumber = (value: number) => new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value);
+const formatNumber = (value: number) => new Intl.NumberFormat('en-US').format(value);
 const formatNa = (value: string) => (value && value.toLowerCase() !== '#n/a' ? value : '~');
 
 // --- Components ---
@@ -308,19 +310,25 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                             <th className="text-center">Status</th>
                             <th>Order No</th>
                             <th className="text-center">Image</th>
-                            {isDetailedView && <th>Product Code</th>}
-                            <th>Category</th>
-                            {isDetailedView && <th>Product</th>}
+                            {isDetailedView ? (
+                                <>
+                                    <th>Product Code</th>
+                                    <th>Category</th>
+                                    <th>Product</th>
+                                </>
+                            ) : null}
                             {authenticatedUser === 'admin' && <th>Customer</th>}
                             {authenticatedUser === 'admin' && <th>Country</th>}
                             <th className="text-right">Qty</th>
-                            <th className="text-right">Export Value</th>
-                            {isDetailedView && (
+                            {isDetailedView ? (
                                 <>
                                     <th className="text-right">Unit Price</th>
+                                    <th className="text-right">Order Value</th>
                                     <th className="text-right">Fob Price</th>
                                     <th className="text-right">MOQ</th>
                                 </>
+                            ) : (
+                                <th className="text-right">Order Value</th>
                             )}
                         </tr>
                     </thead>
@@ -343,9 +351,9 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                     <td>{formatNa(row.product)}</td>
                                     {authenticatedUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
                                     {authenticatedUser === 'admin' && <td>{formatNa(row.country)}</td>}
-                                    <td className="text-right">{formatCompactNumber(row.qty)}</td>
-                                    <td className="value-text text-right">{row.exportValue > 0 ? formatCurrency(row.exportValue) : '-'}</td>
+                                    <td className="text-right">{formatNumber(row.qty)}</td>
                                     <td className="value-text text-right">{row.unitPrice > 0 ? formatCurrency(row.unitPrice) : '-'}</td>
+                                    <td className="value-text text-right">{row.exportValue > 0 ? formatCurrency(row.exportValue) : '-'}</td>
                                     <td className="value-text text-right">{row.fobPrice > 0 ? formatCurrency(row.fobPrice) : '-'}</td>
                                     <td className="text-right">{row.moq > 0 ? formatCompactNumber(row.moq) : '-'}</td>
                                 </tr>
@@ -368,10 +376,9 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                     <td className="product-image-cell">
                                         {group.imageLink && group.imageLink.toLowerCase() !== '#n/a' ? <img src={group.imageLink} alt={group.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                                     </td>
-                                    <td>{group.productCount > 1 ? 'Multiple Items' : formatNa(group.category)}</td>
                                     {authenticatedUser === 'admin' && <td>{formatNa(group.customerName)}</td>}
                                     {authenticatedUser === 'admin' && <td>{formatNa(group.country)}</td>}
-                                    <td className="text-right">{formatCompactNumber(group.totalQty)}</td>
+                                    <td className="text-right">{formatNumber(group.totalQty)}</td>
                                     <td className="value-text text-right">{formatCurrency(group.totalExportValue)}</td>
                                 </tr>
                             ))
@@ -417,7 +424,6 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
               <th>Product</th>
               {authenticatedUser === 'admin' && <th>Customer</th>}
               {authenticatedUser === 'admin' && <th>Country</th>}
-              <th className="text-right">FOB Price</th>
               <th className="text-right">MOQ</th>
             </tr>
           </thead>
@@ -433,7 +439,6 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
                 <td>{formatNa(row.product)}</td>
                 {authenticatedUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
                 {authenticatedUser === 'admin' && <td>{formatNa(row.country)}</td>}
-                <td className="value-text text-right">{row.fobPrice > 0 ? formatCurrency(row.fobPrice) : '-'}</td>
                 <td className="text-right">{row.moq > 0 ? formatCompactNumber(row.moq) : '-'}</td>
               </tr>
             ))}
@@ -548,7 +553,7 @@ Always be polite and professional. Keep your answers short and to the point unle
             `;
 
             const responseStream = await ai.models.generateContentStream({
-                model: 'gemini-2.5-flash',
+                model: 'gemini-2.5-pro',
                 contents: prompt,
                 config: {
                     systemInstruction,
@@ -829,7 +834,13 @@ const SalesByCountryChart = ({ data, onFilter, activeFilter }: { data: OrderData
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis dataKey="name" stroke={'var(--text-color-muted)'} tick={{ fontSize: 12 }} interval={0} angle={-35} textAnchor="end" />
                 <YAxis stroke={'var(--text-color-muted)'} tickFormatter={formatCompactNumber}/>
-                <Tooltip cursor={{fill: 'rgba(255,255,255,0.05)'}} contentStyle={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)' }} formatter={(value: number) => formatCurrency(value)} />
+                <Tooltip 
+                    cursor={{fill: 'rgba(255,255,255,0.05)'}} 
+                    contentStyle={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)' }} 
+                    formatter={(value: number) => formatCurrency(value)} 
+                    labelStyle={{ color: 'var(--text-color)' }} 
+                    itemStyle={{ color: 'var(--text-color)' }}
+                />
                 <Bar dataKey="value" onClick={handleClick} animationDuration={800} animationEasing="ease-out">
                     {chartData.map((entry, index) => (
                         <Cell 
@@ -894,7 +905,11 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilter }: { data: OrderData
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis dataKey="name" stroke={'var(--text-color-muted)'} />
                 <YAxis stroke={'var(--text-color-muted)'} tickFormatter={(value) => formatCompactNumber(value)} />
-                <Tooltip contentStyle={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)' }}/>
+                <Tooltip 
+                    contentStyle={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)' }}
+                    labelStyle={{ color: 'var(--text-color)' }}
+                    itemStyle={{ color: 'var(--text-color)' }}
+                />
                 <Line type="monotone" dataKey="orders" stroke="#36C5F0" strokeWidth={3} animationDuration={800} animationEasing="ease-out" dot={<CustomDot onFilter={onFilter} activeFilter={activeFilter} />} activeDot={{ r: 8 }}>
                     <LabelList dataKey="orders" position="top" fill="var(--text-color)" fontSize={16} fontWeight="bold" />
                 </Line>
@@ -1112,7 +1127,9 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
-      const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Live`;
+      // Query for rows where column 'A' (Status) is not empty.
+      const liveQuery = encodeURIComponent("SELECT * WHERE A IS NOT NULL AND A <> ''");
+      const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Live&tq=${liveQuery}`;
       const masterSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=MASTER`;
       const apiKeySheetGid = '817322209';
       const apiKeySheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${apiKeySheetGid}`;
@@ -1154,11 +1171,11 @@ const App = () => {
           for (const [header, key] of Object.entries(liveHeaderMapping)) {
             const value = values[liveHeaderIndices[header]] || '';
             if (['qty', 'moq'].includes(key)) row[key] = parseInt(String(value).replace(/,/g, ''), 10) || 0;
-            else if (['exportValue', 'unitPrice', 'fobPrice'].includes(key)) row[key] = parseFloat(String(value).replace(/,/g, '')) || 0;
+            else if (['exportValue', 'unitPrice', 'fobPrice'].includes(key)) row[key] = parseFloat(String(value).replace(/[$,]/g, '')) || 0;
             else row[key] = value.trim();
           }
           return row as OrderData;
-        }).filter(row => row.orderNo);
+        }).filter(row => row.orderNo && row.orderNo.includes('-'));
         setData(parsedLiveData);
 
         // Parse Master Data
@@ -1180,7 +1197,7 @@ const App = () => {
           const row: any = {};
           for (const [header, key] of Object.entries(masterHeaderMapping)) {
               const value = values[masterHeaderIndices[header]] || '';
-              if (key === 'fobPrice') row[key] = parseFloat(String(value).replace(/,/g, '')) || 0;
+              if (key === 'fobPrice') row[key] = parseFloat(String(value).replace(/[$,]/g, '')) || 0;
               else if (key === 'moq') row[key] = parseInt(String(value).replace(/,/g, ''), 10) || 0;
               else row[key] = value.trim();
           }
@@ -1275,7 +1292,7 @@ const App = () => {
     // FIX: Explicitly type the initial value for the reduce function to avoid TypeScript inference issues.
   }, {} as Record<string, string>), [data]);
 
-  const clientList = useMemo(() => ['admin', ...new Set(data.map(d => d.customerName))], [data]);
+  const clientList = useMemo(() => ['admin', ...new Set(data.map(d => d.customerName).filter(name => name && name.trim()))], [data]);
   
   const clientFilteredData = useMemo(() => {
       return currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
@@ -1351,8 +1368,8 @@ const App = () => {
   const kpis = useMemo(() => ({
     totalValue: formatCurrency(finalFilteredData.reduce((acc, item) => acc + item.exportValue, 0)),
     totalOrders: new Set(finalFilteredData.map(item => item.orderNo)).size,
-    totalInProcess: finalFilteredData.filter(item => item.status.toUpperCase() === 'PLAN').length,
-    totalShipped: finalFilteredData.filter(item => item.status.toUpperCase() === 'SHIPPED').length,
+    totalInProcess: new Set(finalFilteredData.filter(item => item.status.toUpperCase() === 'PLAN').map(item => item.orderNo)).size,
+    totalShipped: new Set(finalFilteredData.filter(item => item.status.toUpperCase() === 'SHIPPED').map(item => item.orderNo)).size,
     boughtProducts: new Set(finalFilteredData.map(item => item.productCode)).size,
     activeClients: new Set(finalFilteredData.map(item => item.customerName)).size,
     countries: new Set(finalFilteredData.map(item => item.country)).size,
@@ -1480,7 +1497,6 @@ const App = () => {
                 activeFilter={activeFilter}
                 className="never-bought-kpi"
               />
-              {currentUser === 'admin' && <KpiCard title="Active Clients" value={formatCompactNumber(kpis.activeClients)} icon="clients" activeFilter={activeFilter}/>}
           </div>
           {currentUser === 'admin' && (
               <div className="view-toggle-buttons">
@@ -1515,7 +1531,7 @@ const App = () => {
               {currentUser === 'admin' && adminViewMode === 'dashboard' ? (
                 <div className="charts-container">
                   <div className={`chart-container ${activeFilter?.source === 'countryChart' ? 'active-filter-source' : ''}`}>
-                    <h3>{singleCountryName ? `Total Export Value to ${singleCountryName}` : 'Export Value by Country'}</h3>
+                    <h3>{singleCountryName ? `Total Order Value to ${singleCountryName}` : 'Order Value by Country'}</h3>
                     <SalesByCountryChart data={finalFilteredData} onFilter={handleFilter} activeFilter={activeFilter} />
                   </div>
                   <div className={`chart-container ${activeFilter?.source === 'monthChart' ? 'active-filter-source' : ''}`}>
