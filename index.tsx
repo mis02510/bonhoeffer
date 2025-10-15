@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -92,6 +91,18 @@ const formatCurrency = (value: number) => new Intl.NumberFormat('en-US', { style
 const formatCompactNumber = (value: number) => new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value);
 const formatNumber = (value: number) => new Intl.NumberFormat('en-US').format(value);
 const formatNa = (value: string) => (value && value.toLowerCase() !== '#n/a' ? value : '~');
+
+const summarizeCatalogData = (data: (MasterProductData | OrderData)[]): string => {
+    if (!data || data.length === 0) return "No product catalog data available.";
+    const uniqueProducts = new Map(data.map(p => [p.productCode, p]));
+    const uniqueData = Array.from(uniqueProducts.values());
+
+    const categories = [...new Set(uniqueData.map(p => p.category))].filter(Boolean);
+    const segments = [...new Set(uniqueData.map(p => p.segment))].filter(Boolean);
+
+    return `Total Unique Products: ${uniqueData.length}. Product Categories: ${categories.slice(0, 15).join(', ')}. Product Segments: ${segments.slice(0, 15).join(', ')}.`;
+};
+
 
 // --- Components ---
 const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, key: string) => boolean, onClearSavedUser: () => void }) => {
@@ -471,7 +482,7 @@ const SimpleMarkdown = ({ text }: { text: string }) => {
 };
 
 
-const ChatAssistant = ({ orderData, catalogData, clientName, kpis }: { orderData: OrderData[], catalogData: any[], clientName: string, kpis: any }) => {
+const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartData, monthlyChartData }: { orderData: OrderData[], catalogData: any[], clientName: string, kpis: any, countryChartData: {name: string, value: number}[], monthlyChartData: {name: string, orders: number}[] }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{role: string, text: string}[]>([]);
     const [input, setInput] = useState('');
@@ -524,40 +535,97 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis }: { orderData
         setIsLoading(true);
 
         try {
-            // Limit the data sent to the API to improve performance
-            const orderDataContext = JSON.stringify(orderData.slice(0, 100));
-            const catalogDataContext = JSON.stringify(catalogData.slice(0, 100));
+            const MAX_JSON_LENGTH = 50000; // Character limit for raw JSON context
+
+            const rawOrderDataJson = JSON.stringify(orderData);
+            let orderDataContext = '';
+
+            if (rawOrderDataJson.length > MAX_JSON_LENGTH) {
+                const groupedOrders = orderData.reduce((acc, row) => {
+                    const key = row.orderNo;
+                    if (!acc[key]) {
+                        acc[key] = {
+                            orderNo: row.orderNo,
+                            customerName: row.customerName,
+                            country: row.country,
+                            status: row.status,
+                            totalQty: 0,
+                            totalExportValue: 0,
+                            productCount: 0,
+                        };
+                    }
+                    acc[key].totalQty += row.qty;
+                    acc[key].totalExportValue += row.exportValue;
+                    acc[key].productCount += 1;
+                    return acc;
+                }, {} as Record<string, any>);
+                
+                const summarizedOrderArray = Object.values(groupedOrders);
+                orderDataContext = `Note: The order data is too large to show full product details. Here is a summary grouped by Order Number:\n${JSON.stringify(summarizedOrderArray)}`;
+            } else {
+                orderDataContext = `Here is the complete dataset for the user's current view (All Orders Table Data):\n${rawOrderDataJson}`;
+            }
+
+            const rawCatalogDataJson = JSON.stringify(catalogData);
+            const catalogDataContext = rawCatalogDataJson.length > MAX_JSON_LENGTH
+                ? `Note: The product catalog is too large to show in full. Here is a summary:\n${summarizeCatalogData(catalogData)}`
+                : `Here is the complete dataset for the user's current view:\n${rawCatalogDataJson}`;
+
             const kpiContext = JSON.stringify(kpis);
+            const countryChartContext = JSON.stringify(countryChartData);
+            const monthlyChartContext = JSON.stringify(monthlyChartData);
 
             const roleInstructions = clientName === 'admin'
-                ? "The user is an admin and can see all data. You can answer questions about any client or perform cross-client analysis based on the provided data."
-                : `The user is the client named '${clientName}'. You MUST only answer questions related to this specific client's data. Do not reveal any information about other clients. If asked about another client, politely decline and state that you can only provide information about their own account.`;
+                ? "The user is an **admin** and can see all data. You can answer questions about any client or perform cross-client analysis based on the provided data."
+                : `The user is the client named **'${clientName}'**. You **MUST** only answer questions related to this specific client's data. Do not reveal any information about other clients. If asked about another client, politely decline and state that you can only provide information about their own account.`;
 
-            const systemInstruction = `You are an expert data analyst for an international shipping company. 
-Your goal is to provide accurate, concise, and helpful answers based on the context provided.
-Analyze the user's dashboard KPIs and the detailed order/catalog data to answer questions.
-${roleInstructions}
-Always be polite and professional. Keep your answers short and to the point unless the user asks for more detail. Respond using simple Markdown for formatting (bolding, lists).`;
-            
+            const systemInstruction = `You are an expert AI data assistant for an international shipping company. Your primary goal is to provide fast, accurate, and concise answers based *only* on the real-time data provided.
+
+**CRITICAL DATA & PRIVACY RULES:**
+1.  **Data Source:** Your knowledge is strictly limited to the dashboard data provided in the following context. Do not use any external knowledge.
+2.  **Admin vs. Client Access:**
+    - If the user is an **admin**, you can answer questions about any client or perform cross-client analysis.
+    - If the user is a **client** (e.g., 'RAYMOTOS'), you **MUST** only answer questions related to that specific client's data. If asked about another client, politely state that you can only provide information for their account.
+3.  **Data Schema:** The data comes from two main sources:
+    - **'Live' Sheet (Order Data):** Contains individual product line items for each order. An 'Order Number' (e.g., 'BM-0071-I') can have multiple rows. To get total value or quantity for an order, you must sum all its line items. Headers include: \`Status\`, \`Order Number\`, \`Product Code\`, \`Client\`, \`Country\`, \`Qty\`, \`Export Value\`.
+    - **'MASTER' Sheet (Product Catalog):** Contains the full catalog of all available products.
+
+**HOW TO ANSWER QUESTIONS:**
+- **Be Direct:** Get straight to the point. Avoid conversational filler like "Of course" or "Certainly".
+- **Prioritize Charts:** For questions about "Order Value by Country" or "Monthly Order Volume", you **MUST** use the specific 'Chart Data' provided as the absolute source of truth. This data is pre-calculated for the charts the user is seeing.
+- **Use Table Data for Details:** For specific questions, like the value of 'Order Number BM-0057-I', use the 'All Orders Table Data'.
+- **Handling Large Datasets:** If the 'All Orders Table Data' is too large, you will receive a summary grouped by 'Order Number' with columns like \`orderNo\`, \`totalQty\`, and \`totalExportValue\`. You can use this to answer order-level questions, but you will not have individual product details in this view.
+- **Calculations:** If you have the full detailed data, you can perform calculations (e.g., "What is the total value for order BM-0071-I?") by finding all rows with that \`orderNo\` and summing their \`exportValue\`.`;
+
             const prompt = `
-                **CONTEXT - Dashboard KPIs Summary:**
+                **CONTEXT - Real-time Dashboard KPIs:**
+                This is a summary of the currently filtered data on the user's dashboard. Use this for high-level questions about totals.
                 ${kpiContext}
 
-                **CONTEXT - Detailed Order Data (A sample of up to 100 rows):**
+                **CONTEXT - 'Order Value by Country' Chart Data:**
+                Use this data as the primary source of truth for any questions about order values for specific countries.
+                ${countryChartContext}
+
+                **CONTEXT - 'Monthly Order Volume' Chart Data:**
+                Use this data as the primary source of truth for any questions about order volumes for specific months. The 'orders' value represents the total number of unique orders for that month.
+                ${monthlyChartContext}
+
+                **CONTEXT - All Orders Table Data (from 'Live' Google Sheet):**
+                This is the detailed table data. Use this for specific questions not covered by the KPIs or Chart Data, such as details about a specific 'Order Number'.
                 ${orderDataContext}
 
-                **CONTEXT - Detailed Product Catalog Data (A sample of up to 100 rows):**
+                **CONTEXT - Full Product Catalog Data (from 'MASTER' Google Sheet):**
+                This data contains all available products, including those not yet purchased.
                 ${catalogDataContext}
 
                 **User's Question:** "${input}"
             `;
 
             const responseStream = await ai.models.generateContentStream({
-                model: 'gemini-2.5-pro',
+                model: 'gemini-2.5-flash',
                 contents: prompt,
                 config: {
                     systemInstruction,
-                    thinkingConfig: { thinkingBudget: 0 } // Disable thinking for faster responses
                 }
             });
 
@@ -710,6 +778,8 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientNa
           catalogData={filteredCatalogData} 
           clientName={selectedUser} 
           kpis={{}}
+          countryChartData={[]}
+          monthlyChartData={[]}
         />
     </>
   );
@@ -813,7 +883,9 @@ const OrderTrackingModal = ({ orderNo, stepData, onClose }: { orderNo: string, s
 const SalesByCountryChart = ({ data, onFilter, activeFilter }: { data: OrderData[], onFilter: (filter: Filter, source: string) => void, activeFilter: Filter | null }) => {
     const chartData = useMemo(() => {
         const countryData = data.reduce<Record<string, number>>((acc, curr) => {
-            acc[curr.country] = (acc[curr.country] || 0) + curr.exportValue;
+            if (curr.country && curr.exportValue > 0) {
+              acc[curr.country] = (acc[curr.country] || 0) + curr.exportValue;
+            }
             return acc;
         }, {});
         return Object.entries(countryData)
@@ -885,12 +957,24 @@ const CustomDot = (props: any) => {
 const OrdersOverTimeChart = ({ data, onFilter, activeFilter }: { data: OrderData[], onFilter: (filter: Filter, source: string) => void, activeFilter: Filter | null }) => {
     const chartData = useMemo(() => {
         const monthData = data.reduce((acc, curr) => {
-            const month = new Date(curr.orderDate).toLocaleString('default', { month: 'short' });
-            acc[month] = (acc[month] || 0) + 1;
+            if (curr.orderDate && curr.orderNo) {
+                const date = new Date(curr.orderDate);
+                if (!isNaN(date.getTime())) {
+                    const month = date.toLocaleString('default', { month: 'short' });
+                    if (!acc[month]) {
+                        acc[month] = new Set<string>();
+                    }
+                    acc[month].add(curr.orderNo);
+                }
+            }
             return acc;
-        }, {} as Record<string, number>);
-         const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        return monthOrder.map(month => ({ name: month, orders: monthData[month] || 0 })).filter(d => d.orders > 0);
+        }, {} as Record<string, Set<string>>);
+
+        const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return monthOrder.map(month => ({
+            name: month,
+            orders: monthData[month] ? monthData[month].size : 0
+        }));
     }, [data]);
 
      return (
@@ -1388,6 +1472,40 @@ const App = () => {
     return masterProductList.filter(p => p.customerName === currentUser);
   }, [masterProductList, currentUser]);
 
+  const countryChartData = useMemo(() => {
+    const countryData = finalFilteredData.reduce<Record<string, number>>((acc, curr) => {
+        if (curr.country && curr.exportValue) {
+            acc[curr.country] = (acc[curr.country] || 0) + curr.exportValue;
+        }
+        return acc;
+    }, {});
+    return Object.entries(countryData)
+        .map(([name, value]) => ({ name, value }))
+        .sort((a, b) => b.value - a.value);
+  }, [finalFilteredData]);
+
+  const monthlyChartData = useMemo(() => {
+    const monthData = finalFilteredData.reduce((acc, curr) => {
+        if (curr.orderDate && curr.orderNo) {
+            const date = new Date(curr.orderDate);
+            if (!isNaN(date.getTime())) {
+                const month = date.toLocaleString('default', { month: 'short' });
+                if (!acc[month]) {
+                    acc[month] = new Set<string>();
+                }
+                acc[month].add(curr.orderNo);
+            }
+        }
+        return acc;
+    }, {} as Record<string, Set<string>>);
+
+    const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return monthOrder.map(month => ({
+        name: month,
+        orders: monthData[month] ? monthData[month].size : 0
+    }));
+  }, [finalFilteredData]);
+
   const handleFilter = (filter: Filter, source: string) => {
       if (activeFilter && activeFilter.type === filter.type && activeFilter.value === filter.value) {
           setActiveFilter(null);
@@ -1558,6 +1676,8 @@ const App = () => {
           catalogData={relevantCatalogData} 
           clientName={currentUser} 
           kpis={kpis}
+          countryChartData={countryChartData}
+          monthlyChartData={monthlyChartData}
         />
       </div>
       {selectedOrderForTracking && (
