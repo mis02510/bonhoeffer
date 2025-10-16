@@ -1199,7 +1199,7 @@ const App = () => {
   const [error, setError] = useState(null);
   const [authenticatedUser, setAuthenticatedUser] = useState<string | null>(null);
   const [userCredentials, setUserCredentials] = useState<Record<string, string>>({
-      "admin": "admin-secret-key-123" // Hardcoded fallback for admin access
+      "admin": "admin-123" // Hardcoded fallback for admin access
   });
   const [currentUser, setCurrentUser] = useState('admin');
   const [activeFilter, setActiveFilter] = useState<Filter | null>(null);
