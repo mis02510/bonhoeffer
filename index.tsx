@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -13,7 +12,7 @@ const Icons = {
   revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   orders: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25l3.807-3.262a4.502 4.502 0 0 1 6.384 0L20.25 18" /></svg>,
   clients: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 0L5 11.529m10.232 2.234a3.75 3.75 0 0 0-4.493 0L10.5 11.529m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 16.25m10.232-2.234a3.75 3.75 0 0 1-4.493 0L7.5 13.763m7.5-4.515a3.753 3.753 0 0 0-4.493 0L10.5 6.5m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 11.25m10.232-2.234a3.75 3.75 0 0 0-4.493 0L7.5 8.763m7.5 4.515a3.75 3.75 0 0 1-4.493 0L10.5 13.75m5.007-4.515a3.75 3.75 0 0 0-4.493 0L13.5 8.763" /></svg>,
-  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898 1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
+  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
   placeholder: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>,
   prevArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>,
   nextArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>,
@@ -38,6 +37,7 @@ const Icons = {
 // --- Data Types ---
 interface OrderData {
   status: string;
+  originalStatus?: string;
   orderDate: string;
   stuffingMonth: string;
   orderNo: string;
@@ -93,6 +93,29 @@ const formatCurrencyNoDecimals = (value: number) => new Intl.NumberFormat('en-US
 const formatCompactNumber = (value: number) => new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value);
 const formatNumber = (value: number) => new Intl.NumberFormat('en-US').format(value);
 const formatNa = (value: string) => (value && value.toLowerCase() !== '#n/a' ? value : '~');
+
+const parseDate = (dateString: string): Date | null => {
+    if (!dateString || typeof dateString !== 'string' || dateString.toLowerCase() === '#n/a' || dateString.trim() === '') {
+        return null;
+    }
+
+    // Try parsing Google's "Date(YYYY,M,D...)" format which is common in gviz responses
+    const gvizMatch = dateString.match(/Date\((\d{4}),(\d{1,2}),(\d{1,2}).*?\)/);
+    if (gvizMatch) {
+        const year = parseInt(gvizMatch[1], 10);
+        const month = parseInt(gvizMatch[2], 10); // gviz month is 0-indexed
+        const day = parseInt(gvizMatch[3], 10);
+        return new Date(year, month, day);
+    }
+    
+    // Fallback to standard Date constructor for other formats like ISO, "MM/DD/YYYY" etc.
+    const date = new Date(dateString);
+    if (!isNaN(date.getTime())) {
+        return date;
+    }
+
+    return null;
+};
 
 const summarizeCatalogData = (data: (MasterProductData | OrderData)[]): string => {
     if (!data || data.length === 0) return "No product catalog data available.";
@@ -218,15 +241,15 @@ const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, ke
     );
 };
 
-const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filterValue = null, activeFilter, onClick = null, className = '' }) => {
+const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filterValue = null, activeFilters, onClick = null, className = '' }) => {
     const isFilterable = !!filterType || !!onClick;
-    const isActive = activeFilter && activeFilter.type === filterType && activeFilter.value === filterValue;
+    const isActive = activeFilters && activeFilters.some(f => f.type === filterType && f.value === filterValue);
     
     const handleClick = () => {
         if (onClick) {
             onClick();
         } else if (filterType && onFilter) {
-            onFilter({ type: filterType, value: filterValue }, 'kpi');
+            onFilter({ type: filterType, value: filterValue, source: 'kpi' });
         }
     };
 
@@ -272,7 +295,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                 totalExportValue: products.reduce((sum, p) => sum + p.exportValue, 0),
                 customerName: firstProduct.customerName,
                 country: firstProduct.country,
-                status: firstProduct.status,
+                status: firstProduct.status, // Use calculated status with dates
                 imageLink: firstProduct.imageLink,
                 productCode: firstProduct.productCode,
                 category: firstProduct.category,
@@ -582,24 +605,27 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
             const roleInstructions = clientName === 'admin'
                 ? "The user is an **admin** and can see all data. You can answer questions about any client or perform cross-client analysis based on the provided data."
                 : `The user is the client named **'${clientName}'**. You **MUST** only answer questions related to this specific client's data. Do not reveal any information about other clients. If asked about another client, politely decline and state that you can only provide information about their own account.`;
-
+            
             const systemInstruction = `You are an expert AI data assistant for an international shipping company. Your primary goal is to provide fast, accurate, and concise answers based *only* on the real-time data provided.
 
 **CRITICAL DATA & PRIVACY RULES:**
 1.  **Data Source:** Your knowledge is strictly limited to the dashboard data provided in the following context. Do not use any external knowledge.
 2.  **Admin vs. Client Access:**
-    - If the user is an **admin**, you can answer questions about any client or perform cross-client analysis.
-    - If the user is a **client** (e.g., 'RAYMOTOS'), you **MUST** only answer questions related to that specific client's data. If asked about another client, politely state that you can only provide information for their account.
+    - ${roleInstructions}
 3.  **Data Schema:** The data comes from two main sources:
-    - **'Live' Sheet (Order Data):** Contains individual product line items for each order. An 'Order Number' (e.g., 'BM-0071-I') can have multiple rows. To get total value or quantity for an order, you must sum all its line items. Headers include: \`Status\`, \`Order Number\`, \`Product Code\`, \`Client\`, \`Country\`, \`Qty\`, \`Export Value\`.
+    - **'Live' Sheet (Order Data):** This is your primary source for order details. It contains individual product line items for each order. An 'Order Number' (e.g., 'BM-0071-I') can have multiple rows, one for each product. Key columns include: \`Status\`, \`orderNo\`, \`productCode\`, \`product\`, \`customerName\`, \`country\`, \`qty\`, \`unitPrice\`, \`exportValue\`.
     - **'MASTER' Sheet (Product Catalog):** Contains the full catalog of all available products.
 
 **HOW TO ANSWER QUESTIONS:**
-- **Be Direct:** Get straight to the point. Avoid conversational filler like "Of course" or "Certainly".
-- **Prioritize Charts:** For questions about "Order Value by Country" or "Monthly Order Volume", you **MUST** use the specific 'Chart Data' provided as the absolute source of truth. This data is pre-calculated for the charts the user is seeing.
-- **Use Table Data for Details:** For specific questions, like the value of 'Order Number BM-0057-I', use the 'All Orders Table Data'.
-- **Handling Large Datasets:** If the 'All Orders Table Data' is too large, you will receive a summary grouped by 'Order Number' with columns like \`orderNo\`, \`totalQty\`, and \`totalExportValue\`. You can use this to answer order-level questions, but you will not have individual product details in this view.
-- **Calculations:** If you have the full detailed data, you can perform calculations (e.g., "What is the total value for order BM-0071-I?") by finding all rows with that \`orderNo\` and summing their \`exportValue\`.`;
+- **Be Direct, Factual, and Concise:** Get straight to the point. Provide short, meaningful answers based *only* on the data provided. Avoid conversational filler.
+- **Data is Your Only Truth:** You have been given all the necessary data from the dashboard and the underlying Google Sheets. Assume this data is complete and accurate. Do not claim data is missing or summarized unless the context explicitly states "Here is a summary...".
+- **Prioritize Data Sources:**
+    1.  **KPIs & Charts First:** For high-level summary questions (e.g., "what is total revenue?", "how many orders in May?"), use the 'KPIs' and 'Chart Data' contexts. They are pre-calculated for the user's view.
+    2.  **Table Data for All Details:** For any specific question about an **order number** (e.g., "details for BM-0071-I") or a **product code** (e.g., "quantity for BON-P-BC36"), you **MUST** meticulously search the 'All Orders Table Data' JSON.
+- **Answering Specific Questions (Your MOST IMPORTANT task):**
+    - **If asked about an Order Number:** Find all JSON objects in the 'All Orders Table Data' with the matching \`orderNo\`. List each product's \`product\`, \`qty\`, \`unitPrice\`, and \`exportValue\`. Then, provide a total value for the order by summing the \`exportValue\` of all its items.
+    - **If asked about a Product Code:** Find all JSON objects in the 'All Orders Table Data' with the matching \`productCode\`. For each occurrence, state the \`orderNo\` it belongs to, its \`qty\`, \`unitPrice\`, and \`exportValue\`.
+    - **NEVER say you cannot provide details:** The detailed, product-level data is always present in the 'All Orders Table Data' context unless it is explicitly marked as a summary. You must search it thoroughly to find the answer.`;
 
             const prompt = `
                 **CONTEXT - Real-time Dashboard KPIs:**
@@ -627,8 +653,10 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
 
             const responseStream = await ai.models.generateContentStream({
                 model: 'gemini-2.5-flash',
-                contents: { role: 'user', parts: [{ text: prompt }] },
-                systemInstruction: { role: 'system', parts: [{ text: systemInstruction }] },
+                contents: prompt,
+                config: {
+                    systemInstruction: systemInstruction,
+                },
             });
 
             let fullResponse = '';
@@ -882,24 +910,42 @@ const OrderTrackingModal = ({ orderNo, stepData, onClose }: { orderNo: string, s
 };
 
 
-const SalesByCountryChart = ({ data, onFilter, activeFilter }: { data: OrderData[], onFilter: (filter: Filter, source: string) => void, activeFilter: Filter | null }) => {
+const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null }) => {
     const chartData = useMemo(() => {
-        const countryData = data.reduce<Record<string, number>>((acc, curr) => {
-            if (curr.country && curr.exportValue > 0) {
-              acc[curr.country] = (acc[curr.country] || 0) + curr.exportValue;
+        const countryData = data.reduce<Record<string, { value: number; qty: number }>>((acc, curr) => {
+            if (curr.country) {
+              if (!acc[curr.country]) {
+                  acc[curr.country] = { value: 0, qty: 0 };
+              }
+              acc[curr.country].value += curr.exportValue;
+              acc[curr.country].qty += curr.qty;
             }
             return acc;
         }, {});
         return Object.entries(countryData)
-            .map(([name, value]) => ({ name, value }))
+            .map(([name, data]) => ({ name, value: data.value, qty: data.qty }))
+            .filter(d => d.value > 0)
             .sort((a, b) => b.value - a.value)
             .slice(0, 10);
     }, [data]);
 
     const handleClick = (payload: any) => {
-        if (payload && onFilter) {
-            onFilter({ type: 'country', value: payload.name }, 'countryChart');
+        if (!payload || !payload.name) return;
+        const countryName = payload.name;
+        onFilter({ type: 'country', value: countryName, source: 'countryChart' });
+    };
+
+    const CustomCountryTooltip = ({ active, payload, label }: any) => {
+        if (active && payload && payload.length) {
+          return (
+            <div className="recharts-default-tooltip" style={{padding: '0.5rem 1rem', backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)'}}>
+              <p style={{margin: '0 0 0.5rem 0', fontWeight: 'bold', color: 'var(--text-color)'}}>{label}</p>
+              <p style={{margin: 0, color: 'var(--text-color)'}}>{`Value: ${formatCurrency(payload[0].value)}`}</p>
+              <p style={{margin: 0, color: 'var(--text-color-muted)'}}>{`Total Qty: ${formatNumber(payload[0].payload.qty)}`}</p>
+            </div>
+          );
         }
+        return null;
     };
 
     return (
@@ -910,17 +956,14 @@ const SalesByCountryChart = ({ data, onFilter, activeFilter }: { data: OrderData
                 <YAxis stroke={'var(--text-color-muted)'} tickFormatter={formatCompactNumber}/>
                 <Tooltip 
                     cursor={{fill: 'rgba(255,255,255,0.05)'}} 
-                    contentStyle={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)' }} 
-                    formatter={(value: number) => formatCurrency(value)} 
-                    labelStyle={{ color: 'var(--text-color)' }} 
-                    itemStyle={{ color: 'var(--text-color)' }}
+                    content={<CustomCountryTooltip />}
                 />
-                <Bar dataKey="value" onClick={handleClick} animationDuration={800} animationEasing="ease-out">
+                <Bar dataKey="value" onClick={(data) => handleClick(data.payload)} animationDuration={800} animationEasing="ease-out">
                     {chartData.map((entry, index) => (
                         <Cell 
                           key={`cell-${index}`}
                           cursor="pointer"
-                          fill={activeFilter?.type === 'country' && activeFilter?.value === entry.name ? '#FFB86C' : '#F99C1E'} 
+                          fill={activeFilters?.some(f => f.type === 'country' && f.value === entry.name) ? '#FFB86C' : '#F99C1E'} 
                         />
                     ))}
                     <LabelList dataKey="value" position="top" formatter={formatCompactNumber} fill="var(--text-color)" fontSize={16} fontWeight="bold" />
@@ -930,54 +973,65 @@ const SalesByCountryChart = ({ data, onFilter, activeFilter }: { data: OrderData
     )
 };
 
-const CustomDot = (props: any) => {
-    const { cx, cy, stroke, payload, onFilter, activeFilter } = props;
-    if (payload.orders === 0) return null;
-    
-    const isActive = activeFilter && activeFilter.type === 'month' && activeFilter.value === payload.name;
-    
-    const handleClick = () => {
-        if (onFilter) {
-            onFilter({ type: 'month', value: payload.name }, 'monthChart');
-        }
-    };
-
-    return (
-        <circle 
-            cx={cx} 
-            cy={cy} 
-            r={isActive ? 8 : 5} 
-            fill={stroke} 
-            stroke={isActive ? 'rgba(255,255,255,0.8)' : 'none'}
-            strokeWidth={2}
-            onClick={handleClick} 
-            style={{ cursor: 'pointer', transition: 'r 0.2s ease, stroke 0.2s ease' }} 
-        />
-    );
-};
-
-const OrdersOverTimeChart = ({ data, onFilter, activeFilter }: { data: OrderData[], onFilter: (filter: Filter, source: string) => void, activeFilter: Filter | null }) => {
+const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null }) => {
     const chartData = useMemo(() => {
-        const monthData = data.reduce((acc, curr) => {
-            if (curr.orderDate && curr.orderNo) {
-                const date = new Date(curr.orderDate);
-                if (!isNaN(date.getTime())) {
-                    const month = date.toLocaleString('default', { month: 'short' });
-                    if (!acc[month]) {
-                        acc[month] = new Set<string>();
+        // 1. Create a map to store the first encountered date for each unique order number.
+        const uniqueOrderDates = new Map<string, Date>();
+        for (const item of data) {
+            if (item.orderNo && !uniqueOrderDates.has(item.orderNo)) {
+                if (item.orderDate) {
+                    const date = parseDate(item.orderDate);
+                    if (date) {
+                        uniqueOrderDates.set(item.orderNo, date);
                     }
-                    acc[month].add(curr.orderNo);
                 }
             }
-            return acc;
-        }, {} as Record<string, Set<string>>);
+        }
 
+        // 2. Count the orders per month based on the unique order dates.
+        const monthCounts: Record<string, number> = {};
+        for (const date of uniqueOrderDates.values()) {
+            const month = date.toLocaleString('default', { month: 'short' });
+            monthCounts[month] = (monthCounts[month] || 0) + 1;
+        }
+
+        // 3. Format for the chart.
         const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         return monthOrder.map(month => ({
             name: month,
-            orders: monthData[month] ? monthData[month].size : 0
+            orders: monthCounts[month] || 0
         }));
     }, [data]);
+
+    const handleDotClickAction = (payload: any) => {
+        if (!payload || !payload.name || payload.orders === 0) return;
+        const monthName = payload.name;
+        onFilter({ type: 'month', value: monthName, source: 'monthChart' });
+    };
+
+    const dotRenderer = (props: any) => {
+        const { cx, cy, stroke, payload } = props;
+        if (payload.orders === 0) return null;
+
+        const isActive = activeFilters && activeFilters.some(f => f.type === 'month' && f.value === payload.name);
+        
+        const handleClick = () => {
+            handleDotClickAction(payload);
+        };
+
+        return (
+            <circle
+                cx={cx}
+                cy={cy}
+                r={isActive ? 8 : 5}
+                fill={stroke}
+                stroke={isActive ? 'rgba(255,255,255,0.8)' : 'none'}
+                strokeWidth={2}
+                onClick={handleClick}
+                style={{ cursor: 'pointer', transition: 'r 0.2s ease, stroke 0.2s ease' }}
+            />
+        );
+    };
 
      return (
         <ResponsiveContainer width="100%" height="100%">
@@ -990,13 +1044,13 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilter }: { data: OrderData
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis dataKey="name" stroke={'var(--text-color-muted)'} />
-                <YAxis stroke={'var(--text-color-muted)'} tickFormatter={(value) => formatCompactNumber(value)} />
+                <YAxis stroke={'var(--text-color-muted)'} tickFormatter={(value) => formatCompactNumber(value)} allowDecimals={false} />
                 <Tooltip 
                     contentStyle={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)' }}
                     labelStyle={{ color: 'var(--text-color)' }}
                     itemStyle={{ color: 'var(--text-color)' }}
                 />
-                <Line type="monotone" dataKey="orders" stroke="#36C5F0" strokeWidth={3} animationDuration={800} animationEasing="ease-out" dot={<CustomDot onFilter={onFilter} activeFilter={activeFilter} />} activeDot={{ r: 8 }}>
+                <Line type="monotone" dataKey="orders" stroke="#36C5F0" strokeWidth={3} animationDuration={800} animationEasing="ease-out" dot={dotRenderer} activeDot={{ r: 8 }}>
                     <LabelList dataKey="orders" position="top" fill="var(--text-color)" fontSize={16} fontWeight="bold" />
                 </Line>
                 {/* FIX: The 'stroke' prop for the Area component expects a string, but was receiving a boolean (false). Changed to "none" to correctly disable the stroke and fix the type error. */}
@@ -1112,9 +1166,10 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose }: { allCl
         } catch (error) {
             console.error('Failed to save credentials:', error);
             setSaveStatus('error');
-            const errorMessage = (error instanceof TypeError)
-                ? 'A network error occurred. This could be a CORS issue. Please check the browser console.'
-                : error.message;
+            // Fix: Add type guard for 'error' which is of type 'unknown' in a catch block to prevent runtime errors.
+            const errorMessage = (error instanceof Error)
+                ? error.message
+                : 'An unknown error occurred. This could be a CORS issue. Please check the browser console.';
             setSaveMessage(`Save failed: ${errorMessage}`);
         }
     };
@@ -1202,7 +1257,7 @@ const App = () => {
       "admin": "admin-123" // Hardcoded fallback for admin access
   });
   const [currentUser, setCurrentUser] = useState('admin');
-  const [activeFilter, setActiveFilter] = useState<Filter | null>(null);
+  const [activeFilters, setActiveFilters] = useState<Filter[]>([]);
   const [viewedOrder, setViewedOrder] = useState<string | null>(null);
   const [selectedOrderForTracking, setSelectedOrderForTracking] = useState<string | null>(null);
   const [showNeverBought, setShowNeverBought] = useState(false);
@@ -1210,17 +1265,55 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table'>('dashboard');
 
+  const parseGvizResponse = (responseText: string, headerMapping: Record<string, string>, requiredFields: string[] = []) => {
+      if (!responseText) return [];
+      const match = responseText.match(/{.*}/s);
+      if (!match) throw new Error("Invalid Gviz response format.");
+      
+      const json = JSON.parse(match[0]);
+      if (json.status !== 'ok') {
+        const errorMessages = json.errors?.map((e: any) => e.detailed_message || e.message).join(', ') || 'Unknown error';
+        throw new Error(`Google Sheets API error: ${errorMessages}`);
+      }
+
+      const labelToIndex = new Map(json.table.cols.map((col: any, i: number) => [col.label.trim(), i]));
+
+      const missingHeaders = Object.keys(headerMapping).filter(h => !labelToIndex.has(h));
+      if (missingHeaders.length > 0) {
+          throw new Error(`Sheet is missing required columns: ${missingHeaders.join(', ')}`);
+      }
+      
+      return json.table.rows.map((r: any) => {
+          const row: any = {};
+          for (const [header, key] of Object.entries(headerMapping)) {
+              const index = labelToIndex.get(header);
+              const cell = r.c[index];
+              const value = cell ? cell.v : null;
+
+              if (['qty', 'moq'].includes(key)) {
+                  row[key] = parseInt(String(value || '0').replace(/,/g, ''), 10) || 0;
+              } else if (['exportValue', 'unitPrice', 'fobPrice'].includes(key)) {
+                  row[key] = parseFloat(String(value || '0').replace(/[$,]/g, '')) || 0;
+              } else {
+                  row[key] = value !== null ? String(value).trim() : '';
+              }
+          }
+          return row;
+      }).filter((row: any) => requiredFields.every(field => row[field] && String(row[field]).toLowerCase() !== '#n/a'));
+    };
+
   useEffect(() => {
     const fetchData = async () => {
       const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
-      // Query for rows where column 'A' (Status) is not empty.
       const liveQuery = encodeURIComponent("SELECT * WHERE A IS NOT NULL AND A <> ''");
-      const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Live&tq=${liveQuery}`;
-      const masterSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=MASTER`;
+      
+      // Use gviz JSON response instead of CSV for robust parsing
+      const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Live&tq=${liveQuery}`;
+      const masterSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=MASTER`;
       const apiKeySheetGid = '817322209';
-      const apiKeySheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${apiKeySheetGid}`;
+      const apiKeySheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${apiKeySheetGid}`;
       const stepSheetGid = '2023445010';
-      const stepSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${stepSheetGid}`;
+      const stepSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${stepSheetGid}`;
 
       try {
         const [liveResponse, masterResponse, apiKeyResponse, stepResponse] = await Promise.all([
@@ -1233,12 +1326,10 @@ const App = () => {
         if (!liveResponse.ok) throw new Error(`HTTP error! status: ${liveResponse.status} on Live sheet`);
         if (!masterResponse.ok) throw new Error(`HTTP error! status: ${masterResponse.status} on MASTER sheet`);
 
-        // --- PARSE ALL DATA FIRST ---
-        // Parse Live Data
-        const liveCsvText = await liveResponse.text();
-        const liveLines = liveCsvText.trim().split('\n');
-        const liveHeadersRaw = liveLines.shift().slice(1, -1).split('","');
-        
+        // --- PARSE ALL DATA USING NEW JSON-BASED PARSER ---
+        const liveText = await liveResponse.text();
+        const masterText = await masterResponse.text();
+
         const liveHeaderMapping = {
             'Status': 'status', 'ORDER FORWARDING DATE': 'orderDate', 'Stuffing Month': 'stuffingMonth',
             'Order Number': 'orderNo', 'Client': 'customerName', 'Country': 'country',
@@ -1247,72 +1338,38 @@ const App = () => {
             'Product': 'product', 'Image Link': 'imageLink', 'Unit Price': 'unitPrice',
             'Fob Price': 'fobPrice', 'MOQ': 'moq'
         };
-        const liveRequiredHeaders = Object.keys(liveHeaderMapping);
-        const liveHeaderIndices: {[key: string]: number} = {};
-        liveHeadersRaw.forEach((h, i) => { if (liveRequiredHeaders.includes(h.trim())) liveHeaderIndices[h.trim()] = i; });
-        if (liveRequiredHeaders.some(h => !liveHeaderIndices.hasOwnProperty(h))) throw new Error('Live CSV is missing required columns. Please check sheet headers.');
+        const parsedLiveData: OrderData[] = parseGvizResponse(liveText, liveHeaderMapping, ['orderNo'])
+            .filter(row => row.orderNo.includes('-'));
 
-        const parsedLiveData = liveLines.map(line => {
-          const values = line.slice(1, -1).split('","');
-          const row: any = {};
-          for (const [header, key] of Object.entries(liveHeaderMapping)) {
-            const value = values[liveHeaderIndices[header]] || '';
-            if (['qty', 'moq'].includes(key)) row[key] = parseInt(String(value).replace(/,/g, ''), 10) || 0;
-            else if (['exportValue', 'unitPrice', 'fobPrice'].includes(key)) row[key] = parseFloat(String(value).replace(/[$,]/g, '')) || 0;
-            else row[key] = value.trim();
-          }
-          return row as OrderData;
-        }).filter(row => row.orderNo && row.orderNo.includes('-'));
-
-        // Parse Master Data
-        const masterCsvText = await masterResponse.text();
-        const masterLines = masterCsvText.trim().split('\n');
-        const masterHeadersRaw = masterLines.shift().slice(1, -1).split('","');
         const masterHeaderMapping = {
             'Category': 'category', 'Segment': 'segment', 'Product': 'product',
             'Products Code': 'productCode', 'Image Link': 'imageLink', 'Customer Name': 'customerName',
             'Country': 'country', 'Fob Price': 'fobPrice', 'Moq Qty': 'moq'
         };
-        const masterRequiredHeaders = Object.keys(masterHeaderMapping);
-        const masterHeaderIndices: {[key: string]: number} = {};
-        masterHeadersRaw.forEach((h, i) => { if (masterRequiredHeaders.includes(h.trim())) masterHeaderIndices[h.trim()] = i; });
-        if (masterRequiredHeaders.some(h => !masterHeaderIndices.hasOwnProperty(h))) throw new Error('MASTER CSV is missing required columns. Please check sheet headers.');
-        
-        const parsedMasterData = masterLines.map(line => {
-          const values = line.slice(1, -1).split('","');
-          const row: any = {};
-          for (const [header, key] of Object.entries(masterHeaderMapping)) {
-              const value = values[masterHeaderIndices[header]] || '';
-              if (key === 'fobPrice') row[key] = parseFloat(String(value).replace(/[$,]/g, '')) || 0;
-              else if (key === 'moq') row[key] = parseInt(String(value).replace(/,/g, ''), 10) || 0;
-              else row[key] = value.trim();
-          }
-          return row as MasterProductData;
-        }).filter(row => row.productCode);
+        const parsedMasterData: MasterProductData[] = parseGvizResponse(masterText, masterHeaderMapping, ['productCode']);
         
         // Parse Step Data
         let parsedStepData: StepData[] = [];
         if (stepResponse && stepResponse.ok) {
-            const stepCsvText = await stepResponse.text();
-            const stepLines = stepCsvText.trim().split('\n');
-            const dataStartIndex = stepLines.findIndex(line => line.toLowerCase().includes('bg-0002'));
-            const dataLines = dataStartIndex !== -1 ? stepLines.slice(dataStartIndex) : [];
-            
-            parsedStepData = dataLines.map(line => {
-                const values = line.slice(1, -1).split('","');
-                return {
-                    orderNo: values[0]?.trim() || '',
-                    productionDate: values[1]?.trim() || '',
-                    productionStatus: values[2]?.trim() || '',
-                    sobDate: values[3]?.trim() || '',
-                    sobStatus: values[4]?.trim() || '',
-                    paymentPlannedDate: values[5]?.trim() || '',
-                    paymentStatus: values[6]?.trim() || '',
-                    qualityCheckPlannedDate: values[7]?.trim() || '',
-                    qualityCheckInspection: values[8]?.trim() || '',
-                    qualityCheckStatus: values[9]?.trim() || '',
-                } as StepData;
-            }).filter(row => row.orderNo && row.orderNo.toLowerCase() !== '#n/a');
+            const stepText = await stepResponse.text();
+            const match = stepText.match(/{.*}/s);
+            if (match) {
+                const json = JSON.parse(match[0]);
+                if (json.status === 'ok') {
+                    parsedStepData = json.table.rows.map((r: any) => ({
+                        orderNo: String(r.c[0]?.v || '').trim(),
+                        productionDate: String(r.c[1]?.v || '').trim(),
+                        productionStatus: String(r.c[2]?.v || '').trim(),
+                        sobDate: String(r.c[3]?.v || '').trim(),
+                        sobStatus: String(r.c[4]?.v || '').trim(),
+                        paymentPlannedDate: String(r.c[5]?.v || '').trim(),
+                        paymentStatus: String(r.c[6]?.v || '').trim(),
+                        qualityCheckPlannedDate: String(r.c[7]?.v || '').trim(),
+                        qualityCheckInspection: String(r.c[8]?.v || '').trim(),
+                        qualityCheckStatus: String(r.c[9]?.v || '').trim(),
+                    } as StepData)).filter(row => row.orderNo && row.orderNo.toLowerCase() !== '#n/a');
+                }
+            }
         }
 
         // --- PROCESS DATA & SET STATE ---
@@ -1320,22 +1377,28 @@ const App = () => {
 
         const processedLiveData = parsedLiveData.map(order => {
             const stepInfo = stepDataMap.get(order.orderNo);
+            let updatedStatus = order.status;
+            const originalStatus = order.status; // Keep the original status
+
             if (stepInfo) {
                 const sobDone = (stepInfo.sobStatus?.toLowerCase() === 'yes' || stepInfo.sobStatus?.toLowerCase() === 'done');
                 const qualityDone = (stepInfo.qualityCheckStatus?.toLowerCase() === 'yes' || stepInfo.qualityCheckStatus?.toLowerCase() === 'done');
                 const productionDone = (stepInfo.productionStatus?.toLowerCase() === 'yes' || stepInfo.productionStatus?.toLowerCase() === 'done');
+                const paymentDone = (stepInfo.paymentStatus?.toLowerCase() === 'yes' || stepInfo.paymentStatus?.toLowerCase() === 'done');
                 
                 const isValidDate = (dateStr: string) => dateStr && dateStr.trim().toLowerCase() !== '#n/a' && dateStr.trim() !== '';
 
-                if (sobDone && isValidDate(stepInfo.sobDate)) {
-                    return { ...order, status: `Shipped (${stepInfo.sobDate})` };
+                if (sobDone && paymentDone && isValidDate(stepInfo.sobDate)) {
+                    updatedStatus = `Complete (${stepInfo.sobDate})`;
+                } else if (sobDone && isValidDate(stepInfo.sobDate)) {
+                    updatedStatus = `Shipped (${stepInfo.sobDate})`;
                 } else if (qualityDone && isValidDate(stepInfo.qualityCheckPlannedDate)) {
-                    return { ...order, status: `Quality Check (${stepInfo.qualityCheckPlannedDate})` };
+                    updatedStatus = `Quality Check (${stepInfo.qualityCheckPlannedDate})`;
                 } else if (productionDone && isValidDate(stepInfo.productionDate)) {
-                    return { ...order, status: `Production (${stepInfo.productionDate})` };
+                    updatedStatus = `Production (${stepInfo.productionDate})`;
                 }
             }
-            return order;
+            return { ...order, status: updatedStatus, originalStatus: originalStatus };
         });
 
         setData(processedLiveData);
@@ -1345,18 +1408,20 @@ const App = () => {
         // Parse API Key Data
         const fetchedCredentials: Record<string, string> = {};
         if (apiKeyResponse && apiKeyResponse.ok) {
-            const apiKeyCsvText = await apiKeyResponse.text();
-            const apiKeyLines = apiKeyCsvText.trim().split('\n').slice(1); // Skip header row
-            apiKeyLines.forEach(line => {
-                const values = line.slice(1, -1).split('","');
-                if (values.length >= 2) {
-                    const name = values[0]?.trim();
-                    const key = values[1]?.trim();
-                    if (name && key) {
-                        fetchedCredentials[name] = key;
-                    }
+            const apiKeyText = await apiKeyResponse.text();
+            const match = apiKeyText.match(/{.*}/s);
+            if (match) {
+                const json = JSON.parse(match[0]);
+                if (json.status === 'ok') {
+                    json.table.rows.forEach((r: any) => {
+                        const name = r.c[0]?.v?.trim();
+                        const key = r.c[1]?.v?.trim();
+                        if (name && key) {
+                            fetchedCredentials[name] = key;
+                        }
+                    });
                 }
-            });
+            }
         }
         const allCredentials = { ...userCredentials, ...fetchedCredentials };
         setUserCredentials(allCredentials);
@@ -1374,7 +1439,7 @@ const App = () => {
 
       } catch (e) {
         console.error("Failed to fetch or parse sheet data:", e);
-        setError(`Failed to load live data. Please check sheet permissions and column headers. Error: ${e.message}`);
+        setError(`Failed to load live data. Please check sheet permissions and column headers. Error: ${e instanceof Error ? e.message : String(e)}`);
       } finally {
         setLoading(false);
       }
@@ -1398,11 +1463,12 @@ const App = () => {
     setAuthenticatedUser(null);
   };
 
-  const clientLogos = useMemo(() => data.reduce((acc, row) => {
-    if (row.customerName && row.logoUrl && !acc[row.customerName]) acc[row.customerName] = row.logoUrl;
+  const clientLogos = useMemo(() => data.reduce<Record<string, string>>((acc, row) => {
+    if (row.customerName && row.logoUrl && !acc[row.customerName]) {
+      acc[row.customerName] = row.logoUrl;
+    }
     return acc;
-    // FIX: Explicitly type the initial value for the reduce function to avoid TypeScript inference issues.
-  }, {} as Record<string, string>), [data]);
+  }, {}), [data]);
 
   const clientList = useMemo(() => ['admin', ...new Set(data.map(d => d.customerName).filter(name => name && name.trim()))], [data]);
   
@@ -1425,20 +1491,52 @@ const App = () => {
     );
   }, [clientFilteredData, searchQuery]);
 
-  const finalFilteredData = useMemo(() => {
-    if (!activeFilter) return searchedData;
-    const { type, value } = activeFilter;
-    
-    return searchedData.filter(item => {
-        if (type === 'status') return item.status.toUpperCase() === value;
-        if (type === 'country') return item.country === value;
-        if (type === 'month') {
-            const itemMonth = new Date(item.orderDate).toLocaleString('default', { month: 'short' });
-            return itemMonth === value;
-        }
-        return true;
-    });
-  }, [searchedData, activeFilter]);
+    const finalFilteredData = useMemo(() => {
+        if (activeFilters.length === 0) return searchedData;
+
+        return searchedData.filter(item => {
+            // Group active filters by their type
+            const filtersByType = activeFilters.reduce<Record<string, Filter[]>>((acc, f) => {
+                if (!acc[f.type]) acc[f.type] = [];
+                acc[f.type].push(f);
+                return acc;
+            }, {});
+
+            // Check if the item matches the filters for each type.
+            // This is an AND condition between filter types.
+            for (const type in filtersByType) {
+                const filtersForType = filtersByType[type];
+                
+                // This is an OR condition within a filter type.
+                const match = filtersForType.some(filter => {
+                    const { value } = filter;
+                    switch (type) {
+                        case 'status':
+                            if (filter.source === 'kpi' && (value === 'PLAN' || value === 'SHIPPED')) {
+                                return item.originalStatus?.toUpperCase() === value;
+                            }
+                            return item.status.toUpperCase().startsWith(value);
+                        case 'country':
+                            return item.country === value;
+                        case 'month':
+                            const date = parseDate(item.orderDate);
+                            if (!date) return false;
+                            const itemMonth = date.toLocaleString('default', { month: 'short' });
+                            return itemMonth === value;
+                        default:
+                            return true;
+                    }
+                });
+
+                // If it doesn't match any of the values for this type, the item is filtered out.
+                if (!match) {
+                    return false;
+                }
+            }
+            
+            return true; // The item passed all filter types.
+        });
+    }, [searchedData, activeFilters]);
   
   const tableData = useMemo(() => {
     if (viewedOrder) {
@@ -1478,12 +1576,11 @@ const App = () => {
   }, [masterProductList, currentUser, clientFilteredData]);
 
   const kpis = useMemo(() => ({
-    // FIX: Explicitly specify the accumulator type for `reduce` as <number> to resolve a TypeScript
-    // error where it failed to infer the type correctly for the arithmetic operation.
+    // Fix: Explicitly specify the generic type parameter for `reduce` to `<number>` to ensure the accumulator is correctly typed as a number, preventing arithmetic errors.
     totalValue: formatCurrencyNoDecimals(finalFilteredData.reduce<number>((acc, item) => acc + item.exportValue, 0)),
     totalOrders: new Set(finalFilteredData.map(item => item.orderNo)).size,
-    totalInProcess: new Set(finalFilteredData.filter(item => item.status.toUpperCase() === 'PLAN').map(item => item.orderNo)).size,
-    totalShipped: new Set(finalFilteredData.filter(item => item.status.toUpperCase().startsWith('SHIPPED')).map(item => item.orderNo)).size,
+    totalInProcess: new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'PLAN').map(item => item.orderNo)).size,
+    totalShipped: new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'SHIPPED').map(item => item.orderNo)).size,
     boughtProducts: new Set(finalFilteredData.map(item => item.productCode)).size,
     activeClients: new Set(finalFilteredData.map(item => item.customerName)).size,
     countries: new Set(finalFilteredData.map(item => item.country)).size,
@@ -1515,34 +1612,51 @@ const App = () => {
   }, [finalFilteredData]);
 
   const monthlyChartData = useMemo(() => {
-    const monthData = finalFilteredData.reduce((acc, curr) => {
-        if (curr.orderDate && curr.orderNo) {
-            const date = new Date(curr.orderDate);
-            if (!isNaN(date.getTime())) {
-                const month = date.toLocaleString('default', { month: 'short' });
-                if (!acc[month]) {
-                    acc[month] = new Set<string>();
+        // 1. Create a map to store the first encountered date for each unique order number.
+        const uniqueOrderDates = new Map<string, Date>();
+        for (const item of finalFilteredData) {
+            if (item.orderNo && !uniqueOrderDates.has(item.orderNo)) {
+                if (item.orderDate) {
+                    const date = parseDate(item.orderDate);
+                    if (date) {
+                        uniqueOrderDates.set(item.orderNo, date);
+                    }
                 }
-                acc[month].add(curr.orderNo);
             }
         }
-        return acc;
-    }, {} as Record<string, Set<string>>);
 
-    const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return monthOrder.map(month => ({
-        name: month,
-        orders: monthData[month] ? monthData[month].size : 0
-    }));
+        // 2. Count the orders per month based on the unique order dates.
+        const monthCounts: Record<string, number> = {};
+        for (const date of uniqueOrderDates.values()) {
+            const month = date.toLocaleString('default', { month: 'short' });
+            monthCounts[month] = (monthCounts[month] || 0) + 1;
+        }
+
+        // 3. Format for the chart.
+        const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return monthOrder.map(month => ({
+            name: month,
+            orders: monthCounts[month] || 0
+        }));
   }, [finalFilteredData]);
 
-  const handleFilter = (filter: Filter, source: string) => {
-      if (activeFilter && activeFilter.type === filter.type && activeFilter.value === filter.value) {
-          setActiveFilter(null);
-      } else {
-          setActiveFilter({ ...filter, source });
-      }
-  };
+    const handleFilter = (filter: Filter) => {
+        setActiveFilters(prevFilters => {
+            const isAlreadyActive = prevFilters.some(f => f.type === filter.type && f.value === filter.value);
+    
+            if (isAlreadyActive) {
+                // Remove the specific filter
+                return prevFilters.filter(f => !(f.type === filter.type && f.value === filter.value));
+            } else {
+                // Add the new filter
+                return [...prevFilters, filter];
+            }
+        });
+    };
+    
+    const handleDashboardDoubleClick = () => {
+        setActiveFilters([]);
+    };
   
   if (loading) return <SkeletonLoader />;
   if (error) return <div className="error">{error}</div>;
@@ -1576,7 +1690,7 @@ const App = () => {
 
   return (
     <>
-      <div className="dashboard-container" onDoubleClick={() => {setActiveFilter(null); setSearchQuery('');}}>
+      <div className="dashboard-container" onDoubleClick={handleDashboardDoubleClick}>
         <header>
           <div className="header-title">
               {currentUser === 'admin' ? (
@@ -1602,7 +1716,7 @@ const App = () => {
               </div>
               <label className="view-switcher-label" htmlFor="view-switcher">Current View:</label>
                <div className="select-container">
-                  <select id="view-switcher" value={currentUser} onChange={e => {setCurrentUser(e.target.value); setActiveFilter(null); setViewedOrder(null); setSearchQuery(''); setAdminViewMode('dashboard');}} disabled={authenticatedUser !== 'admin'}>
+                  <select id="view-switcher" value={currentUser} onChange={e => {setCurrentUser(e.target.value); setActiveFilters([]); setViewedOrder(null); setSearchQuery(''); setAdminViewMode('dashboard');}} disabled={authenticatedUser !== 'admin'}>
                     {authenticatedUser === 'admin' ?
                       clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)
                       : <option value={authenticatedUser}>{authenticatedUser}</option>
@@ -1626,15 +1740,15 @@ const App = () => {
         </header>
         <main>
           <div className="kpi-container">
-              <KpiCard title="Total Order Value" value={kpis.totalValue} icon="revenue" activeFilter={activeFilter} />
-              <KpiCard title="Total Orders" value={formatCompactNumber(kpis.totalOrders)} icon="orders" activeFilter={activeFilter} />
-              <KpiCard title="In Process" value={formatCompactNumber(kpis.totalInProcess)} icon="plan" onFilter={handleFilter} filterType="status" filterValue="PLAN" activeFilter={activeFilter}/>
-              <KpiCard title="Shipped Orders" value={formatCompactNumber(kpis.totalShipped)} icon="shipped" onFilter={handleFilter} filterType="status" filterValue="SHIPPED" activeFilter={activeFilter}/>
+              <KpiCard title="Total Order Value" value={kpis.totalValue} icon="revenue" activeFilters={activeFilters} />
+              <KpiCard title="Total Orders" value={formatCompactNumber(kpis.totalOrders)} icon="orders" activeFilters={activeFilters} />
+              <KpiCard title="In Process" value={formatCompactNumber(kpis.totalInProcess)} icon="plan" onFilter={handleFilter} filterType="status" filterValue="PLAN" activeFilters={activeFilters}/>
+              <KpiCard title="Shipped Orders" value={formatCompactNumber(kpis.totalShipped)} icon="shipped" onFilter={handleFilter} filterType="status" filterValue="SHIPPED" activeFilters={activeFilters}/>
               <KpiCard 
                 title="Bought Products" 
                 value={formatCompactNumber(kpis.boughtProducts)} 
                 icon="shoppingCart" 
-                activeFilter={activeFilter}
+                activeFilters={activeFilters}
                 className="bought-products-kpi"
               />
               <KpiCard 
@@ -1642,7 +1756,7 @@ const App = () => {
                 value={formatCompactNumber(kpis.neverBoughtCount)} 
                 icon="placeholder" 
                 onClick={() => setShowNeverBought(true)}
-                activeFilter={activeFilter}
+                activeFilters={activeFilters}
                 className="never-bought-kpi"
               />
           </div>
@@ -1678,13 +1792,13 @@ const App = () => {
           }`}>
               {currentUser === 'admin' && adminViewMode === 'dashboard' ? (
                 <div className="charts-container">
-                  <div className={`chart-container ${activeFilter?.source === 'countryChart' ? 'active-filter-source' : ''}`}>
+                  <div className={`chart-container ${activeFilters?.some(f => f.source === 'countryChart') ? 'active-filter-source' : ''}`}>
                     <h3>{singleCountryName ? `Total Order Value to ${singleCountryName}` : 'Order Value by Country'}</h3>
-                    <SalesByCountryChart data={finalFilteredData} onFilter={handleFilter} activeFilter={activeFilter} />
+                    <SalesByCountryChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
                   </div>
-                  <div className={`chart-container ${activeFilter?.source === 'monthChart' ? 'active-filter-source' : ''}`}>
+                  <div className={`chart-container ${activeFilters?.some(f => f.source === 'monthChart') ? 'active-filter-source' : ''}`}>
                     <h3>Monthly Order Volume</h3>
-                    <OrdersOverTimeChart data={finalFilteredData} onFilter={handleFilter} activeFilter={activeFilter} />
+                    <OrdersOverTimeChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
                   </div>
                 </div>
               ) : (
