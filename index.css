@@ -13,7 +13,7 @@
   --status-shipped: #2ED47A; /* Green */
   --status-pending: #ffc107;
   --status-plan: var(--primary-accent);
-  --status-catalog: #A9A9A9;
+  --status-catalog: #A9A9AA;
   --status-production: #ffc107;
   --status-quality: #36C5F0;
   --error-color: #E53935; /* Red for errors */
@@ -679,6 +679,17 @@ main {
     stroke: var(--status-shipped);
 }
 
+.kpi-card.completed-orders-kpi .icon {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+.kpi-card.completed-orders-kpi .icon svg {
+    stroke: var(--status-pending);
+}
+.kpi-card:hover.completed-orders-kpi {
+    border-color: var(--status-pending);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 0 20px rgba(255, 193, 7, 0.6);
+}
+
 .kpi-card.bought-products-kpi .icon {
     background-color: rgba(189, 147, 249, 0.1); /* Purple */
 }
@@ -999,6 +1010,7 @@ tbody tr:hover .product-image {
 }
 
 .status-dot.shipped { background-color: var(--status-shipped); }
+.status-dot.complete { background-color: var(--status-pending); }
 .status-dot.pending { background-color: var(--status-pending); }
 .status-dot.plan { background-color: var(--status-plan); }
 .status-dot.catalog { background-color: var(--status-catalog); }
