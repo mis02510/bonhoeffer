@@ -1,3 +1,5 @@
+
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -30,6 +32,7 @@ const Icons = {
   copy: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H9.75" /></svg>,
   logout: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3h12" /></svg>,
   checkCircle: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
+  checkCircleFilled: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25z" clipRule="evenodd" /></svg>,
   clock: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   circle: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
 };
@@ -77,8 +80,11 @@ interface StepData {
   paymentPlannedDate: string;
   paymentStatus: string;
   qualityCheckPlannedDate: string;
-  qualityCheckInspection: string;
   qualityCheckStatus: string;
+  qualityCheck1Url: string;
+  qualityCheck2Url: string;
+  qualityCheck3Url: string;
+  qualityCheck4Url: string;
 }
 
 interface Filter {
@@ -115,6 +121,17 @@ const parseDate = (dateString: string): Date | null => {
     }
 
     return null;
+};
+
+const formatDateDDMMMYY = (dateString: string): string => {
+    const date = parseDate(dateString);
+    if (!date) {
+        return '~';
+    }
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = date.toLocaleString('en-US', { month: 'short' });
+    const year = String(date.getFullYear()).slice(-2);
+    return `${day}-${month}-${year}`;
 };
 
 const summarizeCatalogData = (data: (MasterProductData | OrderData)[]): string => {
@@ -267,10 +284,13 @@ const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filte
     );
 };
 
-const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrderView, currentUser, authenticatedUser, onShowTracking }: { data: OrderData[], title: string, isDetailedView: boolean, onOrderDoubleClick: (orderNo: string) => void, onClearOrderView: () => void, currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void }) => {
+const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrderView, currentUser, authenticatedUser, onShowTracking, stepData }: { data: OrderData[], title: string, isDetailedView: boolean, onOrderDoubleClick: (orderNo: string) => void, onClearOrderView: () => void, currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void, stepData: StepData[] }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10; // Use a fixed number of rows per page
     const tableWrapperRef = useRef<HTMLDivElement>(null);
+
+    const stepDataOrderNos = useMemo(() => new Set(stepData.map(s => s.orderNo)), [stepData]);
+    const stepDataMap = useMemo(() => new Map(stepData.map(d => [d.orderNo, d])), [stepData]);
 
     const getStatusKeyword = (status: string) => (status.split('(')[0] || '').trim().toLowerCase().replace(/\s+/g, '');
 
@@ -285,7 +305,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
             return acc;
         }, {});
 
-        return Object.values(groups).map(products => {
+        const mappedGroups = Object.values(groups).map(products => {
             const firstProduct = products[0];
             return {
                 orderNo: firstProduct.orderNo,
@@ -295,7 +315,9 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                 totalExportValue: products.reduce((sum, p) => sum + p.exportValue, 0),
                 customerName: firstProduct.customerName,
                 country: firstProduct.country,
-                status: firstProduct.status, // Use calculated status with dates
+                status: firstProduct.status, // Use calculated status for tooltip
+                originalStatus: firstProduct.originalStatus, // Use this for display
+                hasTracking: stepDataOrderNos.has(firstProduct.orderNo), // Add tracking flag
                 imageLink: firstProduct.imageLink,
                 productCode: firstProduct.productCode,
                 category: firstProduct.category,
@@ -303,7 +325,52 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                 product: firstProduct.product,
             };
         });
-    }, [data, isDetailedView]);
+
+        const getStepState = (status: string): 'completed' | 'pending' => {
+            const s = (status || '').toLowerCase();
+            if (s === 'yes' || s === 'done') {
+                return 'completed';
+            }
+            return 'pending';
+        };
+
+        const getOrderProgressScore = (orderNo: string): number => {
+            const trackingData = stepDataMap.get(orderNo);
+            if (!trackingData) {
+                return 0; // No tracking
+            }
+
+            const sobState = getStepState(trackingData.sobStatus);
+            const paymentState = getStepState(trackingData.paymentStatus);
+    
+            if (sobState === 'completed' || paymentState === 'completed') {
+                return -1; // Order is complete/shipped, sort to bottom
+            }
+
+            const productionState = getStepState(trackingData.productionStatus);
+            const qcState = getStepState(trackingData.qualityCheckStatus);
+
+            if (productionState === 'completed' || qcState === 'completed') {
+                return 2; // In progress
+            }
+
+            return 1; // All steps are pending/planned
+        };
+
+        mappedGroups.sort((a, b) => {
+            const scoreA = getOrderProgressScore(a.orderNo);
+            const scoreB = getOrderProgressScore(b.orderNo);
+
+            if (scoreA !== scoreB) {
+                return scoreB - scoreA; // Higher score comes first
+            }
+
+            return a.orderNo.localeCompare(b.orderNo);
+        });
+
+        return mappedGroups;
+
+    }, [data, isDetailedView, stepDataOrderNos, stepDataMap]);
 
     const totalItems = isDetailedView ? data.length : groupedData.length;
     const totalPages = useMemo(() => Math.ceil(totalItems / rowsPerPage), [totalItems, rowsPerPage]);
@@ -373,14 +440,14 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                     <tbody>
                         {isDetailedView ? (
                             (paginatedData as OrderData[]).map((row, index) => (
-                                <tr key={row.productCode + index} className="detail-row" style={{ animationDelay: `${index * 0.05}s` }}>
+                                <tr key={row.productCode + index} className={`detail-row ${stepDataOrderNos.has(row.orderNo) ? 'has-tracking' : ''}`} style={{ animationDelay: `${index * 0.05}s` }}>
                                     <td className="text-center">
                                         <div className="status-cell">
-                                            <span className={`status-dot ${getStatusKeyword(row.status)}`}></span>
-                                            <span className="status-text">{formatNa(row.status)}</span>
+                                            <span className={`status-dot ${getStatusKeyword(row.originalStatus || row.status)}`}></span>
+                                            <span className="status-text">{formatNa(row.originalStatus || row.status)}</span>
                                         </div>
                                     </td>
-                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(row.orderNo); }}>{formatNa(row.orderNo)}</td>
+                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(row.orderNo); }} title={`Status: ${formatNa(row.status)}`}>{formatNa(row.orderNo)}</td>
                                     <td className="product-image-cell">
                                         {row.imageLink && row.imageLink.toLowerCase() !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                                     </td>
@@ -400,17 +467,17 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                             (paginatedData as any[]).map((group, index) => (
                                 <tr 
                                     key={group.orderNo}
-                                    className="summary-row" 
+                                    className={`summary-row ${group.hasTracking ? 'has-tracking' : ''}`}
                                     onDoubleClick={() => onOrderDoubleClick(group.orderNo)}
                                     style={{ animationDelay: `${index * 0.05}s` }}
                                 >
                                     <td className="text-center">
                                         <div className="status-cell">
-                                            <span className={`status-dot ${getStatusKeyword(group.status)}`}></span>
-                                            <span className="status-text">{formatNa(group.status)}</span>
+                                            <span className={`status-dot ${getStatusKeyword(group.originalStatus || group.status)}`}></span>
+                                            <span className="status-text">{formatNa(group.originalStatus || group.status)}</span>
                                         </div>
                                     </td>
-                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(group.orderNo); }}>{formatNa(group.orderNo)}</td>
+                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(group.orderNo); }} title={`Status: ${formatNa(group.status)}`}>{formatNa(group.orderNo)}</td>
                                     <td className="product-image-cell">
                                         {group.imageLink && group.imageLink.toLowerCase() !== '#n/a' ? <img src={group.imageLink} alt={group.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                                     </td>
@@ -518,7 +585,7 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
     const [showHelpPopup, setShowHelpPopup] = useState(false);
 
     const placeholder = "Ask about orders or products...";
-    const initialMessage = "Hello! I am a real-time AI assistant. How can I help you with your orders and our product catalog today?";
+    const initialMessage = "How can I help you with your orders and our product catalog today?";
 
     useEffect(() => {
         let intervalId: number;
@@ -612,7 +679,8 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
 1.  **Data Source:** Your knowledge is strictly limited to the dashboard data provided in the following context. Do not use any external knowledge.
 2.  **Admin vs. Client Access:**
     - ${roleInstructions}
-3.  **Data Schema:** The data comes from two main sources:
+3.  **Case-Insensitive Data Aggregation:** This is a critical rule. User queries must be matched against the data without regard to letter case. When a user asks for a value like "peru", you **MUST** find all variations in the data (e.g., "Peru", "peru", "PERU"), sum their corresponding values (like 'exportValue'), and present the aggregated total. Always combine results from different casings.
+4.  **Data Schema:** The data comes from two main sources:
     - **'Live' Sheet (Order Data):** This is your primary source for order details. It contains individual product line items for each order. An 'Order Number' (e.g., 'BM-0071-I') can have multiple rows, one for each product. Key columns include: \`Status\`, \`orderNo\`, \`productCode\`, \`product\`, \`customerName\`, \`country\`, \`qty\`, \`unitPrice\`, \`exportValue\`.
     - **'MASTER' Sheet (Product Catalog):** Contains the full catalog of all available products.
 
@@ -839,45 +907,42 @@ const OrderTrackingModal = ({ orderNo, stepData, onClose }: { orderNo: string, s
         return 'upcoming';
     };
 
-    const steps = stepData ? [
-        {
-            title: "Production Date Follow-up",
-            date: stepData.productionDate,
-            status: stepData.productionStatus,
-            state: getStepState(stepData.productionStatus, stepData.productionDate),
-            details: `Date: ${formatNa(stepData.productionDate)}`
-        },
-        {
-            title: "Quality Check",
-            date: stepData.qualityCheckPlannedDate,
-            status: stepData.qualityCheckStatus,
-            state: getStepState(stepData.qualityCheckStatus, stepData.qualityCheckPlannedDate),
-            details: `Planned: ${formatNa(stepData.qualityCheckPlannedDate)} | Inspection: ${formatNa(stepData.qualityCheckInspection)}`
-        },
-        {
-            title: "Final SOB",
-            date: stepData.sobDate,
-            status: stepData.sobStatus,
-            state: getStepState(stepData.sobStatus, stepData.sobDate),
-            details: `SOB/ETD: ${formatNa(stepData.sobDate)}`
-        },
-        {
-            title: "Payment Follow-up",
-            date: stepData.paymentPlannedDate,
-            status: stepData.paymentStatus,
-            state: getStepState(stepData.paymentStatus, stepData.paymentPlannedDate),
-            details: `Planned: ${formatNa(stepData.paymentPlannedDate)}`
-        },
-    ] : [];
-
     const getIconForState = (state: 'completed' | 'pending' | 'upcoming') => {
         switch (state) {
-            case 'completed': return Icons.checkCircle;
+            case 'completed': return Icons.checkCircleFilled;
             case 'pending': return Icons.clock;
             case 'upcoming': return Icons.circle;
             default: return Icons.circle;
         }
     };
+
+    if (!stepData) {
+        return (
+            <div className="modal-backdrop" onClick={onClose}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="modal-header">
+                        <h2>Order Tracking: <span className="modal-order-no">{orderNo}</span></h2>
+                        <button className="modal-close-button" onClick={onClose}>&times;</button>
+                    </div>
+                    <div className="modal-body">
+                         <p className="no-tracking-info">No tracking information available for this order.</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
+    const productionState = getStepState(stepData.productionStatus, stepData.productionDate);
+    const qcState = getStepState(stepData.qualityCheckStatus, stepData.qualityCheckPlannedDate);
+    const sobState = getStepState(stepData.sobStatus, stepData.sobDate);
+    const paymentState = getStepState(stepData.paymentStatus, stepData.paymentPlannedDate);
+
+    const qualityCheckLinks = [
+        { label: 'Quality check 1', url: stepData.qualityCheck1Url },
+        { label: 'Quality check 2', url: stepData.qualityCheck2Url },
+        { label: 'Quality check 3', url: stepData.qualityCheck3Url },
+        { label: 'Quality check 4', url: stepData.qualityCheck4Url },
+    ].filter(link => link.url && link.url.trim() && link.url.toLowerCase() !== '#n/a' && link.url.toLowerCase().startsWith('http'));
 
     return (
         <div className="modal-backdrop" onClick={onClose}>
@@ -887,22 +952,56 @@ const OrderTrackingModal = ({ orderNo, stepData, onClose }: { orderNo: string, s
                     <button className="modal-close-button" onClick={onClose}>&times;</button>
                 </div>
                 <div className="modal-body">
-                    {stepData ? (
-                        <ul className="tracking-timeline">
-                            {steps.map((step, index) => (
-                                <li key={index} className={`tracking-step ${step.state}`}>
-                                    <div className="step-icon">{getIconForState(step.state)}</div>
-                                    <div className="step-content">
-                                        <h4 className="step-title">{step.title}</h4>
-                                        <p className="step-details">{step.details}</p>
-                                        <span className="step-status">{formatNa(step.status)}</span>
+                    <ul className="tracking-timeline">
+                        {/* Production Step */}
+                        <li className={`tracking-step ${productionState}`}>
+                            <div className="step-icon">{getIconForState(productionState)}</div>
+                            <div className="step-content">
+                                <h4 className="step-title">Production</h4>
+                                <p className="step-details">Planned:- {formatDateDDMMMYY(stepData.productionDate)}</p>
+                                <p className="step-details">Status:- {formatNa(stepData.productionStatus) === '~' ? 'Pending' : formatNa(stepData.productionStatus)}</p>
+                            </div>
+                        </li>
+
+                        {/* Quality Check Step */}
+                        <li className={`tracking-step ${qcState}`}>
+                             <div className="step-icon">{getIconForState(qcState)}</div>
+                             <div className="step-content">
+                                <h4 className="step-title">Quality Check</h4>
+                                <p className="step-details">Planned:- {formatDateDDMMMYY(stepData.qualityCheckPlannedDate)}</p>
+                                {qualityCheckLinks.length > 0 && (
+                                    <div className="quality-check-links">
+                                        {qualityCheckLinks.map((link, idx) => (
+                                            <a href={link.url} key={idx} target="_blank" rel="noopener noreferrer" className="quality-link-button">
+                                                {Icons.plan} {link.label}
+                                            </a>
+                                        ))}
                                     </div>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p className="no-tracking-info">No tracking information available for this order.</p>
-                    )}
+                                )}
+                                <p className="step-details">Status:- {formatNa(stepData.qualityCheckStatus) === '~' ? 'Pending' : formatNa(stepData.qualityCheckStatus)}</p>
+                            </div>
+                        </li>
+                        
+                        {/* Final SOB Step */}
+                        <li className={`tracking-step ${sobState}`}>
+                            <div className="step-icon">{getIconForState(sobState)}</div>
+                            <div className="step-content">
+                                <h4 className="step-title">Final SOB</h4>
+                                <p className="step-details">SOB/ETD:- {formatDateDDMMMYY(stepData.sobDate)}</p>
+                                <p className="step-details">Status:- {formatNa(stepData.sobStatus) === '~' ? 'Pending' : formatNa(stepData.sobStatus)}</p>
+                            </div>
+                        </li>
+
+                        {/* Payment Step */}
+                        <li className={`tracking-step ${paymentState}`}>
+                            <div className="step-icon">{getIconForState(paymentState)}</div>
+                            <div className="step-content">
+                                <h4 className="step-title">Payment</h4>
+                                <p className="step-details">Planned:- {formatDateDDMMMYY(stepData.paymentPlannedDate)}</p>
+                                <p className="step-details">Status:- {formatNa(stepData.paymentStatus) === '~' ? 'Pending' : formatNa(stepData.paymentStatus)}</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -1166,7 +1265,9 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose }: { allCl
         } catch (error) {
             console.error('Failed to save credentials:', error);
             setSaveStatus('error');
-            // Fix: Add type guard for 'error' which is of type 'unknown' in a catch block to prevent runtime errors.
+            // FIX: In TypeScript, the error object in a catch block is of type `unknown`.
+            // This type guard checks if the error is an instance of the Error class
+            // before accessing `error.message` to prevent a potential runtime error.
             const errorMessage = (error instanceof Error)
                 ? error.message
                 : 'An unknown error occurred. This could be a CORS issue. Please check the browser console.';
@@ -1253,9 +1354,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [authenticatedUser, setAuthenticatedUser] = useState<string | null>(null);
-  const [userCredentials, setUserCredentials] = useState<Record<string, string>>({
-      "admin": "admin-123" // Hardcoded fallback for admin access
-  });
+  const [userCredentials, setUserCredentials] = useState<Record<string, string>>({});
   const [currentUser, setCurrentUser] = useState('admin');
   const [activeFilters, setActiveFilters] = useState<Filter[]>([]);
   const [viewedOrder, setViewedOrder] = useState<string | null>(null);
@@ -1305,7 +1404,7 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
-      const liveQuery = encodeURIComponent("SELECT * WHERE A IS NOT NULL AND A <> ''");
+      const liveQuery = encodeURIComponent("SELECT *");
       
       // Use gviz JSON response instead of CSV for robust parsing
       const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Live&tq=${liveQuery}`;
@@ -1313,7 +1412,9 @@ const App = () => {
       const apiKeySheetGid = '817322209';
       const apiKeySheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${apiKeySheetGid}`;
       const stepSheetGid = '2023445010';
-      const stepSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${stepSheetGid}`;
+      const stepSheetRange = 'A2:M';
+      const stepQuery = encodeURIComponent('SELECT *');
+      const stepSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${stepSheetGid}&range=${stepSheetRange}&tq=${stepQuery}`;
 
       try {
         const [liveResponse, masterResponse, apiKeyResponse, stepResponse] = await Promise.all([
@@ -1338,8 +1439,7 @@ const App = () => {
             'Product': 'product', 'Image Link': 'imageLink', 'Unit Price': 'unitPrice',
             'Fob Price': 'fobPrice', 'MOQ': 'moq'
         };
-        const parsedLiveData: OrderData[] = parseGvizResponse(liveText, liveHeaderMapping, ['orderNo'])
-            .filter(row => row.orderNo.includes('-'));
+        const parsedLiveData: OrderData[] = parseGvizResponse(liveText, liveHeaderMapping, ['orderNo']);
 
         const masterHeaderMapping = {
             'Category': 'category', 'Segment': 'segment', 'Product': 'product',
@@ -1365,8 +1465,11 @@ const App = () => {
                         paymentPlannedDate: String(r.c[5]?.v || '').trim(),
                         paymentStatus: String(r.c[6]?.v || '').trim(),
                         qualityCheckPlannedDate: String(r.c[7]?.v || '').trim(),
-                        qualityCheckInspection: String(r.c[8]?.v || '').trim(),
-                        qualityCheckStatus: String(r.c[9]?.v || '').trim(),
+                        qualityCheck1Url: String(r.c[8]?.v || '').trim(),
+                        qualityCheck2Url: String(r.c[9]?.v || '').trim(),
+                        qualityCheck3Url: String(r.c[10]?.v || '').trim(),
+                        qualityCheck4Url: String(r.c[11]?.v || '').trim(),
+                        qualityCheckStatus: String(r.c[12]?.v || '').trim(),
                     } as StepData)).filter(row => row.orderNo && row.orderNo.toLowerCase() !== '#n/a');
                 }
             }
@@ -1494,19 +1597,21 @@ const App = () => {
     const finalFilteredData = useMemo(() => {
         if (activeFilters.length === 0) return searchedData;
 
-        return searchedData.filter(item => {
-            // Group active filters by their type
-            const filtersByType = activeFilters.reduce<Record<string, Filter[]>>((acc, f) => {
-                if (!acc[f.type]) acc[f.type] = [];
-                acc[f.type].push(f);
-                return acc;
-            }, {});
+        // Group active filters by their type once, outside the filter loop for performance.
+        const filtersByType = activeFilters.reduce<Record<string, Filter[]>>((acc, f) => {
+            if (!acc[f.type]) acc[f.type] = [];
+            acc[f.type].push(f);
+            return acc;
+        }, {});
 
-            // Check if the item matches the filters for each type.
+        const filterKeys = Object.keys(filtersByType);
+
+        return searchedData.filter(item => {
             // This is an AND condition between filter types.
-            for (const type in filtersByType) {
+            // The item must match at least one filter value for each active filter type.
+            for (const type of filterKeys) {
                 const filtersForType = filtersByType[type];
-                
+
                 // This is an OR condition within a filter type.
                 const match = filtersForType.some(filter => {
                     const { value } = filter;
@@ -1575,17 +1680,22 @@ const App = () => {
     return availableCatalog.filter(p => !boughtCodes.has(p.productCode));
   }, [masterProductList, currentUser, clientFilteredData]);
 
-  const kpis = useMemo(() => ({
-    // Fix: Explicitly specify the generic type parameter for `reduce` to `<number>` to ensure the accumulator is correctly typed as a number, preventing arithmetic errors.
-    totalValue: formatCurrencyNoDecimals(finalFilteredData.reduce<number>((acc, item) => acc + item.exportValue, 0)),
-    totalOrders: new Set(finalFilteredData.map(item => item.orderNo)).size,
-    totalInProcess: new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'PLAN').map(item => item.orderNo)).size,
-    totalShipped: new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'SHIPPED').map(item => item.orderNo)).size,
-    boughtProducts: new Set(finalFilteredData.map(item => item.productCode)).size,
-    activeClients: new Set(finalFilteredData.map(item => item.customerName)).size,
-    countries: new Set(finalFilteredData.map(item => item.country)).size,
-    neverBoughtCount: neverBoughtForClientData.length,
-  }), [finalFilteredData, neverBoughtForClientData]);
+  const kpis = useMemo(() => {
+    // FIX: The `reduce` method can cause type errors if the accumulator isn't correctly typed.
+    // By explicitly typing the accumulator as a number, we prevent potential issues.
+    const totalValue = finalFilteredData.reduce<number>((acc, item) => acc + item.exportValue, 0);
+
+    return {
+      totalValue: formatCurrencyNoDecimals(totalValue),
+      totalOrders: new Set(finalFilteredData.map(item => item.orderNo)).size,
+      totalInProcess: new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'PLAN').map(item => item.orderNo)).size,
+      totalShipped: new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'SHIPPED').map(item => item.orderNo)).size,
+      boughtProducts: new Set(finalFilteredData.map(item => item.productCode)).size,
+      activeClients: new Set(finalFilteredData.map(item => item.customerName)).size,
+      countries: new Set(finalFilteredData.map(item => item.country)).size,
+      neverBoughtCount: neverBoughtForClientData.length,
+    };
+  }, [finalFilteredData, neverBoughtForClientData]);
   
   const singleCountryName = useMemo(() => {
     const countries = [...new Set(clientFilteredData.map(item => item.country))];
@@ -1779,7 +1889,7 @@ const App = () => {
               </div>
           )}
           <div className={`main-content ${
-              // FIX: Refactored nested ternary to an IIFE to prevent a potential linter error.
+              // Refactored nested ternary to an IIFE for readability and to prevent potential linter errors.
               (() => {
                   if (currentUser !== 'admin') {
                       return 'client-view';
@@ -1811,6 +1921,7 @@ const App = () => {
                       currentUser={currentUser}
                       authenticatedUser={authenticatedUser}
                       onShowTracking={setSelectedOrderForTracking}
+                      stepData={stepData}
                   />
               )}
           </div>
