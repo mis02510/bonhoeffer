@@ -872,6 +872,11 @@ tbody tr {
   transition: all 0.2s ease-in-out;
 }
 
+.summary-row.has-tracking,
+.detail-row.has-tracking {
+    background-color: rgba(54, 197, 240, 0.03); /* A very subtle teal tint */
+}
+
 .summary-row,
 .detail-row,
 .catalog-row {
@@ -895,6 +900,11 @@ tbody tr:last-child {
   box-shadow: 0 8px 16px rgba(0,0,0,0.3);
   position: relative;
   z-index: 2;
+}
+
+.summary-row.has-tracking:hover,
+.detail-row.has-tracking:hover {
+  background-color: rgba(54, 197, 240, 0.1); /* A more pronounced teal on hover */
 }
 
 .detail-row {
@@ -1458,6 +1468,40 @@ tbody tr:hover .product-image {
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid var(--card-border);
+}
+
+.quality-check-links {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.quality-link-button {
+    background-color: rgba(54, 197, 240, 0.1);
+    border: 1px solid var(--secondary-accent);
+    color: var(--secondary-accent);
+    border-radius: 6px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.quality-link-button:hover {
+    background-color: var(--secondary-accent);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(54, 197, 240, 0.4);
+}
+
+.quality-link-button svg {
+    width: 14px;
+    height: 14px;
 }
 
 /* Step States */
