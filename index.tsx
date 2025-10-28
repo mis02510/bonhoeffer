@@ -9,6 +9,35 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, A
 // IMPORTANT: This assumes process.env.API_KEY is set in the execution environment.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
+// --- Announcements Data ---
+const ANNOUNCEMENTS = [
+  {
+    id: '20240729-initial-release',
+    date: 'July 29, 2024',
+    title: 'Dashboard Launch!',
+    description: `Welcome to the new International Client Dashboard. You can now track your orders, view product catalogs, and get insights into your business operations.`
+  },
+  {
+    id: '20240730-ai-chat',
+    date: 'July 30, 2024',
+    title: 'Introducing the AI Data Assistant',
+    description: `We've added a powerful new AI assistant to help you get answers faster.
+- **Ask anything:** Ask questions about your orders, products, or sales data in plain English.
+- **Instant Answers:** Get immediate insights without searching through tables.
+- **How to use:** Click the AI icon in the bottom right to start a conversation.`
+  },
+  {
+    id: '20240731-order-tracking',
+    date: 'July 31, 2024',
+    title: 'Live Order Tracking',
+    description: `You can now see the step-by-step progress of your orders.
+- **How to track:** Single-click on any 'Order No' in the main table.
+- **What you'll see:** A popup will show the status for Production, Quality Check, Shipping (SOB), and Payment.
+- **Availability:** This feature is active for orders marked with a subtle blue background highlight in the table.`
+  }
+];
+
+
 // --- SVG Icons ---
 const Icons = {
   revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
@@ -35,6 +64,10 @@ const Icons = {
   checkCircleFilled: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25z" clipRule="evenodd" /></svg>,
   clock: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   circle: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
+  sun: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>,
+  moon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>,
+  eye: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>,
+  bell: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>,
 };
 
 // --- Data Types ---
@@ -303,7 +336,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
             }
             acc[row.orderNo].push(row);
             return acc;
-        }, {});
+        }, {} as Record<string, OrderData[]>);
 
         const mappedGroups = Object.values(groups).map(products => {
             const firstProduct = products[0];
@@ -721,10 +754,8 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
 
             const responseStream = await ai.models.generateContentStream({
                 model: 'gemini-2.5-flash',
-                contents: prompt,
-                config: {
-                    systemInstruction: systemInstruction,
-                },
+                contents: [{ role: 'user', parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] },
             });
 
             let fullResponse = '';
@@ -1050,11 +1081,11 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
     return (
         <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 30, right: 20, left: 30, bottom: 40 }} barCategoryGap="20%">
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-stroke)" />
                 <XAxis dataKey="name" stroke={'var(--text-color-muted)'} tick={{ fontSize: 12 }} interval={0} angle={-35} textAnchor="end" />
                 <YAxis stroke={'var(--text-color-muted)'} tickFormatter={formatCompactNumber}/>
                 <Tooltip 
-                    cursor={{fill: 'rgba(255,255,255,0.05)'}} 
+                    cursor={{fill: 'var(--tooltip-cursor)'}} 
                     content={<CustomCountryTooltip />}
                 />
                 <Bar dataKey="value" onClick={(data) => handleClick(data.payload)} animationDuration={800} animationEasing="ease-out">
@@ -1062,7 +1093,7 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
                         <Cell 
                           key={`cell-${index}`}
                           cursor="pointer"
-                          fill={activeFilters?.some(f => f.type === 'country' && f.value === entry.name) ? '#FFB86C' : '#F99C1E'} 
+                          fill={activeFilters?.some(f => f.type === 'country' && f.value === entry.name) ? 'var(--primary-accent-active)' : 'var(--primary-accent)'} 
                         />
                     ))}
                     <LabelList dataKey="value" position="top" formatter={formatCompactNumber} fill="var(--text-color)" fontSize={16} fontWeight="bold" />
@@ -1124,7 +1155,7 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderDat
                 cy={cy}
                 r={isActive ? 8 : 5}
                 fill={stroke}
-                stroke={isActive ? 'rgba(255,255,255,0.8)' : 'none'}
+                stroke={isActive ? 'var(--dot-active-stroke)' : 'none'}
                 strokeWidth={2}
                 onClick={handleClick}
                 style={{ cursor: 'pointer', transition: 'r 0.2s ease, stroke 0.2s ease' }}
@@ -1137,11 +1168,11 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderDat
             <LineChart data={chartData} margin={{ top: 30, right: 20, left: -10, bottom: 5 }}>
                  <defs>
                     <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#36C5F0" stopOpacity={0.5}/>
-                        <stop offset="95%" stopColor="#36C5F0" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="var(--secondary-accent)" stopOpacity={0.5}/>
+                        <stop offset="95%" stopColor="var(--secondary-accent)" stopOpacity={0}/>
                     </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-stroke)" />
                 <XAxis dataKey="name" stroke={'var(--text-color-muted)'} />
                 <YAxis stroke={'var(--text-color-muted)'} tickFormatter={(value) => formatCompactNumber(value)} allowDecimals={false} />
                 <Tooltip 
@@ -1149,7 +1180,7 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderDat
                     labelStyle={{ color: 'var(--text-color)' }}
                     itemStyle={{ color: 'var(--text-color)' }}
                 />
-                <Line type="monotone" dataKey="orders" stroke="#36C5F0" strokeWidth={3} animationDuration={800} animationEasing="ease-out" dot={dotRenderer} activeDot={{ r: 8 }}>
+                <Line type="monotone" dataKey="orders" stroke="var(--secondary-accent)" strokeWidth={3} animationDuration={800} animationEasing="ease-out" dot={dotRenderer} activeDot={{ r: 8 }}>
                     <LabelList dataKey="orders" position="top" fill="var(--text-color)" fontSize={16} fontWeight="bold" />
                 </Line>
                 {/* FIX: The 'stroke' prop for the Area component expects a string, but was receiving a boolean (false). Changed to "none" to correctly disable the stroke and fix the type error. */}
@@ -1265,12 +1296,14 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose }: { allCl
         } catch (error) {
             console.error('Failed to save credentials:', error);
             setSaveStatus('error');
-            // FIX: In TypeScript, the error object in a catch block is of type `unknown`.
-            // This type guard checks if the error is an instance of the Error class
-            // before accessing `error.message` to prevent a potential runtime error.
-            const errorMessage = (error instanceof Error)
-                ? error.message
-                : 'An unknown error occurred. This could be a CORS issue. Please check the browser console.';
+            // Fix: The error from a catch block is of type 'unknown'. This refactor safely
+            // extracts the error message by checking its type, preventing a potential runtime error.
+            let errorMessage = 'An unknown error occurred. This could be a CORS issue. Please check the browser console.';
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            } else {
+                errorMessage = String(error);
+            }
             setSaveMessage(`Save failed: ${errorMessage}`);
         }
     };
@@ -1346,6 +1379,58 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose }: { allCl
     );
 };
 
+const ThemeToggles = ({ theme, isEyeProtection, onThemeChange, onEyeProtectionChange }) => {
+    return (
+        <div className="theme-toggles-container">
+            <label className="toggle-switch" title="Toggle Eye Protection">
+                <input type="checkbox" checked={isEyeProtection} onChange={onEyeProtectionChange} />
+                <span className="slider eye">{Icons.eye}</span>
+            </label>
+            <label className="toggle-switch" title="Toggle Light/Dark Theme">
+                <input type="checkbox" checked={theme === 'dark'} onChange={onThemeChange} />
+                <span className="slider theme">
+                    {theme === 'light' ? Icons.sun : Icons.moon}
+                </span>
+            </label>
+        </div>
+    );
+};
+
+const AnnouncementsPanel = ({ announcements, onClose, buttonRef }) => {
+    const panelRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                panelRef.current && !panelRef.current.contains(event.target as Node) &&
+                buttonRef.current && !buttonRef.current.contains(event.target as Node)
+            ) {
+                onClose();
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [onClose, buttonRef]);
+
+    return (
+        <div className="announcements-panel" ref={panelRef}>
+            <div className="announcements-header">
+                <h3>What's New</h3>
+            </div>
+            <div className="announcements-body">
+                {announcements.slice().reverse().map(ann => ( // Show newest first
+                    <div key={ann.id} className="announcement-item">
+                        <h4>{ann.title}</h4>
+                        <span>{ann.date}</span>
+                        <p>{ann.description.split('\n').map((line, i) => <React.Fragment key={i}>{line.trim().startsWith('-') ? <ul><li>{line.substring(1).trim()}</li></ul> : <>{line}<br/></>}</React.Fragment>)}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
 
 const App = () => {
   const [data, setData] = useState<OrderData[]>([]);
@@ -1363,6 +1448,49 @@ const App = () => {
   const [showUserManagement, setShowUserManagement] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table'>('dashboard');
+  const [theme, setTheme] = useState('light');
+  const [isEyeProtection, setIsEyeProtection] = useState(false);
+  const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
+  const [hasUnreadAnnouncements, setHasUnreadAnnouncements] = useState(false);
+  const announcementsButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    // Theme initialization
+    const savedTheme = localStorage.getItem('dashboard-theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    setTheme(initialTheme);
+    document.documentElement.setAttribute('data-theme', initialTheme);
+
+    // Eye protection initialization
+    const savedEyeProtection = localStorage.getItem('dashboard-eye-protection') === 'true';
+    setIsEyeProtection(savedEyeProtection);
+    if (savedEyeProtection) {
+        document.body.classList.add('eye-protection-mode');
+    }
+  }, []);
+
+  const handleThemeChange = () => {
+      setTheme(prevTheme => {
+          const newTheme = prevTheme === 'light' ? 'dark' : 'light';
+          localStorage.setItem('dashboard-theme', newTheme);
+          document.documentElement.setAttribute('data-theme', newTheme);
+          return newTheme;
+      });
+  };
+
+  const handleEyeProtectionChange = () => {
+      setIsEyeProtection(prev => {
+          const newState = !prev;
+          localStorage.setItem('dashboard-eye-protection', String(newState));
+          if (newState) {
+              document.body.classList.add('eye-protection-mode');
+          } else {
+              document.body.classList.remove('eye-protection-mode');
+          }
+          return newState;
+      });
+  };
 
   const parseGvizResponse = (responseText: string, headerMapping: Record<string, string>, requiredFields: string[] = []) => {
       if (!responseText) return [];
@@ -1402,6 +1530,13 @@ const App = () => {
     };
 
   useEffect(() => {
+    // Announcement check
+    const lastReadId = localStorage.getItem('dashboard_last_announcement_id');
+    const latestId = ANNOUNCEMENTS[ANNOUNCEMENTS.length - 1]?.id;
+    if (latestId && lastReadId !== latestId) {
+        setHasUnreadAnnouncements(true);
+    }
+
     const fetchData = async () => {
       const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
       const liveQuery = encodeURIComponent("SELECT *");
@@ -1566,6 +1701,20 @@ const App = () => {
     setAuthenticatedUser(null);
   };
 
+  const handleToggleAnnouncements = () => {
+      setIsAnnouncementsOpen(prev => {
+          const newIsOpen = !prev;
+          if (newIsOpen) {
+              setHasUnreadAnnouncements(false);
+              const latestId = ANNOUNCEMENTS[ANNOUNCEMENTS.length - 1]?.id;
+              if (latestId) {
+                  localStorage.setItem('dashboard_last_announcement_id', latestId);
+              }
+          }
+          return newIsOpen;
+      });
+  };
+
   const clientLogos = useMemo(() => data.reduce<Record<string, string>>((acc, row) => {
     if (row.customerName && row.logoUrl && !acc[row.customerName]) {
       acc[row.customerName] = row.logoUrl;
@@ -1683,7 +1832,7 @@ const App = () => {
   const kpis = useMemo(() => {
     // FIX: The `reduce` method can cause type errors if the accumulator isn't correctly typed.
     // By explicitly typing the accumulator as a number, we prevent potential issues.
-    const totalValue = finalFilteredData.reduce<number>((acc, item) => acc + item.exportValue, 0);
+    const totalValue = finalFilteredData.reduce((acc, item) => acc + (Number(item.exportValue) || 0), 0);
 
     return {
       totalValue: formatCurrencyNoDecimals(totalValue),
@@ -1841,11 +1990,37 @@ const App = () => {
                       {Icons.clients} User Management
                   </button>
                )}
-               {authenticatedUser && (
-                  <button className="logout-button" onClick={handleLogout}>
-                      {Icons.logout} Logout
-                  </button>
-               )}
+               <div className="header-actions">
+                    <div className="announcements-container">
+                        <button
+                            ref={announcementsButtonRef}
+                            className="announcements-button"
+                            onClick={handleToggleAnnouncements}
+                            aria-label="View announcements"
+                        >
+                            {Icons.bell}
+                            {hasUnreadAnnouncements && <span className="notification-dot"></span>}
+                        </button>
+                        {isAnnouncementsOpen &&
+                            <AnnouncementsPanel
+                                announcements={ANNOUNCEMENTS}
+                                onClose={() => setIsAnnouncementsOpen(false)}
+                                buttonRef={announcementsButtonRef}
+                            />
+                        }
+                    </div>
+                    <ThemeToggles
+                        theme={theme}
+                        isEyeProtection={isEyeProtection}
+                        onThemeChange={handleThemeChange}
+                        onEyeProtectionChange={handleEyeProtectionChange}
+                    />
+                    {authenticatedUser && (
+                        <button className="logout-button" onClick={handleLogout}>
+                            {Icons.logout} Logout
+                        </button>
+                    )}
+               </div>
           </div>
         </header>
         <main>
