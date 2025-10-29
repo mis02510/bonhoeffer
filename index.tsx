@@ -13,22 +13,19 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 const ANNOUNCEMENTS = [
   {
     id: '20240729-initial-release',
-    date: 'July 29, 2024',
     title: 'Dashboard Launch!',
     description: `Welcome to the new International Client Dashboard. You can now track your orders, view product catalogs, and get insights into your business operations.`
   },
   {
     id: '20240730-ai-chat',
-    date: 'July 30, 2024',
     title: 'Introducing the AI Data Assistant',
     description: `We've added a powerful new AI assistant to help you get answers faster.
-- **Ask anything:** Ask questions about your orders, products, or sales data in plain English.
+- **Ask anything:** Ask questions about your orders, products, or sales data in any language.
 - **Instant Answers:** Get immediate insights without searching through tables.
 - **How to use:** Click the AI icon in the bottom right to start a conversation.`
   },
   {
     id: '20240731-order-tracking',
-    date: 'July 31, 2024',
     title: 'Live Order Tracking',
     description: `You can now see the step-by-step progress of your orders.
 - **How to track:** Single-click on any 'Order No' in the main table.
