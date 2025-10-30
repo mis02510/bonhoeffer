@@ -1,5 +1,3 @@
-
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -230,60 +228,56 @@ const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, ke
 
     if (savedUsername) {
         return (
-            <div className="login-container">
-                <div className="login-box">
-                    <h1 className="login-title">Welcome Back!</h1>
-                    <p className="login-subtitle">Continue as <strong>{savedUsername}</strong> or log in as a different user.</p>
-                    <form className="login-form" onSubmit={handleWelcomeBackLogin}>
-                         {error && <p className="login-error">{error}</p>}
-                        <button type="submit" className="login-button" disabled={isLoading}>
-                            {isLoading ? 'Logging In...' : `Login as ${savedUsername}`}
-                        </button>
-                        <button type="button" className="secondary-login-button" onClick={handleUseDifferentAccount} disabled={isLoading}>
-                            Use a Different Account
-                        </button>
-                    </form>
-                </div>
+            <div className="login-box">
+                <h1 className="login-title">Welcome Back!</h1>
+                <p className="login-subtitle">Continue as <strong>{savedUsername}</strong> or log in as a different user.</p>
+                <form className="login-form" onSubmit={handleWelcomeBackLogin}>
+                     {error && <p className="login-error">{error}</p>}
+                    <button type="submit" className="login-button" disabled={isLoading}>
+                        {isLoading ? 'Logging In...' : `Login as ${savedUsername}`}
+                    </button>
+                    <button type="button" className="secondary-login-button" onClick={handleUseDifferentAccount} disabled={isLoading}>
+                        Use a Different Account
+                    </button>
+                </form>
             </div>
         );
     }
 
     return (
-        <div className="login-container">
-            <div className="login-box">
-                <h1 className="login-title">Client Dashboard Access</h1>
-                <p className="login-subtitle">Please enter your credentials to continue</p>
-                <form className="login-form" onSubmit={handleLoginAttempt}>
-                    <div className="input-group">
-                        <label htmlFor="name">{Icons.user} Name</label>
-                        <input
-                            id="name"
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="e.g., admin"
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
-                    <div className="input-group">
-                        <label htmlFor="key">{Icons.key} Secret Key</label>
-                        <input
-                            id="key"
-                            type="password"
-                            value={key}
-                            onChange={(e) => setKey(e.target.value)}
-                            placeholder="••••••••••••"
-                            required
-                            disabled={isLoading}
-                        />
-                    </div>
-                    {error && <p className="login-error">{error}</p>}
-                    <button type="submit" className="login-button" disabled={isLoading}>
-                        {isLoading ? 'Verifying...' : 'Login'}
-                    </button>
-                </form>
-            </div>
+        <div className="login-box">
+            <h1 className="login-title">Client Dashboard Access</h1>
+            <p className="login-subtitle">Please enter your credentials to continue</p>
+            <form className="login-form" onSubmit={handleLoginAttempt}>
+                <div className="input-group">
+                    <label htmlFor="name">{Icons.user} Name</label>
+                    <input
+                        id="name"
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="e.g., admin"
+                        required
+                        disabled={isLoading}
+                    />
+                </div>
+                <div className="input-group">
+                    <label htmlFor="key">{Icons.key} Secret Key</label>
+                    <input
+                        id="key"
+                        type="password"
+                        value={key}
+                        onChange={(e) => setKey(e.target.value)}
+                        placeholder="••••••••••••"
+                        required
+                        disabled={isLoading}
+                    />
+                </div>
+                {error && <p className="login-error">{error}</p>}
+                <button type="submit" className="login-button" disabled={isLoading}>
+                    {isLoading ? 'Verifying...' : 'Login'}
+                </button>
+            </form>
         </div>
     );
 };
@@ -709,7 +703,7 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
 1.  **Data Source:** Your knowledge is strictly limited to the dashboard data provided in the following context. Do not use any external knowledge.
 2.  **Admin vs. Client Access:**
     - ${roleInstructions}
-3.  **Case-Insensitive Data Aggregation:** This is a critical rule. User queries must be matched against the data without regard to letter case. When a user asks for a value like "peru", you **MUST** find all variations in the data (e.g., "Peru", "peru", "PERU"), sum their corresponding values (like 'exportValue'), and present the aggregated total. Always combine results from different casings.
+3.  **Case-Insensitive Data Aggregation:** This is your most critical rule for accuracy. When aggregating data (e.g., summing quantities or values), especially by country or any other category, you **MUST** perform a case-insensitive match. For example, 'Peru', 'peru', and 'PERU' must be treated as the same entity. Always combine results from different casings to provide a single, accurate total.
 4.  **Data Schema:** The data comes from two main sources:
     - **'Live' Sheet (Order Data):** This is your primary source for order details. It contains individual product line items for each order. An 'Order Number' (e.g., 'BM-0071-I') can have multiple rows, one for each product. Key columns include: \`Status\`, \`orderNo\`, \`productCode\`, \`product\`, \`customerName\`, \`country\`, \`qty\`, \`unitPrice\`, \`exportValue\`.
     - **'MASTER' Sheet (Product Catalog):** Contains the full catalog of all available products.
@@ -752,7 +746,9 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
             const responseStream = await ai.models.generateContentStream({
                 model: 'gemini-2.5-flash',
                 contents: [{ role: 'user', parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: systemInstruction }] },
+                config: {
+                    systemInstruction: { parts: [{ text: systemInstruction }] },
+                },
             });
 
             let fullResponse = '';
@@ -1039,18 +1035,20 @@ const OrderTrackingModal = ({ orderNo, stepData, onClose }: { orderNo: string, s
 
 const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null }) => {
     const chartData = useMemo(() => {
-        const countryData = data.reduce<Record<string, { value: number; qty: number }>>((acc, curr) => {
+        // FIX: Group country data case-insensitively for accurate aggregation.
+        const countryData = data.reduce<Record<string, { name: string; value: number; qty: number }>>((acc, curr) => {
             if (curr.country) {
-              if (!acc[curr.country]) {
-                  acc[curr.country] = { value: 0, qty: 0 };
+              const key = curr.country.trim().toLowerCase();
+              if (!acc[key]) {
+                  // Store the first-seen casing for display purposes.
+                  acc[key] = { name: curr.country.trim(), value: 0, qty: 0 };
               }
-              acc[curr.country].value += curr.exportValue;
-              acc[curr.country].qty += curr.qty;
+              acc[key].value += curr.exportValue;
+              acc[key].qty += curr.qty;
             }
             return acc;
         }, {});
-        return Object.entries(countryData)
-            .map(([name, data]) => ({ name, value: data.value, qty: data.qty }))
+        return Object.values(countryData)
             .filter(d => d.value > 0)
             .sort((a, b) => b.value - a.value)
             .slice(0, 10);
@@ -1090,7 +1088,7 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
                         <Cell 
                           key={`cell-${index}`}
                           cursor="pointer"
-                          fill={activeFilters?.some(f => f.type === 'country' && f.value === entry.name) ? 'var(--primary-accent-active)' : 'var(--primary-accent)'} 
+                          fill={activeFilters?.some(f => f.type === 'country' && f.value.toLowerCase() === entry.name.toLowerCase()) ? 'var(--primary-accent-active)' : 'var(--primary-accent)'} 
                         />
                     ))}
                     <LabelList dataKey="value" position="top" formatter={formatCompactNumber} fill="var(--text-color)" fontSize={16} fontWeight="bold" />
@@ -1293,7 +1291,7 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose }: { allCl
         } catch (error) {
             console.error('Failed to save credentials:', error);
             setSaveStatus('error');
-            // Fix: The error from a catch block is of type 'unknown'. This refactor safely
+            // FIX: The error from a catch block is of type 'unknown'. This refactor safely
             // extracts the error message by checking its type, preventing a potential runtime error.
             let errorMessage = 'An unknown error occurred. This could be a CORS issue. Please check the browser console.';
             if (error instanceof Error) {
@@ -1352,7 +1350,8 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose }: { allCl
                                 onClick={handleGenerateKey}
                                 disabled={!selectedClient || saveStatus === 'saving'}
                              >
-                                {currentCredentials[selectedClient] || apiKey ? 'Regenerate Key' : 'Generate Key'}
+                                {/* FIX: Logic was incorrectly checking credentials directly. It has been updated to use the 'apiKey' state, which is properly derived in useEffect. This ensures the button text is always in sync with the current state. */}
+                                {apiKey ? 'Regenerate Key' : 'Generate Key'}
                              </button>
                         </div>
                     </div>
@@ -1444,6 +1443,8 @@ const App = () => {
   const [showNeverBought, setShowNeverBought] = useState(false);
   const [showUserManagement, setShowUserManagement] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table'>('dashboard');
   const [theme, setTheme] = useState('light');
   const [isEyeProtection, setIsEyeProtection] = useState(false);
@@ -1664,7 +1665,8 @@ const App = () => {
         // Auto-login validation
         const savedName = localStorage.getItem('dashboard_username');
         const savedKey = localStorage.getItem('dashboard_apikey');
-        if (savedName && savedKey && allCredentials[savedName] === savedKey) {
+        // FIX: Added hasOwnProperty check to ensure savedName is a valid key before indexing, preventing potential type errors.
+        if (savedName && savedKey && Object.prototype.hasOwnProperty.call(allCredentials, savedName) && allCredentials[savedName] === savedKey) {
             setAuthenticatedUser(savedName);
             setCurrentUser(savedName);
         } else {
@@ -1683,13 +1685,16 @@ const App = () => {
   }, []);
   
   const handleLogin = (name: string, key: string): boolean => {
-      const expectedKey = userCredentials[name];
-      if (expectedKey && expectedKey === key) {
-          localStorage.setItem('dashboard_username', name);
-          localStorage.setItem('dashboard_apikey', key);
-          setAuthenticatedUser(name);
-          setCurrentUser(name);
-          return true;
+      // FIX: Added hasOwnProperty check to ensure 'name' is a valid key before indexing, preventing potential type errors.
+      if (Object.prototype.hasOwnProperty.call(userCredentials, name)) {
+          const expectedKey = userCredentials[name];
+          if (expectedKey && expectedKey === key) {
+              localStorage.setItem('dashboard_username', name);
+              localStorage.setItem('dashboard_apikey', key);
+              setAuthenticatedUser(name);
+              setCurrentUser(name);
+              return true;
+          }
       }
       return false;
   };
@@ -1722,8 +1727,28 @@ const App = () => {
   const clientList = useMemo(() => ['admin', ...new Set(data.map(d => d.customerName).filter(name => name && name.trim()))], [data]);
   
   const clientFilteredData = useMemo(() => {
-      return currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
-  }, [data, currentUser]);
+    const baseData = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
+
+    const sDate = startDate ? parseDate(startDate) : null;
+    if (sDate) sDate.setHours(0, 0, 0, 0); // Normalize to the beginning of the day
+
+    const eDate = endDate ? parseDate(endDate) : null;
+    if (eDate) eDate.setHours(23, 59, 59, 999); // Normalize to the end of the day
+
+    if (!sDate && !eDate) {
+        return baseData;
+    }
+
+    return baseData.filter(d => {
+        const orderDate = parseDate(d.orderDate);
+        if (!orderDate) return false;
+        
+        const isAfterStart = sDate ? orderDate >= sDate : true;
+        const isBeforeEnd = eDate ? orderDate <= eDate : true;
+        
+        return isAfterStart && isBeforeEnd;
+    });
+  }, [data, currentUser, startDate, endDate]);
   
   const searchedData = useMemo(() => {
     if (!searchQuery.trim()) return clientFilteredData;
@@ -1768,7 +1793,8 @@ const App = () => {
                             }
                             return item.status.toUpperCase().startsWith(value);
                         case 'country':
-                            return item.country === value;
+                            // Case-insensitive comparison for country filter
+                            return item.country.trim().toLowerCase() === value.trim().toLowerCase();
                         case 'month':
                             const date = parseDate(item.orderDate);
                             if (!date) return false;
@@ -1827,10 +1853,7 @@ const App = () => {
   }, [masterProductList, currentUser, clientFilteredData]);
 
   const kpis = useMemo(() => {
-    // FIX: The `reduce` method can cause type errors if the accumulator isn't correctly typed.
-    // By explicitly typing the accumulator as a number, we prevent potential issues.
-    const totalValue = finalFilteredData.reduce((acc, item) => acc + (Number(item.exportValue) || 0), 0);
-
+    const totalValue = finalFilteredData.reduce((acc: number, item) => acc + (item.exportValue || 0), 0);
     return {
       totalValue: formatCurrencyNoDecimals(totalValue),
       totalOrders: new Set(finalFilteredData.map(item => item.orderNo)).size,
@@ -1838,14 +1861,21 @@ const App = () => {
       totalShipped: new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'SHIPPED').map(item => item.orderNo)).size,
       boughtProducts: new Set(finalFilteredData.map(item => item.productCode)).size,
       activeClients: new Set(finalFilteredData.map(item => item.customerName)).size,
-      countries: new Set(finalFilteredData.map(item => item.country)).size,
+      // FIX: Count unique countries case-insensitively for an accurate count.
+      countries: new Set(finalFilteredData.filter(item => item.country).map(item => item.country.trim().toLowerCase())).size,
       neverBoughtCount: neverBoughtForClientData.length,
     };
   }, [finalFilteredData, neverBoughtForClientData]);
   
   const singleCountryName = useMemo(() => {
-    const countries = [...new Set(clientFilteredData.map(item => item.country))];
-    return countries.length === 1 ? countries[0] : null;
+    // FIX: Determine the single country name case-insensitively.
+    const countries = [...new Set(clientFilteredData.filter(item => item.country).map(item => item.country.trim().toLowerCase()))];
+    if (countries.length === 1) {
+        // Find and return the original casing for display.
+        const originalCasing = clientFilteredData.find(item => item.country.trim().toLowerCase() === countries[0])?.country;
+        return originalCasing || countries[0];
+    }
+    return null;
   }, [clientFilteredData]);
   
   const relevantCatalogData = useMemo(() => {
@@ -1856,14 +1886,18 @@ const App = () => {
   }, [masterProductList, currentUser]);
 
   const countryChartData = useMemo(() => {
-    const countryData = finalFilteredData.reduce<Record<string, number>>((acc, curr) => {
+    // FIX: Group country data case-insensitively to provide accurate, aggregated data for the AI assistant.
+    const countryData = finalFilteredData.reduce<Record<string, { name: string; value: number }>>((acc, curr) => {
         if (curr.country && curr.exportValue) {
-            acc[curr.country] = (acc[curr.country] || 0) + curr.exportValue;
+            const key = curr.country.trim().toLowerCase();
+            if (!acc[key]) {
+                acc[key] = { name: curr.country.trim(), value: 0 };
+            }
+            acc[key].value += curr.exportValue;
         }
         return acc;
     }, {});
-    return Object.entries(countryData)
-        .map(([name, value]) => ({ name, value }))
+    return Object.values(countryData)
         .sort((a, b) => b.value - a.value);
   }, [finalFilteredData]);
 
@@ -1896,6 +1930,8 @@ const App = () => {
         }));
   }, [finalFilteredData]);
 
+    const financialYearDisplay = 'FY:- 24-25 to 25-26';
+
     const handleFilter = (filter: Filter) => {
         setActiveFilters(prevFilters => {
             const isAlreadyActive = prevFilters.some(f => f.type === filter.type && f.value === filter.value);
@@ -1922,7 +1958,19 @@ const App = () => {
         localStorage.removeItem('dashboard_username');
         localStorage.removeItem('dashboard_apikey');
     };
-    return <LoginScreen onLogin={handleLogin} onClearSavedUser={clearSavedUser} />;
+    return (
+        <div className="login-page-container">
+            <div className="login-container">
+                <LoginScreen onLogin={handleLogin} onClearSavedUser={clearSavedUser} />
+            </div>
+            <div className="login-video-container">
+                <video autoPlay muted loop playsInline id="background-video">
+                  <source src="https://bonhoeffermachines.com/public/images/Brand_Video.mp4" type="video/mp4"/>
+                  Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    );
   }
 
   if (showUserManagement) {
@@ -1948,19 +1996,83 @@ const App = () => {
     <>
       <div className="dashboard-container" onDoubleClick={handleDashboardDoubleClick}>
         <header>
-          <div className="header-title">
-              {currentUser === 'admin' ? (
-                  <img src="https://lh3.googleusercontent.com/d/1IPYJixe4KjQ3oY-9oOPdDyag98LND-qw" alt="Admin Logo" className="client-logo" />
-              ) : (
-                  clientLogos[currentUser] ? (
-                      <img src={clientLogos[currentUser]} alt={`${currentUser} Logo`} className="client-logo" />
-                  ) : (
-                      <div className="client-logo-placeholder">No Logo</div>
-                  )
-              )}
-              <h1>{currentUser === 'admin' ? 'Global Operations Dashboard' : `Welcome, ${currentUser}`}</h1>
-          </div>
-          <div className="filters">
+            <div className="header-main">
+                <div className="header-title">
+                    {currentUser === 'admin' ? (
+                        <img src="https://lh3.googleusercontent.com/d/1IPYJixe4KjQ3oY-9oOPdDyag98LND-qw" alt="Admin Logo" className="client-logo" />
+                    ) : (
+                        clientLogos[currentUser] ? (
+                            <img src={clientLogos[currentUser]} alt={`${currentUser} Logo`} className="client-logo" />
+                        ) : (
+                            <div className="client-logo-placeholder">No Logo</div>
+                        )
+                    )}
+                    <div className="title-and-fy">
+                        <h1>{currentUser === 'admin' ? 'Global Operations Dashboard' : `Welcome, ${currentUser}`}</h1>
+                        {financialYearDisplay && <span className="financial-year-display">{financialYearDisplay}</span>}
+                    </div>
+                </div>
+                <div className="header-main-actions">
+                    {authenticatedUser === 'admin' && (
+                        <button className="user-management-button" onClick={() => setShowUserManagement(true)}>
+                            {Icons.clients} User Management
+                        </button>
+                    )}
+                    <div className="header-actions">
+                        <div className="announcements-container">
+                            <button
+                                ref={announcementsButtonRef}
+                                className="announcements-button"
+                                onClick={handleToggleAnnouncements}
+                                aria-label="View announcements"
+                            >
+                                {Icons.bell}
+                                {hasUnreadAnnouncements && <span className="notification-dot"></span>}
+                            </button>
+                            {isAnnouncementsOpen &&
+                                <AnnouncementsPanel
+                                    announcements={ANNOUNCEMENTS}
+                                    onClose={() => setIsAnnouncementsOpen(false)}
+                                    buttonRef={announcementsButtonRef}
+                                />
+                            }
+                        </div>
+                        <ThemeToggles
+                            theme={theme}
+                            isEyeProtection={isEyeProtection}
+                            onThemeChange={handleThemeChange}
+                            onEyeProtectionChange={handleEyeProtectionChange}
+                        />
+                        {authenticatedUser && (
+                            <button className="logout-button" onClick={handleLogout}>
+                                {Icons.logout} Logout
+                            </button>
+                        )}
+                   </div>
+                </div>
+            </div>
+            <div className="filters">
+               <div className="date-filter-container">
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        aria-label="Start Date"
+                    />
+                    <span>to</span>
+                    <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        min={startDate}
+                        aria-label="End Date"
+                    />
+                    {(startDate || endDate) && (
+                        <button className="clear-date-button" onClick={() => { setStartDate(''); setEndDate(''); }}>
+                            &times;
+                        </button>
+                    )}
+                </div>
               <div className="search-bar-container">
                   {Icons.search}
                   <input
@@ -1972,7 +2084,7 @@ const App = () => {
               </div>
               <label className="view-switcher-label" htmlFor="view-switcher">Current View:</label>
                <div className="select-container">
-                  <select id="view-switcher" value={currentUser} onChange={e => {setCurrentUser(e.target.value); setActiveFilters([]); setViewedOrder(null); setSearchQuery(''); setAdminViewMode('dashboard');}} disabled={authenticatedUser !== 'admin'}>
+                  <select id="view-switcher" value={currentUser} onChange={e => {setCurrentUser(e.target.value); setActiveFilters([]); setViewedOrder(null); setSearchQuery(''); setStartDate(''); setEndDate(''); setAdminViewMode('dashboard');}} disabled={authenticatedUser !== 'admin'}>
                     {authenticatedUser === 'admin' ?
                       clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)
                       : <option value={authenticatedUser}>{authenticatedUser}</option>
@@ -1982,43 +2094,7 @@ const App = () => {
                <button className="never-bought-button" onClick={() => setShowNeverBought(true)}>
                   {Icons.placeholder} Never Bought Products
                </button>
-               {authenticatedUser === 'admin' && (
-                  <button className="user-management-button" onClick={() => setShowUserManagement(true)}>
-                      {Icons.clients} User Management
-                  </button>
-               )}
-               <div className="header-actions">
-                    <div className="announcements-container">
-                        <button
-                            ref={announcementsButtonRef}
-                            className="announcements-button"
-                            onClick={handleToggleAnnouncements}
-                            aria-label="View announcements"
-                        >
-                            {Icons.bell}
-                            {hasUnreadAnnouncements && <span className="notification-dot"></span>}
-                        </button>
-                        {isAnnouncementsOpen &&
-                            <AnnouncementsPanel
-                                announcements={ANNOUNCEMENTS}
-                                onClose={() => setIsAnnouncementsOpen(false)}
-                                buttonRef={announcementsButtonRef}
-                            />
-                        }
-                    </div>
-                    <ThemeToggles
-                        theme={theme}
-                        isEyeProtection={isEyeProtection}
-                        onThemeChange={handleThemeChange}
-                        onEyeProtectionChange={handleEyeProtectionChange}
-                    />
-                    {authenticatedUser && (
-                        <button className="logout-button" onClick={handleLogout}>
-                            {Icons.logout} Logout
-                        </button>
-                    )}
-               </div>
-          </div>
+            </div>
         </header>
         <main>
           <div className="kpi-container">
