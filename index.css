@@ -152,14 +152,55 @@ html, body {
   min-height: 100vh;
 }
 
+#background-video {
+  width: 100%;
+  height: 100%;
+  object-fit: auto;
+  transition: filter 0.3s ease;
+}
+
+/* Dim video in dark mode */
+html[data-theme='dark'] #background-video {
+    filter: brightness(0.7);
+}
+
+/* Add warm tint for eye protection mode */
+body.eye-protection-mode #background-video {
+    filter: sepia(0.25);
+}
+
+/* Combine filters for dark + eye protection mode */
+html[data-theme='dark'] body.eye-protection-mode #background-video {
+    filter: brightness(0.7) sepia(0.25);
+}
+
+
 /* --- Login Screen --- */
+.login-page-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
 .login-container {
+    flex: 1 1 50%;
+    max-width: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-grow: 1;
     padding: 2rem;
+    background-color: var(--background-color);
     animation: fadeIn 0.8s ease-out;
+}
+
+.login-video-container {
+    flex: 1 1 50%;
+    max-width: 50%;
+    position: relative;
+    height: 100%;
+    background-color: var(--background-color);
+    transition: background-color 0.3s ease;
 }
 
 .login-box {
@@ -172,6 +213,7 @@ html, body {
     animation: slideUp 0.6s ease-out forwards;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s ease, border-color 0.3s ease;
+    position: relative;
 }
 
 .login-title {
@@ -324,21 +366,56 @@ html, body {
 
 header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   animation: slideUp 0.6s ease-out forwards;
   flex-shrink: 0;
-  gap: 1.5rem; /* Add gap for spacing when wrapping */
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 1.5rem;
   position: relative; /* Ensure header creates a stacking context */
   z-index: 10; /* Elevate header and its children above main content */
+}
+
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.header-main-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
 }
 
 .header-title {
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex-shrink: 0; /* Prevent title from shrinking */
+    flex-shrink: 0;
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.title-and-fy {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.financial-year-display {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-accent);
+    background-color: rgba(249, 156, 30, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid rgba(249, 156, 30, 0.2);
+    white-space: nowrap;
+    animation: fadeIn 0.5s ease-out forwards;
 }
 
 .client-logo {
@@ -379,14 +456,14 @@ header h1 {
   color: transparent;
   animation: slideUp 0.6s ease-out forwards, text-focus-in 1s cubic-bezier(0.550, 0.085, 0.680, 0.530) 0.4s both;
   white-space: nowrap; /* Ensure title stays on one line */
+  flex-shrink: 0;
 }
 
 .filters {
   display: flex;
   gap: 1rem;
   align-items: center;
-  justify-content: flex-end;
-  flex-grow: 1; /* Allow filter group to take available space */
+  justify-content: flex-start;
   flex-wrap: wrap; /* Allow filters themselves to wrap if needed */
 }
 
@@ -487,6 +564,58 @@ header h1 {
     color: var(--text-color-muted);
 }
 
+.date-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--card-background);
+    border: 1px solid var(--card-border);
+    padding: 2px;
+    border-radius: 8px;
+}
+
+.date-filter-container input[type="date"] {
+    background-color: transparent;
+    border: none;
+    color: var(--text-color);
+    font-family: var(--font-family);
+    font-size: 0.85rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+.date-filter-container input[type="date"]:hover {
+    background-color: rgba(120, 120, 120, 0.05);
+}
+.date-filter-container input[type="date"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-accent);
+}
+
+.date-filter-container span {
+    color: var(--text-color-muted);
+    font-size: 0.8rem;
+}
+
+.clear-date-button {
+    background: transparent;
+    border: none;
+    color: var(--text-color-muted);
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+}
+.clear-date-button:hover {
+    background-color: rgba(120, 120, 120, 0.1);
+    color: var(--error-color);
+}
 
 .never-bought-button, .user-management-button {
   background-color: transparent;
@@ -2065,6 +2194,16 @@ input:checked + .slider:before {
 }
 
 /* --- Responsive Layout --- */
+@media (max-width: 1024px) {
+    .login-video-container {
+        display: none;
+    }
+    .login-container {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}
+
 @media (min-width: 1200px) {
     .chart-container {
       min-height: initial;
@@ -2122,12 +2261,6 @@ input:checked + .slider:before {
     .data-table-header .back-button {
         grid-column: auto;
         justify-self: center;
-    }
-
-    header {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1.5rem;
     }
 
     header h1 {
