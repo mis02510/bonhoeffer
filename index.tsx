@@ -1,7 +1,8 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Area, ResponsiveContainer, LabelList, Cell } from 'recharts';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Area, ResponsiveContainer, LabelList, Cell, Legend } from 'recharts';
 
 // --- Gemini API Initialization ---
 // IMPORTANT: This assumes process.env.API_KEY is set in the execution environment.
@@ -38,7 +39,7 @@ const Icons = {
   revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   orders: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25l3.807-3.262a4.502 4.502 0 0 1 6.384 0L20.25 18" /></svg>,
   clients: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 0L5 11.529m10.232 2.234a3.75 3.75 0 0 0-4.493 0L10.5 11.529m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 16.25m10.232-2.234a3.75 3.75 0 0 1-4.493 0L7.5 13.763m7.5-4.515a3.753 3.753 0 0 0-4.493 0L10.5 6.5m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 11.25m10.232-2.234a3.75 3.75 0 0 0-4.493 0L7.5 8.763m7.5 4.515a3.75 3.75 0 0 1-4.493 0L10.5 13.75m5.007-4.515a3.75 3.75 0 0 0-4.493 0L13.5 8.763" /></svg>,
-  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
+  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898 1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
   placeholder: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>,
   prevArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>,
   nextArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>,
@@ -63,6 +64,9 @@ const Icons = {
   moon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>,
   eye: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>,
   bell: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>,
+  calendar: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0h18M-4.5 12h28.5" /></svg>,
+  box: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>,
+  truck: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>
 };
 
 // --- Data Types ---
@@ -173,6 +177,400 @@ const summarizeCatalogData = (data: (MasterProductData | OrderData)[]): string =
     return `Total Unique Products: ${uniqueData.length}. Product Categories: ${categories.slice(0, 15).join(', ')}. Product Segments: ${segments.slice(0, 15).join(', ')}.`;
 };
 
+// ### calendar view
+const CalendarKpiCard = ({ title, value, icon, variant }) => (
+    <div className={`calendar-kpi-card variant-${variant}`}>
+        <div className="calendar-kpi-icon">{icon}</div>
+        <div className="calendar-kpi-content">
+            <p>{value}</p>
+            <h3>{title}</h3>
+        </div>
+    </div>
+);
+
+// FIX: Added types for props to make them optional and fix call site errors.
+const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selectedYear }: { data: any[], xAxisDataKey?: string, selectedMonth?: number | null, selectedYear?: number }) => {
+    const barLabelFormatter = (value: number) => (value > 0 ? value : '');
+
+    // FIX: Added optional types for props passed by Recharts to fix TypeScript error.
+    interface TooltipPayload {
+        name: string;
+        value: number;
+        dataKey: string;
+        fill: string;
+    }
+    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: TooltipPayload[]; label?: any; }) => {
+        if (active && payload && payload.length) {
+            let displayLabel = label;
+            if (xAxisDataKey === 'day' && selectedMonth !== null && selectedYear) {
+                const date = new Date(selectedYear, selectedMonth, label);
+                displayLabel = formatDateDDMMMYY(date.toISOString());
+            }
+            return (
+                <div className="recharts-default-tooltip" style={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)', borderRadius: '8px', padding: '0.5rem 1rem' }}>
+                    <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>{displayLabel}</p>
+                    {payload.map(p => (
+                        <p key={p.dataKey} style={{ margin: 0, color: p.fill }}>{`${p.name}: ${p.value}`}</p>
+                    ))}
+                </div>
+            );
+        }
+        return null;
+    };
+    
+    return (
+        <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-stroke)" />
+                <XAxis dataKey={xAxisDataKey} stroke={'var(--text-color-muted)'} interval={xAxisDataKey === 'day' ? 4 : 'preserveStartEnd'} />
+                <YAxis stroke={'var(--text-color-muted)'} allowDecimals={false} />
+                <Tooltip 
+                    content={<CustomTooltip />} 
+                    cursor={{fill: 'var(--tooltip-cursor)'}}
+                />
+                <Legend wrapperStyle={{fontSize: '0.8rem'}} />
+                <Bar dataKey="received" fill="var(--calendar-received-color)" name="Received" radius={[4, 4, 0, 0]}>
+                    <LabelList dataKey="received" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                </Bar>
+                <Bar dataKey="planned" fill="var(--calendar-planned-color)" name="Planned" radius={[4, 4, 0, 0]}>
+                    <LabelList dataKey="planned" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                </Bar>
+                <Bar dataKey="shipped" fill="var(--calendar-shipped-color)" name="Shipped" radius={[4, 4, 0, 0]}>
+                    <LabelList dataKey="shipped" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                </Bar>
+            </BarChart>
+        </ResponsiveContainer>
+    );
+};
+
+const TopClientsList = ({ data }) => (
+    <div className="top-clients-container">
+        <h3>Top 5 Clients (by Order Value)</h3>
+        {data.length > 0 ? (
+            <div className="top-clients-list">
+                {data.map((client, index) => (
+                    <div key={client.name} className={`top-client-item rank-${index + 1}`}>
+                        <div className="client-rank-bg">#{index + 1}</div>
+                        <div className="client-info">
+                            <span className="client-name">{client.name}</span>
+                            <div className="client-stats">
+                                <div className="stat-item">
+                                    <span className="stat-label">Value</span>
+                                    <span className="stat-value">{formatCurrencyNoDecimals(client.value)}</span>
+                                </div>
+                                <div className="stat-item">
+                                    <span className="stat-label">Qty</span>
+                                    <span className="stat-value">{formatCompactNumber(client.qty)}</span>
+                                </div>
+                                <div className="stat-item">
+                                    <span className="stat-label">Orders</span>
+                                    <span className="stat-value">{client.orderCount}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        ) : (
+            <p className="no-data-message">No orders found for the selected criteria.</p>
+        )}
+    </div>
+);
+
+
+// FIX: Added prop types to the CalendarViewDashboard component to fix type errors where array elements were being inferred as `unknown` during `map` operations.
+interface CalendarViewDashboardProps {
+    allOrderData: OrderData[];
+    clientList: string[];
+    onClose: () => void;
+    authenticatedUser: string | null;
+}
+
+const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticatedUser }: CalendarViewDashboardProps) => {
+    const years = useMemo(() => {
+        const yearSet = new Set<number>();
+        allOrderData.forEach(d => {
+            const date = parseDate(d.orderDate);
+            if (date) {
+                yearSet.add(date.getFullYear());
+            }
+        });
+        return Array.from(yearSet).sort((a, b) => b - a);
+    }, [allOrderData]);
+
+    const [selectedYear, setSelectedYear] = useState(years.length > 0 ? years[0] : new Date().getFullYear());
+    const [selectedCountry, setSelectedCountry] = useState('All');
+    const [selectedClient, setSelectedClient] = useState('All');
+    const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+
+    const filteredData = useMemo(() => {
+        return allOrderData.filter(d => {
+            const date = parseDate(d.orderDate);
+            const yearMatch = date ? date.getFullYear() === selectedYear : false;
+            const countryMatch = selectedCountry === 'All' || d.country === selectedCountry;
+            const clientMatch = selectedClient === 'All' || d.customerName === selectedClient;
+            return yearMatch && countryMatch && clientMatch;
+        });
+    }, [allOrderData, selectedYear, selectedCountry, selectedClient]);
+    
+    const countries = useMemo(() => ['All', ...new Set(allOrderData.filter(d => {
+        const date = parseDate(d.orderDate);
+        return date && date.getFullYear() === selectedYear;
+    }).map(d => d.country).filter(Boolean).sort())], [allOrderData, selectedYear]);
+
+    const clientsForYear = useMemo(() => ['All', ...new Set(allOrderData.filter(d => {
+        const date = parseDate(d.orderDate);
+        return date && date.getFullYear() === selectedYear;
+    }).map(d => d.customerName).filter(Boolean).sort())], [allOrderData, selectedYear]);
+
+    const calendarData = useMemo(() => {
+        const monthlyData: Record<number, { received: number, planned: number, shipped: number }> = {};
+        for (let i = 0; i < 12; i++) {
+            monthlyData[i] = { received: 0, planned: 0, shipped: 0 };
+        }
+
+        const orders: Record<string, { orderDate: string, status?: string }> = {};
+        for (const row of filteredData) {
+            if (!orders[row.orderNo]) {
+                orders[row.orderNo] = { orderDate: row.orderDate, status: row.originalStatus };
+            } else {
+                const currentStatus = orders[row.orderNo].status?.toUpperCase();
+                const newStatus = row.originalStatus?.toUpperCase();
+                if (newStatus === 'SHIPPED') {
+                    orders[row.orderNo].status = row.originalStatus;
+                } else if (newStatus === 'PLAN' && currentStatus !== 'SHIPPED') {
+                    orders[row.orderNo].status = row.originalStatus;
+                }
+            }
+        }
+
+        for (const orderNo in orders) {
+            const order = orders[orderNo];
+            const date = parseDate(order.orderDate);
+            if (date) {
+                const month = date.getMonth();
+                monthlyData[month].received++;
+                const status = order.status?.toUpperCase();
+                if (status === 'PLAN') {
+                    monthlyData[month].planned++;
+                } else if (status === 'SHIPPED') {
+                    monthlyData[month].shipped++;
+                }
+            }
+        }
+        
+        return Object.values(monthlyData);
+    }, [filteredData]);
+
+    const kpis = useMemo(() => {
+        return calendarData.reduce((acc, month) => {
+            acc.received += month.received;
+            acc.planned += month.planned;
+            acc.shipped += month.shipped;
+            return acc;
+        }, { received: 0, planned: 0, shipped: 0 });
+    }, [calendarData]);
+    
+    const maxMonthlyValue = useMemo(() => Math.max(1, ...calendarData.map(m => Math.max(m.received, m.planned, m.shipped))), [calendarData]);
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    const monthlyChartData = monthNames.map((name, index) => ({
+        name,
+        ...calendarData[index]
+    }));
+    
+    const monthOrders = useMemo(() => {
+        if (selectedMonth === null) return [];
+        return filteredData.filter(d => {
+            const date = parseDate(d.orderDate);
+            return date && date.getMonth() === selectedMonth;
+        });
+    }, [filteredData, selectedMonth]);
+
+    const dailyChartData = useMemo(() => {
+        if (selectedMonth === null) return [];
+    
+        const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+        const dailyData: { received: number, planned: number, shipped: number }[] = 
+            Array.from({ length: daysInMonth }, () => ({
+                received: 0,
+                planned: 0,
+                shipped: 0,
+            }));
+    
+        const orders: Record<string, { orderDate: string, status?: string }> = {};
+        for (const row of monthOrders) {
+            if (!orders[row.orderNo]) {
+                orders[row.orderNo] = { orderDate: row.orderDate, status: row.originalStatus };
+            } else {
+                const currentStatus = orders[row.orderNo].status?.toUpperCase();
+                const newStatus = row.originalStatus?.toUpperCase();
+                if (newStatus === 'SHIPPED') {
+                    orders[row.orderNo].status = row.originalStatus;
+                } else if (newStatus === 'PLAN' && currentStatus !== 'SHIPPED') {
+                    orders[row.orderNo].status = row.originalStatus;
+                }
+            }
+        }
+    
+        for (const orderNo in orders) {
+            const order = orders[orderNo];
+            const date = parseDate(order.orderDate);
+            if (date) {
+                const dayOfMonth = date.getDate() - 1; 
+                if (dailyData[dayOfMonth]) {
+                    dailyData[dayOfMonth].received++;
+                    const status = order.status?.toUpperCase();
+                    if (status === 'PLAN') {
+                        dailyData[dayOfMonth].planned++;
+                    } else if (status === 'SHIPPED') {
+                        dailyData[dayOfMonth].shipped++;
+                    }
+                }
+            }
+        }
+    
+        return dailyData.map((dayData, index) => ({
+            day: index + 1,
+            ...dayData
+        }));
+    }, [monthOrders, selectedMonth, selectedYear]);
+
+    const topClients = useMemo(() => {
+        const dataToProcess = selectedMonth !== null ? monthOrders : filteredData;
+
+        const clientData: Record<string, {
+            name: string;
+            value: number;
+            qty: number;
+            orders: Set<string>;
+        }> = {};
+
+        dataToProcess.forEach(d => {
+            if (!d.customerName) return;
+            if (!clientData[d.customerName]) {
+                clientData[d.customerName] = {
+                    name: d.customerName,
+                    value: 0,
+                    qty: 0,
+                    orders: new Set(),
+                };
+            }
+            clientData[d.customerName].value += d.exportValue;
+            clientData[d.customerName].qty += d.qty;
+            clientData[d.customerName].orders.add(d.orderNo);
+        });
+        
+        return Object.values(clientData)
+            .map(client => ({
+                name: client.name,
+                value: client.value,
+                qty: client.qty,
+                orderCount: client.orders.size,
+            }))
+            .sort((a, b) => b.value - a.value)
+            .slice(0, 5);
+    }, [filteredData, monthOrders, selectedMonth]);
+
+    return (
+        <div className="dashboard-container calendar-view-dashboard">
+            <header>
+                <div className="header-main">
+                    <div className="header-title">
+                        <h1>Calendar Year Order Overview</h1>
+                    </div>
+                </div>
+                <div className="filters">
+                    <div className="select-container">
+                        <select value={selectedYear} onChange={e => { setSelectedYear(Number(e.target.value)); setSelectedMonth(null); }}>
+                            {years.map(year => <option key={year} value={year}>{year}</option>)}
+                        </select>
+                    </div>
+                    <div className="select-container">
+                        <select value={selectedCountry} onChange={e => setSelectedCountry(e.target.value)}>
+                            {countries.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                    </div>
+                    <div className="select-container">
+                        <select value={selectedClient} onChange={e => setSelectedClient(e.target.value)} disabled={authenticatedUser !== 'admin'}>
+                            {authenticatedUser === 'admin' ? 
+                                clientsForYear.map(c => <option key={c} value={c}>{c}</option>) :
+                                <option value={authenticatedUser}>{authenticatedUser}</option>
+                            }
+                        </select>
+                    </div>
+                    <button className="back-button" onClick={onClose}>
+                        {Icons.prevArrow} Back to Main Dashboard
+                    </button>
+                </div>
+            </header>
+            <main className="calendar-view-main">
+                <div className="kpi-container">
+                    <CalendarKpiCard title="Total Orders Received" value={formatNumber(kpis.received)} icon={"📦"} variant="received" />
+                    <CalendarKpiCard title="Total Orders Planned" value={formatNumber(kpis.planned)} icon={"🗓️"} variant="planned" />
+                    <CalendarKpiCard title="Total Orders Shipped" value={formatNumber(kpis.shipped)} icon={"🚚"} variant="shipped" />
+                </div>
+                <div className="calendar-grid-container">
+                    <div className="calendar-grid">
+                        {monthNames.map((month, index) => (
+                            <div 
+                                key={month} 
+                                className={`calendar-month-cell ${selectedMonth === index ? 'active' : ''}`}
+                                onClick={() => setSelectedMonth(index)}
+                            >
+                                <h3>{month}</h3>
+                                <div className="month-bars-container">
+                                    <div className="month-bar-wrapper">
+                                        <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
+                                            {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
+                                        </div>
+                                    </div>
+                                    <div className="month-bar-wrapper">
+                                        <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / maxMonthlyValue) * 100}%` }}>
+                                            {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
+                                        </div>
+                                    </div>
+                                    <div className="month-bar-wrapper">
+                                        <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / maxMonthlyValue) * 100}%` }}>
+                                            {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="calendar-month-tooltip">
+                                    <strong>{month} {selectedYear}</strong>
+                                    <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>
+                                    <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>Planned: {calendarData[index].planned}</span>
+                                    <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="calendar-charts-section">
+                    {selectedMonth === null ? (
+                        <div className="chart-container">
+                            <h3>Monthly Order Volume</h3>
+                            <MonthlyTrendChart data={monthlyChartData} />
+                        </div>
+                    ) : (
+                        <div className="chart-container daily-view">
+                            <div className="daily-chart-header">
+                                <h3>Daily Order Volume for {monthNames[selectedMonth]}</h3>
+                                <button className="back-to-monthly-button" onClick={() => setSelectedMonth(null)}>
+                                    {Icons.prevArrow} Monthly View
+                                </button>
+                            </div>
+                            <MonthlyTrendChart data={dailyChartData} xAxisDataKey="day" selectedMonth={selectedMonth} selectedYear={selectedYear} />
+                        </div>
+                    )}
+                    <TopClientsList data={topClients} />
+                </div>
+            </main>
+        </div>
+    );
+};
 
 // --- Components ---
 const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, key: string) => boolean, onClearSavedUser: () => void }) => {
@@ -341,6 +739,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                 country: firstProduct.country,
                 status: firstProduct.status, // Use calculated status for tooltip
                 originalStatus: firstProduct.originalStatus, // Use this for display
+                stuffingMonth: firstProduct.stuffingMonth,
                 hasTracking: stepDataOrderNos.has(firstProduct.orderNo), // Add tracking flag
                 imageLink: firstProduct.imageLink,
                 productCode: firstProduct.productCode,
@@ -437,6 +836,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                     <thead>
                         <tr>
                             <th className="text-center">Status</th>
+                            <th>Shipped Month</th>
                             <th>Order No</th>
                             <th className="text-center">Image</th>
                             {isDetailedView ? (
@@ -471,6 +871,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                             <span className="status-text">{formatNa(row.originalStatus || row.status)}</span>
                                         </div>
                                     </td>
+                                    <td>{formatNa(row.stuffingMonth)}</td>
                                     <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(row.orderNo); }} title={`Status: ${formatNa(row.status)}`}>{formatNa(row.orderNo)}</td>
                                     <td className="product-image-cell">
                                         {row.imageLink && row.imageLink.toLowerCase() !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
@@ -501,6 +902,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                             <span className="status-text">{formatNa(group.originalStatus || group.status)}</span>
                                         </div>
                                     </td>
+                                    <td>{formatNa(group.stuffingMonth)}</td>
                                     <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(group.orderNo); }} title={`Status: ${formatNa(group.status)}`}>{formatNa(group.orderNo)}</td>
                                     <td className="product-image-cell">
                                         {group.imageLink && group.imageLink.toLowerCase() !== '#n/a' ? <img src={group.imageLink} alt={group.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
@@ -907,7 +1309,7 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientNa
   );
 };
 
-const OrderTrackingModal = ({ orderNo, stepData, onClose }: { orderNo: string, stepData: StepData | undefined, onClose: () => void }) => {
+const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose }: { orderNo: string, stepData: StepData | undefined, orderDate?: string, onClose: () => void }) => {
     useEffect(() => {
         const handleEsc = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
@@ -977,6 +1379,17 @@ const OrderTrackingModal = ({ orderNo, stepData, onClose }: { orderNo: string, s
                 </div>
                 <div className="modal-body">
                     <ul className="tracking-timeline">
+                        {/* Order Received Step */}
+                        {orderDate && (
+                            <li className="tracking-step completed">
+                                <div className="step-icon">{getIconForState('completed')}</div>
+                                <div className="step-content">
+                                    <h4 className="step-title">Order Received</h4>
+                                    <p className="step-details">Date:- {formatDateDDMMMYY(orderDate)}</p>
+                                    <p className="step-details">Status:- Completed</p>
+                                </div>
+                            </li>
+                        )}
                         {/* Production Step */}
                         <li className={`tracking-step ${productionState}`}>
                             <div className="step-icon">{getIconForState(productionState)}</div>
@@ -1060,7 +1473,12 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
         onFilter({ type: 'country', value: countryName, source: 'countryChart' });
     };
 
-    const CustomCountryTooltip = ({ active, payload, label }: any) => {
+    // FIX: Add explicit types for recharts tooltip props to prevent type errors.
+    interface CountryTooltipPayloadItem {
+      value: number;
+      payload: { qty: number };
+    }
+    const CustomCountryTooltip = ({ active, payload, label }: { active?: boolean; payload?: CountryTooltipPayloadItem[]; label?: string; }) => {
         if (active && payload && payload.length) {
           return (
             <div className="recharts-default-tooltip" style={{padding: '0.5rem 1rem', backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)'}}>
@@ -1100,43 +1518,41 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
 
 const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null }) => {
     const chartData = useMemo(() => {
-        // 1. Create a map to store the first encountered date for each unique order number.
-        const uniqueOrderDates = new Map<string, Date>();
+        // 1. Initialize an array to hold the total export value and unique orders for each month.
+        const monthData = Array.from({ length: 12 }, () => ({ value: 0, orders: new Set<string>() }));
+
+        // 2. Iterate through all data rows and sum up the exportValue and collect unique order numbers per month.
         for (const item of data) {
-            if (item.orderNo && !uniqueOrderDates.has(item.orderNo)) {
-                if (item.orderDate) {
-                    const date = parseDate(item.orderDate);
-                    if (date) {
-                        uniqueOrderDates.set(item.orderNo, date);
+            if (item.orderDate) {
+                const date = parseDate(item.orderDate);
+                if (date) {
+                    const monthIndex = date.getMonth();
+                    monthData[monthIndex].value += item.exportValue > 0 ? item.exportValue : 0;
+                    if (item.orderNo) {
+                        monthData[monthIndex].orders.add(item.orderNo);
                     }
                 }
             }
         }
 
-        // 2. Count the orders per month based on the unique order dates.
-        const monthCounts: Record<string, number> = {};
-        for (const date of uniqueOrderDates.values()) {
-            const month = date.toLocaleString('default', { month: 'short' });
-            monthCounts[month] = (monthCounts[month] || 0) + 1;
-        }
-
         // 3. Format for the chart.
         const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        return monthOrder.map(month => ({
+        return monthOrder.map((month, index) => ({
             name: month,
-            orders: monthCounts[month] || 0
+            value: monthData[index].value,
+            orderCount: monthData[index].orders.size,
         }));
     }, [data]);
 
     const handleDotClickAction = (payload: any) => {
-        if (!payload || !payload.name || payload.orders === 0) return;
+        if (!payload || !payload.name || payload.value === 0) return;
         const monthName = payload.name;
         onFilter({ type: 'month', value: monthName, source: 'monthChart' });
     };
 
     const dotRenderer = (props: any) => {
         const { cx, cy, stroke, payload } = props;
-        if (payload.orders === 0) return null;
+        if (payload.orderCount === 0) return null;
 
         const isActive = activeFilters && activeFilters.some(f => f.type === 'month' && f.value === payload.name);
         
@@ -1157,29 +1573,44 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderDat
             />
         );
     };
+    
+    interface TimeTooltipPayloadItem {
+        value: number; // This will now be the orderCount
+        payload: { value: number; orderCount: number; }; // The full data object from chartData
+    }
+    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: TimeTooltipPayloadItem[]; label?: string; }) => {
+        if (active && payload && payload.length && payload[0].value > 0) {
+          return (
+            <div className="recharts-default-tooltip" style={{padding: '0.5rem 1rem', backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)'}}>
+              <p style={{margin: '0 0 0.5rem 0', fontWeight: 'bold', color: 'var(--text-color)'}}>{label}</p>
+              <p style={{margin: 0, color: 'var(--text-color-muted)'}}>{`Orders: ${payload[0].value}`}</p>
+              <p style={{margin: 0, color: 'var(--secondary-accent)'}}>{`Value: ${formatCurrency(payload[0].payload.value)}`}</p>
+            </div>
+          );
+        }
+        return null;
+    };
 
      return (
         <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 30, right: 20, left: -10, bottom: 5 }}>
                  <defs>
-                    <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="var(--secondary-accent)" stopOpacity={0.5}/>
                         <stop offset="95%" stopColor="var(--secondary-accent)" stopOpacity={0}/>
                     </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-stroke)" />
                 <XAxis dataKey="name" stroke={'var(--text-color-muted)'} />
-                <YAxis stroke={'var(--text-color-muted)'} tickFormatter={(value) => formatCompactNumber(value)} allowDecimals={false} />
+                <YAxis stroke={'var(--text-color-muted)'} allowDecimals={false} />
                 <Tooltip 
-                    contentStyle={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)' }}
-                    labelStyle={{ color: 'var(--text-color)' }}
-                    itemStyle={{ color: 'var(--text-color)' }}
+                    content={<CustomTooltip />}
+                    cursor={{fill: 'var(--tooltip-cursor)'}}
                 />
-                <Line type="monotone" dataKey="orders" stroke="var(--secondary-accent)" strokeWidth={3} animationDuration={800} animationEasing="ease-out" dot={dotRenderer} activeDot={{ r: 8 }}>
-                    <LabelList dataKey="orders" position="top" fill="var(--text-color)" fontSize={16} fontWeight="bold" />
+                <Line type="monotone" dataKey="orderCount" name="Order Volume" stroke="var(--secondary-accent)" strokeWidth={3} animationDuration={800} animationEasing="ease-out" dot={dotRenderer} activeDot={{ r: 8 }}>
+                    <LabelList dataKey="orderCount" position="top" formatter={(val: number) => val > 0 ? val : ''} fill="var(--text-color)" fontSize={16} fontWeight="bold" />
                 </Line>
-                {/* FIX: The 'stroke' prop for the Area component expects a string, but was receiving a boolean (false). Changed to "none" to correctly disable the stroke and fix the type error. */}
-                <Area type="monotone" dataKey="orders" stroke="none" fill="url(#colorOrders)" />
+                <Area type="monotone" dataKey="orderCount" stroke="none" fill="url(#colorValue)" />
             </LineChart>
         </ResponsiveContainer>
     )
@@ -1433,7 +1864,7 @@ const App = () => {
   const [masterProductList, setMasterProductList] = useState<MasterProductData[]>([]);
   const [stepData, setStepData] = useState<StepData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [authenticatedUser, setAuthenticatedUser] = useState<string | null>(null);
   const [userCredentials, setUserCredentials] = useState<Record<string, string>>({});
   const [currentUser, setCurrentUser] = useState('admin');
@@ -1446,6 +1877,7 @@ const App = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table'>('dashboard');
+  const [mainViewMode, setMainViewMode] = useState<'dashboard' | 'calendar'>('dashboard');
   const [theme, setTheme] = useState('light');
   const [isEyeProtection, setIsEyeProtection] = useState(false);
   const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
@@ -1665,10 +2097,15 @@ const App = () => {
         // Auto-login validation
         const savedName = localStorage.getItem('dashboard_username');
         const savedKey = localStorage.getItem('dashboard_apikey');
-        // FIX: Added hasOwnProperty check to ensure savedName is a valid key before indexing, preventing potential type errors.
-        if (savedName && savedKey && Object.prototype.hasOwnProperty.call(allCredentials, savedName) && allCredentials[savedName] === savedKey) {
-            setAuthenticatedUser(savedName);
-            setCurrentUser(savedName);
+        // FIX: Refactored the auto-login validation logic to use a simpler, more direct check with the `in` operator. This helps TypeScript's control flow analysis correctly narrow types and resolves the "Type 'unknown' cannot be used as an index type" error.
+        if (savedName && savedKey) {
+            if (savedName in allCredentials && allCredentials[savedName] === savedKey) {
+                setAuthenticatedUser(savedName);
+                setCurrentUser(savedName);
+            } else {
+                localStorage.removeItem('dashboard_username');
+                localStorage.removeItem('dashboard_apikey');
+            }
         } else {
             localStorage.removeItem('dashboard_username');
             localStorage.removeItem('dashboard_apikey');
@@ -1676,7 +2113,15 @@ const App = () => {
 
       } catch (e) {
         console.error("Failed to fetch or parse sheet data:", e);
-        setError(`Failed to load live data. Please check sheet permissions and column headers. Error: ${e instanceof Error ? e.message : String(e)}`);
+        // FIX: The caught error `e` is of type `unknown`. We must verify it's an
+        // instance of Error before accessing the `message` property to avoid a type error.
+        let errorMessage = 'An unknown error occurred.';
+        if (e instanceof Error) {
+            errorMessage = e.message;
+        } else {
+            errorMessage = String(e);
+        }
+        setError(`Failed to load live data. Please check sheet permissions and column headers. Error: ${errorMessage}`);
       } finally {
         setLoading(false);
       }
@@ -1684,16 +2129,17 @@ const App = () => {
     fetchData();
   }, []);
   
+  // FIX: Refactored to use nested if-statements. This helps TypeScript's control flow analysis correctly narrow the type of `name`, resolving an "unknown index type" error, similar to another fix in this file.
   const handleLogin = (name: string, key: string): boolean => {
-      // FIX: Added hasOwnProperty check to ensure 'name' is a valid key before indexing, preventing potential type errors.
-      if (Object.prototype.hasOwnProperty.call(userCredentials, name)) {
-          const expectedKey = userCredentials[name];
-          if (expectedKey && expectedKey === key) {
-              localStorage.setItem('dashboard_username', name);
-              localStorage.setItem('dashboard_apikey', key);
-              setAuthenticatedUser(name);
-              setCurrentUser(name);
-              return true;
+      if (name) {
+          if (Object.prototype.hasOwnProperty.call(userCredentials, name)) {
+              if (userCredentials[name] === key) {
+                  localStorage.setItem('dashboard_username', name);
+                  localStorage.setItem('dashboard_apikey', key);
+                  setAuthenticatedUser(name);
+                  setCurrentUser(name);
+                  return true;
+              }
           }
       }
       return false;
@@ -1852,20 +2298,49 @@ const App = () => {
     return availableCatalog.filter(p => !boughtCodes.has(p.productCode));
   }, [masterProductList, currentUser, clientFilteredData]);
 
+  const uniqueOrdersWithStatus = useMemo(() => {
+    const orders: Record<string, { status?: string }> = {};
+    
+    // Group by order number and determine a single, authoritative status
+    for (const row of finalFilteredData) {
+        if (!orders[row.orderNo]) {
+            orders[row.orderNo] = { status: row.originalStatus };
+        } else {
+            const currentStatus = orders[row.orderNo].status?.toUpperCase();
+            const newStatus = row.originalStatus?.toUpperCase();
+
+            // Status hierarchy: SHIPPED > PLAN > anything else
+            if (newStatus === 'SHIPPED') {
+                orders[row.orderNo].status = row.originalStatus;
+            } else if (newStatus === 'PLAN' && currentStatus !== 'SHIPPED') {
+                orders[row.orderNo].status = row.originalStatus;
+            }
+        }
+    }
+    return Object.values(orders);
+  }, [finalFilteredData]);
+
   const kpis = useMemo(() => {
     const totalValue = finalFilteredData.reduce((acc: number, item) => acc + (item.exportValue || 0), 0);
+    
+    // Per user request, "In Process" now counts all unique orders containing at least one 'PLAN' item.
+    // This may cause "In Process" + "Shipped" to not equal "Total Orders" if an order is partially shipped.
+    const totalInProcess = new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'PLAN').map(item => item.orderNo)).size;
+
+    // "Shipped" and "Total" continue to use a status hierarchy to ensure the total order count is accurate.
+    const totalShipped = uniqueOrdersWithStatus.filter(order => order.status?.toUpperCase() === 'SHIPPED').length;
+
     return {
       totalValue: formatCurrencyNoDecimals(totalValue),
-      totalOrders: new Set(finalFilteredData.map(item => item.orderNo)).size,
-      totalInProcess: new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'PLAN').map(item => item.orderNo)).size,
-      totalShipped: new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'SHIPPED').map(item => item.orderNo)).size,
+      totalOrders: uniqueOrdersWithStatus.length,
+      totalInProcess: totalInProcess,
+      totalShipped: totalShipped,
       boughtProducts: new Set(finalFilteredData.map(item => item.productCode)).size,
       activeClients: new Set(finalFilteredData.map(item => item.customerName)).size,
-      // FIX: Count unique countries case-insensitively for an accurate count.
       countries: new Set(finalFilteredData.filter(item => item.country).map(item => item.country.trim().toLowerCase())).size,
       neverBoughtCount: neverBoughtForClientData.length,
     };
-  }, [finalFilteredData, neverBoughtForClientData]);
+  }, [finalFilteredData, neverBoughtForClientData, uniqueOrdersWithStatus]);
   
   const singleCountryName = useMemo(() => {
     // FIX: Determine the single country name case-insensitively.
@@ -1971,6 +2446,15 @@ const App = () => {
             </div>
         </div>
     );
+  }
+  
+  if (mainViewMode === 'calendar') {
+      return <CalendarViewDashboard
+        allOrderData={data}
+        clientList={clientList}
+        onClose={() => setMainViewMode('dashboard')}
+        authenticatedUser={authenticatedUser}
+      />
   }
 
   if (showUserManagement) {
@@ -2091,6 +2575,9 @@ const App = () => {
                     }
                   </select>
                </div>
+                <button className="calendar-view-button" onClick={() => setMainViewMode('calendar')}>
+                    {Icons.calendar} Calendar View
+                </button>
                <button className="never-bought-button" onClick={() => setShowNeverBought(true)}>
                   {Icons.placeholder} Never Bought Products
                </button>
@@ -2099,11 +2586,11 @@ const App = () => {
         <main>
           <div className="kpi-container">
               <KpiCard title="Total Order Value" value={kpis.totalValue} icon="revenue" activeFilters={activeFilters} />
-              <KpiCard title="Total Orders" value={formatCompactNumber(kpis.totalOrders)} icon="orders" activeFilters={activeFilters} />
+              <KpiCard title="Total Orders Received" value={formatCompactNumber(kpis.totalOrders)} icon="orders" activeFilters={activeFilters} />
               <KpiCard title="In Process" value={formatCompactNumber(kpis.totalInProcess)} icon="plan" onFilter={handleFilter} filterType="status" filterValue="PLAN" activeFilters={activeFilters}/>
               <KpiCard title="Shipped Orders" value={formatCompactNumber(kpis.totalShipped)} icon="shipped" onFilter={handleFilter} filterType="status" filterValue="SHIPPED" activeFilters={activeFilters}/>
               <KpiCard 
-                title="Bought Products" 
+                title="Total No of Units" 
                 value={formatCompactNumber(kpis.boughtProducts)} 
                 icon="shoppingCart" 
                 activeFilters={activeFilters}
@@ -2155,7 +2642,7 @@ const App = () => {
                     <SalesByCountryChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
                   </div>
                   <div className={`chart-container ${activeFilters?.some(f => f.source === 'monthChart') ? 'active-filter-source' : ''}`}>
-                    <h3>Monthly Order Volume</h3>
+                    <h3>Monthly Order Value</h3>
                     <OrdersOverTimeChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
                   </div>
                 </div>
@@ -2187,6 +2674,7 @@ const App = () => {
         <OrderTrackingModal
           orderNo={selectedOrderForTracking}
           stepData={stepData.find(d => d.orderNo === selectedOrderForTracking)}
+          orderDate={data.find(d => d.orderNo === selectedOrderForTracking)?.orderDate}
           onClose={() => setSelectedOrderForTracking(null)}
         />
       )}
