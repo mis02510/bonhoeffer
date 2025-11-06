@@ -1,5 +1,3 @@
-
-
 /* index.css */
 
 :root {
@@ -471,7 +469,9 @@ header h1 {
   gap: 1rem;
   align-items: center;
   justify-content: flex-start;
-  flex-wrap: wrap; /* Allow filters themselves to wrap if needed */
+  flex-wrap: nowrap; /* Prevent filters from wrapping to the next row as requested */
+  overflow-x: auto;  /* Allow horizontal scrolling if needed on smaller viewports */
+  padding-bottom: 10px; /* Add space for the horizontal scrollbar */
 }
 
 .view-switcher-label {
@@ -2380,6 +2380,10 @@ input:checked + .slider:before {
     gap: 1.5rem;
     align-items: flex-start;
 }
+.calendar-charts-section.single-column {
+    grid-template-columns: 1fr !important;
+}
+
 .daily-chart-header {
     display: flex;
     justify-content: space-between;
@@ -2628,4 +2632,3 @@ html[data-theme='dark'] .top-client-item.rank-3 .client-name { color: #CD7F32; }
     }
     .announcements-container {
         position: static;
-    
