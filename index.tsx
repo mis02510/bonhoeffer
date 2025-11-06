@@ -1,4 +1,6 @@
 
+
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -39,7 +41,7 @@ const Icons = {
   revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   orders: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25l3.807-3.262a4.502 4.502 0 0 1 6.384 0L20.25 18" /></svg>,
   clients: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 0L5 11.529m10.232 2.234a3.75 3.75 0 0 0-4.493 0L10.5 11.529m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 16.25m10.232-2.234a3.75 3.75 0 0 1-4.493 0L7.5 13.763m7.5-4.515a3.753 3.753 0 0 0-4.493 0L10.5 6.5m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 11.25m10.232-2.234a3.75 3.75 0 0 0-4.493 0L7.5 8.763m7.5 4.515a3.75 3.75 0 0 1-4.493 0L10.5 13.75m5.007-4.515a3.75 3.75 0 0 0-4.493 0L13.5 8.763" /></svg>,
-  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898 1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
+  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
   placeholder: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>,
   prevArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>,
   nextArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>,
@@ -75,6 +77,7 @@ interface OrderData {
   originalStatus?: string;
   orderDate: string;
   stuffingMonth: string;
+  forwardingMonth?: string;
   orderNo: string;
   customerName: string;
   country: string;
@@ -89,6 +92,7 @@ interface OrderData {
   unitPrice: number;
   fobPrice: number;
   moq: number;
+  fy: string;
 }
 
 interface MasterProductData {
@@ -232,7 +236,7 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                 <Bar dataKey="received" fill="var(--calendar-received-color)" name="Received" radius={[4, 4, 0, 0]}>
                     <LabelList dataKey="received" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
                 </Bar>
-                <Bar dataKey="planned" fill="var(--calendar-planned-color)" name="Planned" radius={[4, 4, 0, 0]}>
+                <Bar dataKey="planned" fill="var(--calendar-planned-color)" name="In Process" radius={[4, 4, 0, 0]}>
                     <LabelList dataKey="planned" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
                 </Bar>
                 <Bar dataKey="shipped" fill="var(--calendar-shipped-color)" name="Shipped" radius={[4, 4, 0, 0]}>
@@ -287,36 +291,54 @@ interface CalendarViewDashboardProps {
 }
 
 const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticatedUser }: CalendarViewDashboardProps) => {
+    const monthNames = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], []);
+    
     const years = useMemo(() => {
         const yearSet = new Set<number>();
         allOrderData.forEach(d => {
-            const date = parseDate(d.orderDate);
-            if (date) {
-                yearSet.add(date.getFullYear());
-            }
+            const orderDate = parseDate(d.orderDate);
+            if (orderDate) yearSet.add(orderDate.getFullYear());
+            
+            const stuffingDate = parseDate(d.stuffingMonth);
+            if(stuffingDate) yearSet.add(stuffingDate.getFullYear());
         });
         return Array.from(yearSet).sort((a, b) => b - a);
     }, [allOrderData]);
 
     const [selectedYear, setSelectedYear] = useState(years.length > 0 ? years[0] : new Date().getFullYear());
     const [selectedCountry, setSelectedCountry] = useState('All');
-    const [selectedClient, setSelectedClient] = useState('All');
+    const [selectedClient, setSelectedClient] = useState(authenticatedUser === 'admin' ? 'All' : authenticatedUser);
     const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
-
-    const filteredData = useMemo(() => {
+    
+    // Base data filtered only by client/country, NOT by year. Used for consistent calculations.
+    const baseFilteredData = useMemo(() => {
         return allOrderData.filter(d => {
-            const date = parseDate(d.orderDate);
-            const yearMatch = date ? date.getFullYear() === selectedYear : false;
             const countryMatch = selectedCountry === 'All' || d.country === selectedCountry;
             const clientMatch = selectedClient === 'All' || d.customerName === selectedClient;
-            return yearMatch && countryMatch && clientMatch;
+            return countryMatch && clientMatch;
         });
-    }, [allOrderData, selectedYear, selectedCountry, selectedClient]);
+    }, [allOrderData, selectedCountry, selectedClient]);
+
+    // Data filtered by year based on ORDER DATE. Used for "Received" and "Planned" counts.
+    const filteredData = useMemo(() => {
+        return baseFilteredData.filter(d => {
+            const date = parseDate(d.orderDate);
+            const yearMatch = date ? date.getFullYear() === selectedYear : false;
+            return yearMatch;
+        });
+    }, [baseFilteredData, selectedYear]);
     
-    const countries = useMemo(() => ['All', ...new Set(allOrderData.filter(d => {
-        const date = parseDate(d.orderDate);
-        return date && date.getFullYear() === selectedYear;
-    }).map(d => d.country).filter(Boolean).sort())], [allOrderData, selectedYear]);
+    const countries = useMemo(() => {
+        let dataForCountryList = allOrderData;
+        if (authenticatedUser !== 'admin') {
+            dataForCountryList = allOrderData.filter(d => d.customerName === authenticatedUser);
+        }
+        return ['All', ...new Set(dataForCountryList.filter(d => {
+            const date = parseDate(d.orderDate);
+            return date && date.getFullYear() === selectedYear;
+        }).map(d => d.country).filter(Boolean).sort())];
+    }, [allOrderData, selectedYear, authenticatedUser]);
+
 
     const clientsForYear = useMemo(() => ['All', ...new Set(allOrderData.filter(d => {
         const date = parseDate(d.orderDate);
@@ -324,45 +346,71 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
     }).map(d => d.customerName).filter(Boolean).sort())], [allOrderData, selectedYear]);
 
     const calendarData = useMemo(() => {
-        const monthlyData: Record<number, { received: number, planned: number, shipped: number }> = {};
-        for (let i = 0; i < 12; i++) {
-            monthlyData[i] = { received: 0, planned: 0, shipped: 0 };
-        }
+        const baseDataForCalendar = baseFilteredData;
 
-        const orders: Record<string, { orderDate: string, status?: string }> = {};
-        for (const row of filteredData) {
-            if (!orders[row.orderNo]) {
-                orders[row.orderNo] = { orderDate: row.orderDate, status: row.originalStatus };
-            } else {
-                const currentStatus = orders[row.orderNo].status?.toUpperCase();
-                const newStatus = row.originalStatus?.toUpperCase();
-                if (newStatus === 'SHIPPED') {
-                    orders[row.orderNo].status = row.originalStatus;
-                } else if (newStatus === 'PLAN' && currentStatus !== 'SHIPPED') {
-                    orders[row.orderNo].status = row.originalStatus;
+        // --- Shipped Calculation (aligns with daily logic) ---
+        // This part is correct and robust.
+        const shippedOrdersByMonth: Set<string>[] = Array.from({ length: 12 }, () => new Set());
+        baseDataForCalendar.forEach(d => {
+            const status = d.originalStatus?.toUpperCase();
+            if (status === 'SHIPPED' || status === 'COMPLETE') {
+                const stuffingDate = parseDate(d.stuffingMonth);
+                if (stuffingDate && stuffingDate.getFullYear() === selectedYear) {
+                    shippedOrdersByMonth[stuffingDate.getMonth()].add(d.orderNo);
                 }
             }
-        }
+        });
 
-        for (const orderNo in orders) {
-            const order = orders[orderNo];
-            const date = parseDate(order.orderDate);
-            if (date) {
-                const month = date.getMonth();
-                monthlyData[month].received++;
-                const status = order.status?.toUpperCase();
-                if (status === 'PLAN') {
-                    monthlyData[month].planned++;
-                } else if (status === 'SHIPPED') {
-                    monthlyData[month].shipped++;
-                }
+        // --- Received & Planned Calculation (Corrected logic) ---
+        const ordersByNo: Record<string, { 
+            finalStatus?: string; 
+            orderDate?: Date | null; 
+        }> = {};
+
+        baseDataForCalendar.forEach(d => {
+            if (!ordersByNo[d.orderNo]) {
+                ordersByNo[d.orderNo] = {};
             }
-        }
-        
-        return Object.values(monthlyData);
-    }, [filteredData]);
+            const order = ordersByNo[d.orderNo];
+            if (!order.orderDate) order.orderDate = parseDate(d.orderDate);
+            
+            const currentStatus = order.finalStatus?.toUpperCase();
+            const newStatus = d.originalStatus?.toUpperCase();
 
-    const kpis = useMemo(() => {
+            const isNewStatusShippedOrComplete = newStatus === 'SHIPPED' || newStatus === 'COMPLETE';
+            const isCurrentStatusShippedOrComplete = currentStatus === 'SHIPPED' || currentStatus === 'COMPLETE';
+
+            if (isNewStatusShippedOrComplete) {
+                order.finalStatus = d.originalStatus;
+            } else if (newStatus === 'PLAN' && !isCurrentStatusShippedOrComplete) {
+                order.finalStatus = d.originalStatus;
+            } else if (!currentStatus) {
+                order.finalStatus = d.originalStatus;
+            }
+        });
+
+        // --- Combine and return final monthly data ---
+        return monthNames.map((_, monthIndex) => {
+            const monthlyReceived = { received: 0, planned: 0 };
+            
+            Object.values(ordersByNo).forEach(order => {
+                if (order.orderDate && order.orderDate.getFullYear() === selectedYear && order.orderDate.getMonth() === monthIndex) {
+                    monthlyReceived.received++;
+                    if (order.finalStatus?.toUpperCase() === 'PLAN') {
+                        monthlyReceived.planned++;
+                    }
+                }
+            });
+
+            return {
+                received: monthlyReceived.received,
+                planned: monthlyReceived.planned,
+                shipped: shippedOrdersByMonth[monthIndex].size,
+            };
+        });
+    }, [baseFilteredData, selectedYear, monthNames]);
+
+    const yearlyKpis = useMemo(() => {
         return calendarData.reduce((acc, month) => {
             acc.received += month.received;
             acc.planned += month.planned;
@@ -370,10 +418,17 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
             return acc;
         }, { received: 0, planned: 0, shipped: 0 });
     }, [calendarData]);
+
+    const monthlyKpis = useMemo(() => {
+        if (selectedMonth === null) {
+            return null;
+        }
+        return calendarData[selectedMonth];
+    }, [calendarData, selectedMonth]);
+
+    const kpis = monthlyKpis || yearlyKpis;
     
     const maxMonthlyValue = useMemo(() => Math.max(1, ...calendarData.map(m => Math.max(m.received, m.planned, m.shipped))), [calendarData]);
-
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     const monthlyChartData = monthNames.map((name, index) => ({
         name,
@@ -393,12 +448,10 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
     
         const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
         const dailyData: { received: number, planned: number, shipped: number }[] = 
-            Array.from({ length: daysInMonth }, () => ({
-                received: 0,
-                planned: 0,
-                shipped: 0,
-            }));
+            Array.from({ length: daysInMonth }, () => ({ received: 0, planned: 0, shipped: 0 }));
     
+        // --- RECEIVED & PLANNED LOGIC ---
+        // Group orders in the current month by orderDate to get received/planned
         const orders: Record<string, { orderDate: string, status?: string }> = {};
         for (const row of monthOrders) {
             if (!orders[row.orderNo]) {
@@ -406,9 +459,10 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
             } else {
                 const currentStatus = orders[row.orderNo].status?.toUpperCase();
                 const newStatus = row.originalStatus?.toUpperCase();
-                if (newStatus === 'SHIPPED') {
+                // Status hierarchy: SHIPPED/COMPLETE > PLAN
+                if (newStatus === 'SHIPPED' || newStatus === 'COMPLETE') {
                     orders[row.orderNo].status = row.originalStatus;
-                } else if (newStatus === 'PLAN' && currentStatus !== 'SHIPPED') {
+                } else if (newStatus === 'PLAN' && currentStatus !== 'SHIPPED' && currentStatus !== 'COMPLETE') {
                     orders[row.orderNo].status = row.originalStatus;
                 }
             }
@@ -421,21 +475,44 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
                 const dayOfMonth = date.getDate() - 1; 
                 if (dailyData[dayOfMonth]) {
                     dailyData[dayOfMonth].received++;
-                    const status = order.status?.toUpperCase();
-                    if (status === 'PLAN') {
+                    if (order.status?.toUpperCase() === 'PLAN') {
                         dailyData[dayOfMonth].planned++;
-                    } else if (status === 'SHIPPED') {
-                        dailyData[dayOfMonth].shipped++;
                     }
                 }
             }
         }
+        
+        // --- SHIPPED LOGIC (Corrected) ---
+        // Correctly count unique orders shipped per day based on stuffingMonth
+        const shippedOrdersByDay: Record<number, Set<string>> = {};
+
+        baseFilteredData.forEach(d => {
+            const status = d.originalStatus?.toUpperCase();
+            // Count an order as shipped if its status is SHIPPED or COMPLETE
+            if (status === 'SHIPPED' || status === 'COMPLETE') {
+                const stuffingDate = parseDate(d.stuffingMonth);
+                if (stuffingDate && stuffingDate.getFullYear() === selectedYear && stuffingDate.getMonth() === selectedMonth) {
+                    const dayOfMonth = stuffingDate.getDate(); // 1-based day
+                    if (!shippedOrdersByDay[dayOfMonth]) {
+                        shippedOrdersByDay[dayOfMonth] = new Set<string>();
+                    }
+                    shippedOrdersByDay[dayOfMonth].add(d.orderNo);
+                }
+            }
+        });
+
+        Object.entries(shippedOrdersByDay).forEach(([day, orderSet]) => {
+            const dayIndex = parseInt(day, 10) - 1;
+            if (dailyData[dayIndex]) {
+                dailyData[dayIndex].shipped = orderSet.size;
+            }
+        });
     
         return dailyData.map((dayData, index) => ({
             day: index + 1,
             ...dayData
         }));
-    }, [monthOrders, selectedMonth, selectedYear]);
+    }, [monthOrders, baseFilteredData, selectedMonth, selectedYear]);
 
     const topClients = useMemo(() => {
         const dataToProcess = selectedMonth !== null ? monthOrders : filteredData;
@@ -508,7 +585,7 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
             <main className="calendar-view-main">
                 <div className="kpi-container">
                     <CalendarKpiCard title="Total Orders Received" value={formatNumber(kpis.received)} icon={"📦"} variant="received" />
-                    <CalendarKpiCard title="Total Orders Planned" value={formatNumber(kpis.planned)} icon={"🗓️"} variant="planned" />
+                    <CalendarKpiCard title="Total Orders In Process" value={formatNumber(kpis.planned)} icon={"🗓️"} variant="planned" />
                     <CalendarKpiCard title="Total Orders Shipped" value={formatNumber(kpis.shipped)} icon={"🚚"} variant="shipped" />
                 </div>
                 <div className="calendar-grid-container">
@@ -540,7 +617,7 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
                                 <div className="calendar-month-tooltip">
                                     <strong>{month} {selectedYear}</strong>
                                     <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>
-                                    <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>Planned: {calendarData[index].planned}</span>
+                                    <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>
                                     <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>
                                 </div>
                             </div>
@@ -548,7 +625,7 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
                     </div>
                 </div>
 
-                <div className="calendar-charts-section">
+                <div className={`calendar-charts-section ${authenticatedUser !== 'admin' ? 'single-column' : ''}`}>
                     {selectedMonth === null ? (
                         <div className="chart-container">
                             <h3>Monthly Order Volume</h3>
@@ -565,7 +642,7 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
                             <MonthlyTrendChart data={dailyChartData} xAxisDataKey="day" selectedMonth={selectedMonth} selectedYear={selectedYear} />
                         </div>
                     )}
-                    <TopClientsList data={topClients} />
+                    {authenticatedUser === 'admin' && <TopClientsList data={topClients} />}
                 </div>
             </main>
         </div>
@@ -836,7 +913,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                     <thead>
                         <tr>
                             <th className="text-center">Status</th>
-                            <th>Shipped Month</th>
+                            <th>Shipped Date</th>
                             <th>Order No</th>
                             <th className="text-center">Image</th>
                             {isDetailedView ? (
@@ -871,7 +948,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                             <span className="status-text">{formatNa(row.originalStatus || row.status)}</span>
                                         </div>
                                     </td>
-                                    <td>{formatNa(row.stuffingMonth)}</td>
+                                    <td>{formatDateDDMMMYY(row.stuffingMonth)}</td>
                                     <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(row.orderNo); }} title={`Status: ${formatNa(row.status)}`}>{formatNa(row.orderNo)}</td>
                                     <td className="product-image-cell">
                                         {row.imageLink && row.imageLink.toLowerCase() !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
@@ -902,7 +979,7 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                                             <span className="status-text">{formatNa(group.originalStatus || group.status)}</span>
                                         </div>
                                     </td>
-                                    <td>{formatNa(group.stuffingMonth)}</td>
+                                    <td>{formatDateDDMMMYY(group.stuffingMonth)}</td>
                                     <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(group.orderNo); }} title={`Status: ${formatNa(group.status)}`}>{formatNa(group.orderNo)}</td>
                                     <td className="product-image-cell">
                                         {group.imageLink && group.imageLink.toLowerCase() !== '#n/a' ? <img src={group.imageLink} alt={group.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
@@ -1495,7 +1572,7 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
         <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 30, right: 20, left: 30, bottom: 40 }} barCategoryGap="20%">
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-stroke)" />
-                <XAxis dataKey="name" stroke={'var(--text-color-muted)'} tick={{ fontSize: 12 }} interval={0} angle={-35} textAnchor="end" />
+                <XAxis dataKey="name" stroke={'var(--text-color-muted)'} tick={{ fontSize: 11 }} interval={0} angle={-35} textAnchor="end" />
                 <YAxis stroke={'var(--text-color-muted)'} tickFormatter={formatCompactNumber}/>
                 <Tooltip 
                     cursor={{fill: 'var(--tooltip-cursor)'}} 
@@ -1509,7 +1586,7 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
                           fill={activeFilters?.some(f => f.type === 'country' && f.value.toLowerCase() === entry.name.toLowerCase()) ? 'var(--primary-accent-active)' : 'var(--primary-accent)'} 
                         />
                     ))}
-                    <LabelList dataKey="value" position="top" formatter={formatCompactNumber} fill="var(--text-color)" fontSize={16} fontWeight="bold" />
+                    <LabelList dataKey="value" position="top" formatter={formatCompactNumber} fill="var(--text-color)" fontSize={12} fontWeight="bold" />
                 </Bar>
             </BarChart>
         </ResponsiveContainer>
@@ -1722,7 +1799,7 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose }: { allCl
         } catch (error) {
             console.error('Failed to save credentials:', error);
             setSaveStatus('error');
-            // FIX: The error from a catch block is of type 'unknown'. This refactor safely
+            // The error from a catch block is of type 'unknown'. This refactor safely
             // extracts the error message by checking its type, preventing a potential runtime error.
             let errorMessage = 'An unknown error occurred. This could be a CORS issue. Please check the browser console.';
             if (error instanceof Error) {
@@ -2002,7 +2079,7 @@ const App = () => {
             'Products Code': 'productCode', 'Qty': 'qty', 'Export Value': 'exportValue',
             'Logo Image': 'logoUrl', 'Category': 'category', 'Segment': 'segment',
             'Product': 'product', 'Image Link': 'imageLink', 'Unit Price': 'unitPrice',
-            'Fob Price': 'fobPrice', 'MOQ': 'moq'
+            'Fob Price': 'fobPrice', 'MOQ': 'moq', 'Month': 'forwardingMonth', 'FY': 'fy'
         };
         const parsedLiveData: OrderData[] = parseGvizResponse(liveText, liveHeaderMapping, ['orderNo']);
 
@@ -2082,8 +2159,11 @@ const App = () => {
                 const json = JSON.parse(match[0]);
                 if (json.status === 'ok') {
                     json.table.rows.forEach((r: any) => {
-                        const name = r.c[0]?.v?.trim();
-                        const key = r.c[1]?.v?.trim();
+                        // FIX: Explicitly convert potential non-string values to string to prevent
+                        // "Type 'unknown' cannot be used as an index type" error. The 'v' property
+                        // from gviz can be of various types, and its inferred type here is 'any'.
+                        const name = String(r.c[0]?.v || '').trim();
+                        const key = String(r.c[1]?.v || '').trim();
                         if (name && key) {
                             fetchedCredentials[name] = key;
                         }
@@ -2091,14 +2171,16 @@ const App = () => {
                 }
             }
         }
-        const allCredentials = { ...userCredentials, ...fetchedCredentials };
+        const allCredentials: Record<string, string> = { ...userCredentials, ...fetchedCredentials };
         setUserCredentials(allCredentials);
         
         // Auto-login validation
         const savedName = localStorage.getItem('dashboard_username');
         const savedKey = localStorage.getItem('dashboard_apikey');
-        // FIX: Refactored the auto-login validation logic to use a simpler, more direct check with the `in` operator. This helps TypeScript's control flow analysis correctly narrow types and resolves the "Type 'unknown' cannot be used as an index type" error.
+        // FIX: The auto-login validation was incorrectly checking against the potentially stale `userCredentials` state.
+        // It now correctly checks against `allCredentials`, which includes the credentials just fetched.
         if (savedName && savedKey) {
+            // FIX: Replaced `Object.prototype.hasOwnProperty.call` with the `in` operator. The `in` operator acts as a type guard, ensuring TypeScript recognizes that the key exists on the object and allowing safe property access, which resolves the "Type 'unknown' cannot be used as an index type" error during auto-login.
             if (savedName in allCredentials && allCredentials[savedName] === savedKey) {
                 setAuthenticatedUser(savedName);
                 setCurrentUser(savedName);
@@ -2129,20 +2211,18 @@ const App = () => {
     fetchData();
   }, []);
   
-  // FIX: Refactored to use nested if-statements. This helps TypeScript's control flow analysis correctly narrow the type of `name`, resolving an "unknown index type" error, similar to another fix in this file.
+  // FIX: Refactored the login logic to use the `in` operator for a more robust property check. This helps TypeScript's control-flow analysis and prevents potential "Type 'unknown' cannot be used as an index type" errors by ensuring the key exists on the credentials object.
   const handleLogin = (name: string, key: string): boolean => {
-      if (name) {
-          if (Object.prototype.hasOwnProperty.call(userCredentials, name)) {
-              if (userCredentials[name] === key) {
-                  localStorage.setItem('dashboard_username', name);
-                  localStorage.setItem('dashboard_apikey', key);
-                  setAuthenticatedUser(name);
-                  setCurrentUser(name);
-                  return true;
-              }
-          }
+    if (name && name in userCredentials) {
+      if (userCredentials[name] === key) {
+        localStorage.setItem('dashboard_username', name);
+        localStorage.setItem('dashboard_apikey', key);
+        setAuthenticatedUser(name);
+        setCurrentUser(name);
+        return true;
       }
-      return false;
+    }
+    return false;
   };
 
   const handleLogout = () => {
@@ -2199,17 +2279,28 @@ const App = () => {
   const searchedData = useMemo(() => {
     if (!searchQuery.trim()) return clientFilteredData;
     const lowercasedQuery = searchQuery.toLowerCase().trim();
-    return clientFilteredData.filter(d =>
-      d.status.toLowerCase().includes(lowercasedQuery) ||
-      d.orderNo.toLowerCase().includes(lowercasedQuery) ||
-      d.productCode.toLowerCase().includes(lowercasedQuery) ||
-      d.category.toLowerCase().includes(lowercasedQuery) ||
-      d.segment.toLowerCase().includes(lowercasedQuery) ||
-      d.product.toLowerCase().includes(lowercasedQuery) ||
-      d.customerName.toLowerCase().includes(lowercasedQuery) ||
-      d.country.toLowerCase().includes(lowercasedQuery)
-    );
-  }, [clientFilteredData, searchQuery]);
+    
+    return clientFilteredData.filter(d => {
+        const shippedDate = formatDateDDMMMYY(d.stuffingMonth).toLowerCase();
+        const statusMatch = d.status.toLowerCase().includes(lowercasedQuery) || (d.originalStatus && d.originalStatus.toLowerCase().includes(lowercasedQuery));
+
+        if (currentUser === 'admin') {
+            return (
+                statusMatch ||
+                shippedDate.includes(lowercasedQuery) ||
+                d.orderNo.toLowerCase().includes(lowercasedQuery) ||
+                d.customerName.toLowerCase().includes(lowercasedQuery) ||
+                d.country.toLowerCase().includes(lowercasedQuery)
+            );
+        } else { // Client view
+            return (
+                statusMatch ||
+                shippedDate.includes(lowercasedQuery) ||
+                d.orderNo.toLowerCase().includes(lowercasedQuery)
+            );
+        }
+    });
+  }, [clientFilteredData, searchQuery, currentUser]);
 
     const finalFilteredData = useMemo(() => {
         if (activeFilters.length === 0) return searchedData;
@@ -2309,10 +2400,13 @@ const App = () => {
             const currentStatus = orders[row.orderNo].status?.toUpperCase();
             const newStatus = row.originalStatus?.toUpperCase();
 
-            // Status hierarchy: SHIPPED > PLAN > anything else
-            if (newStatus === 'SHIPPED') {
+            const isNewStatusShippedOrComplete = newStatus === 'SHIPPED' || newStatus === 'COMPLETE';
+            const isCurrentStatusShippedOrComplete = currentStatus === 'SHIPPED' || currentStatus === 'COMPLETE';
+
+            // Status hierarchy: SHIPPED/COMPLETE > PLAN > anything else
+            if (isNewStatusShippedOrComplete) {
                 orders[row.orderNo].status = row.originalStatus;
-            } else if (newStatus === 'PLAN' && currentStatus !== 'SHIPPED') {
+            } else if (newStatus === 'PLAN' && !isCurrentStatusShippedOrComplete) {
                 orders[row.orderNo].status = row.originalStatus;
             }
         }
@@ -2323,12 +2417,14 @@ const App = () => {
   const kpis = useMemo(() => {
     const totalValue = finalFilteredData.reduce((acc: number, item) => acc + (item.exportValue || 0), 0);
     
-    // Per user request, "In Process" now counts all unique orders containing at least one 'PLAN' item.
-    // This may cause "In Process" + "Shipped" to not equal "Total Orders" if an order is partially shipped.
+    // "In Process" counts unique orders with at least one 'PLAN' item.
     const totalInProcess = new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'PLAN').map(item => item.orderNo)).size;
 
-    // "Shipped" and "Total" continue to use a status hierarchy to ensure the total order count is accurate.
-    const totalShipped = uniqueOrdersWithStatus.filter(order => order.status?.toUpperCase() === 'SHIPPED').length;
+    // "Shipped" counts unique orders that have a final status of SHIPPED or COMPLETE.
+    const totalShipped = uniqueOrdersWithStatus.filter(order => {
+        const status = order.status?.toUpperCase();
+        return status === 'SHIPPED' || status === 'COMPLETE';
+    }).length;
 
     return {
       totalValue: formatCurrencyNoDecimals(totalValue),
@@ -2409,6 +2505,8 @@ const App = () => {
 
     const handleFilter = (filter: Filter) => {
         setActiveFilters(prevFilters => {
+            // FIX: Removed explicit type annotation for the 'f' parameter in array methods to correct an issue where
+            // TypeScript inferred it as 'unknown', causing "Property 'value' does not exist on type 'unknown'" errors.
             const isAlreadyActive = prevFilters.some(f => f.type === filter.type && f.value === filter.value);
     
             if (isAlreadyActive) {
@@ -2475,6 +2573,10 @@ const App = () => {
         authenticatedUser={authenticatedUser}
     />;
   }
+  
+  const searchPlaceholder = currentUser === 'admin'
+    ? "Search by Status, Date, Order, Customer, Country..."
+    : "Search by Status, Date, Order No...";
 
   return (
     <>
@@ -2561,7 +2663,7 @@ const App = () => {
                   {Icons.search}
                   <input
                       type="text"
-                      placeholder="Search by Order, Product, Customer..."
+                      placeholder={searchPlaceholder}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -2618,73 +2720,72 @@ const App = () => {
                       className={adminViewMode === 'table' ? 'active' : ''}
                       onClick={() => setAdminViewMode('table')}
                       aria-label="Switch to Table View"
-                  >
+                    >
                       {Icons.table} Table
                   </button>
               </div>
           )}
-          <div className={`main-content ${
-              // Refactored nested ternary to an IIFE for readability and to prevent potential linter errors.
-              (() => {
-                  if (currentUser !== 'admin') {
-                      return 'client-view';
-                  }
-                  if (adminViewMode === 'table') {
-                      return 'table-only-view';
-                  }
-                  return 'dashboard-only-view';
-              })()
-          }`}>
-              {currentUser === 'admin' && adminViewMode === 'dashboard' ? (
+
+          {currentUser === 'admin' && adminViewMode === 'dashboard' ? (
+             <div className="main-content">
                 <div className="charts-container">
-                  <div className={`chart-container ${activeFilters?.some(f => f.source === 'countryChart') ? 'active-filter-source' : ''}`}>
-                    <h3>{singleCountryName ? `Total Order Value to ${singleCountryName}` : 'Order Value by Country'}</h3>
-                    <SalesByCountryChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
-                  </div>
-                  <div className={`chart-container ${activeFilters?.some(f => f.source === 'monthChart') ? 'active-filter-source' : ''}`}>
-                    <h3>Monthly Order Value</h3>
-                    <OrdersOverTimeChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
-                  </div>
+                    <div className={`chart-container ${activeFilters.some(f => f.source === 'countryChart') ? 'active-filter-source' : ''}`}>
+                        <h3>Order Value by Country</h3>
+                        <SalesByCountryChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
+                    </div>
+                     <div className={`chart-container ${activeFilters.some(f => f.source === 'monthChart') ? 'active-filter-source' : ''}`}>
+                        <h3>Monthly Order Volume</h3>
+                        <OrdersOverTimeChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
+                    </div>
                 </div>
-              ) : (
-                  <DataTable 
-                      data={tableData} 
-                      title={viewedOrder ? `Order Summary: ${viewedOrder}` : 'All Orders'}
-                      isDetailedView={!!viewedOrder}
-                      onOrderDoubleClick={setViewedOrder}
-                      onClearOrderView={() => setViewedOrder(null)}
-                      currentUser={currentUser}
-                      authenticatedUser={authenticatedUser}
-                      onShowTracking={setSelectedOrderForTracking}
-                      stepData={stepData}
-                  />
-              )}
-          </div>
+                <DataTable 
+                    data={tableData} 
+                    title={viewedOrder ? `Details for Order: ${viewedOrder}` : (singleCountryName ? `All Orders for ${singleCountryName}` : "All Orders")}
+                    isDetailedView={!!viewedOrder}
+                    onOrderDoubleClick={setViewedOrder}
+                    onClearOrderView={() => setViewedOrder(null)}
+                    currentUser={currentUser}
+                    authenticatedUser={authenticatedUser}
+                    onShowTracking={setSelectedOrderForTracking}
+                    stepData={stepData}
+                />
+             </div>
+          ) : (
+            <div className={`main-content ${currentUser !== 'admin' ? 'client-view' : 'table-only-view'}`}>
+                <DataTable 
+                    data={tableData} 
+                    title={viewedOrder ? `Details for Order: ${viewedOrder}` : (singleCountryName ? `All Orders for ${singleCountryName}` : "All Orders")}
+                    isDetailedView={!!viewedOrder}
+                    onOrderDoubleClick={setViewedOrder}
+                    onClearOrderView={() => setViewedOrder(null)}
+                    currentUser={currentUser}
+                    authenticatedUser={authenticatedUser}
+                    onShowTracking={setSelectedOrderForTracking}
+                    stepData={stepData}
+                />
+            </div>
+          )}
         </main>
-        <ChatAssistant 
+      </div>
+      <ChatAssistant 
           orderData={finalFilteredData} 
-          catalogData={relevantCatalogData} 
+          catalogData={relevantCatalogData}
           clientName={currentUser} 
           kpis={kpis}
           countryChartData={countryChartData}
           monthlyChartData={monthlyChartData}
+      />
+      {selectedOrderForTracking && 
+        <OrderTrackingModal 
+            orderNo={selectedOrderForTracking} 
+            stepData={stepData.find(d => d.orderNo === selectedOrderForTracking)}
+            orderDate={data.find(d => d.orderNo === selectedOrderForTracking)?.orderDate}
+            onClose={() => setSelectedOrderForTracking(null)}
         />
-      </div>
-      {selectedOrderForTracking && (
-        <OrderTrackingModal
-          orderNo={selectedOrderForTracking}
-          stepData={stepData.find(d => d.orderNo === selectedOrderForTracking)}
-          orderDate={data.find(d => d.orderNo === selectedOrderForTracking)?.orderDate}
-          onClose={() => setSelectedOrderForTracking(null)}
-        />
-      )}
+      }
     </>
   );
 };
 
-// --- Render App ---
-const container = document.getElementById('root');
-if (container) {
-    const root = createRoot(container);
-    root.render(<React.StrictMode><App /></React.StrictMode>);
-}
+const root = createRoot(document.getElementById('root')!);
+root.render(<App />);
