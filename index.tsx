@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -41,7 +39,7 @@ const Icons = {
   revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   orders: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25l3.807-3.262a4.502 4.502 0 0 1 6.384 0L20.25 18" /></svg>,
   clients: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 0L5 11.529m10.232 2.234a3.75 3.75 0 0 0-4.493 0L10.5 11.529m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 16.25m10.232-2.234a3.75 3.75 0 0 1-4.493 0L7.5 13.763m7.5-4.515a3.753 3.753 0 0 0-4.493 0L10.5 6.5m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 11.25m10.232-2.234a3.75 3.75 0 0 0-4.493 0L7.5 8.763m7.5 4.515a3.75 3.75 0 0 1-4.493 0L10.5 13.75m5.007-4.515a3.75 3.75 0 0 0-4.493 0L13.5 8.763" /></svg>,
-  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
+  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898 1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
   placeholder: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>,
   prevArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>,
   nextArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>,
@@ -285,12 +283,14 @@ const TopClientsList = ({ data }) => (
 // FIX: Added prop types to the CalendarViewDashboard component to fix type errors where array elements were being inferred as `unknown` during `map` operations.
 interface CalendarViewDashboardProps {
     allOrderData: OrderData[];
+    masterProductList: MasterProductData[];
     clientList: string[];
     onClose: () => void;
     authenticatedUser: string | null;
+    initialClientName: string;
 }
 
-const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticatedUser }: CalendarViewDashboardProps) => {
+const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, onClose, authenticatedUser, initialClientName }: CalendarViewDashboardProps) => {
     const monthNames = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], []);
     
     const years = useMemo(() => {
@@ -307,7 +307,7 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
 
     const [selectedYear, setSelectedYear] = useState(years.length > 0 ? years[0] : new Date().getFullYear());
     const [selectedCountry, setSelectedCountry] = useState('All');
-    const [selectedClient, setSelectedClient] = useState(authenticatedUser === 'admin' ? 'All' : authenticatedUser);
+    const [selectedClient, setSelectedClient] = useState(initialClientName === 'admin' ? 'All' : initialClientName);
     const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
     
     // Base data filtered only by client/country, NOT by year. Used for consistent calculations.
@@ -430,7 +430,7 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
     
     const maxMonthlyValue = useMemo(() => Math.max(1, ...calendarData.map(m => Math.max(m.received, m.planned, m.shipped))), [calendarData]);
 
-    const monthlyChartData = monthNames.map((name, index) => ({
+    const monthlyTrendChartData = monthNames.map((name, index) => ({
         name,
         ...calendarData[index]
     }));
@@ -550,102 +550,141 @@ const CalendarViewDashboard = ({ allOrderData, clientList, onClose, authenticate
             .slice(0, 5);
     }, [filteredData, monthOrders, selectedMonth]);
 
-    return (
-        <div className="dashboard-container calendar-view-dashboard">
-            <header>
-                <div className="header-main">
-                    <div className="header-title">
-                        <h1>Calendar Year Order Overview</h1>
-                    </div>
-                </div>
-                <div className="filters">
-                    <div className="select-container">
-                        <select value={selectedYear} onChange={e => { setSelectedYear(Number(e.target.value)); setSelectedMonth(null); }}>
-                            {years.map(year => <option key={year} value={year}>{year}</option>)}
-                        </select>
-                    </div>
-                    <div className="select-container">
-                        <select value={selectedCountry} onChange={e => setSelectedCountry(e.target.value)}>
-                            {countries.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
-                    </div>
-                    <div className="select-container">
-                        <select value={selectedClient} onChange={e => setSelectedClient(e.target.value)} disabled={authenticatedUser !== 'admin'}>
-                            {authenticatedUser === 'admin' ? 
-                                clientsForYear.map(c => <option key={c} value={c}>{c}</option>) :
-                                <option value={authenticatedUser}>{authenticatedUser}</option>
-                            }
-                        </select>
-                    </div>
-                    <button className="back-button" onClick={onClose}>
-                        {Icons.prevArrow} Back to Main Dashboard
-                    </button>
-                </div>
-            </header>
-            <main className="calendar-view-main">
-                <div className="kpi-container">
-                    <CalendarKpiCard title="Total Orders Received" value={formatNumber(kpis.received)} icon={"📦"} variant="received" />
-                    <CalendarKpiCard title="Total Orders In Process" value={formatNumber(kpis.planned)} icon={"🗓️"} variant="planned" />
-                    <CalendarKpiCard title="Total Orders Shipped" value={formatNumber(kpis.shipped)} icon={"🚚"} variant="shipped" />
-                </div>
-                <div className="calendar-grid-container">
-                    <div className="calendar-grid">
-                        {monthNames.map((month, index) => (
-                            <div 
-                                key={month} 
-                                className={`calendar-month-cell ${selectedMonth === index ? 'active' : ''}`}
-                                onClick={() => setSelectedMonth(index)}
-                            >
-                                <h3>{month}</h3>
-                                <div className="month-bars-container">
-                                    <div className="month-bar-wrapper">
-                                        <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
-                                            {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
-                                        </div>
-                                    </div>
-                                    <div className="month-bar-wrapper">
-                                        <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / maxMonthlyValue) * 100}%` }}>
-                                            {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
-                                        </div>
-                                    </div>
-                                    <div className="month-bar-wrapper">
-                                        <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / maxMonthlyValue) * 100}%` }}>
-                                            {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="calendar-month-tooltip">
-                                    <strong>{month} {selectedYear}</strong>
-                                    <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>
-                                    <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>
-                                    <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+    // --- Data for Chat Assistant ---
+    const catalogDataForChat = useMemo(() => {
+        if (selectedClient === 'All' || selectedClient === 'admin') {
+            return masterProductList;
+        }
+        return masterProductList.filter(p => p.customerName === selectedClient);
+    }, [masterProductList, selectedClient]);
 
-                <div className={`calendar-charts-section ${authenticatedUser !== 'admin' ? 'single-column' : ''}`}>
-                    {selectedMonth === null ? (
-                        <div className="chart-container">
-                            <h3>Monthly Order Volume</h3>
-                            <MonthlyTrendChart data={monthlyChartData} />
+    const countryChartDataForChat = useMemo(() => {
+        const countryData = baseFilteredData.reduce<Record<string, { name: string; value: number }>>((acc, curr) => {
+            if (curr.country && curr.exportValue) {
+                const key = curr.country.trim().toLowerCase();
+                if (!acc[key]) {
+                    acc[key] = { name: curr.country.trim(), value: 0 };
+                }
+                acc[key].value += curr.exportValue;
+            }
+            return acc;
+        }, {});
+        return Object.values(countryData).sort((a, b) => b.value - a.value);
+    }, [baseFilteredData]);
+
+    const monthlyChartDataForChat = useMemo(() => {
+        return monthlyTrendChartData.map(m => ({
+            name: m.name,
+            orders: m.received
+        }));
+    }, [monthlyTrendChartData]);
+
+    return (
+        <>
+            <div className="dashboard-container calendar-view-dashboard">
+                <header>
+                    <div className="header-main">
+                        <div className="header-title">
+                            <h1>Calendar Year Order Overview</h1>
                         </div>
-                    ) : (
-                        <div className="chart-container daily-view">
-                            <div className="daily-chart-header">
-                                <h3>Daily Order Volume for {monthNames[selectedMonth]}</h3>
-                                <button className="back-to-monthly-button" onClick={() => setSelectedMonth(null)}>
-                                    {Icons.prevArrow} Monthly View
-                                </button>
+                    </div>
+                    <div className="filters">
+                        <div className="select-container">
+                            <select value={selectedYear} onChange={e => { setSelectedYear(Number(e.target.value)); setSelectedMonth(null); }}>
+                                {years.map(year => <option key={year} value={year}>{year}</option>)}
+                            </select>
+                        </div>
+                        <div className="select-container">
+                            <select value={selectedCountry} onChange={e => setSelectedCountry(e.target.value)}>
+                                {countries.map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                        </div>
+                        <div className="select-container">
+                            <select value={selectedClient} onChange={e => setSelectedClient(e.target.value)} disabled={authenticatedUser !== 'admin'}>
+                                {authenticatedUser === 'admin' ? 
+                                    clientsForYear.map(c => <option key={c} value={c}>{c}</option>) :
+                                    <option value={authenticatedUser}>{authenticatedUser}</option>
+                                }
+                            </select>
+                        </div>
+                        <button className="back-button" onClick={onClose}>
+                            {Icons.prevArrow} Back to Main Dashboard
+                        </button>
+                    </div>
+                </header>
+                <main className="calendar-view-main">
+                    <div className="kpi-container">
+                        <CalendarKpiCard title="Total Orders Received" value={formatNumber(kpis.received)} icon={"📦"} variant="received" />
+                        <CalendarKpiCard title="Total Orders In Process" value={formatNumber(kpis.planned)} icon={"🗓️"} variant="planned" />
+                        <CalendarKpiCard title="Total Orders Shipped" value={formatNumber(kpis.shipped)} icon={"🚚"} variant="shipped" />
+                    </div>
+                    <div className="calendar-grid-container">
+                        <div className="calendar-grid">
+                            {monthNames.map((month, index) => (
+                                <div 
+                                    key={month} 
+                                    className={`calendar-month-cell ${selectedMonth === index ? 'active' : ''}`}
+                                    onClick={() => setSelectedMonth(index)}
+                                >
+                                    <h3>{month}</h3>
+                                    <div className="month-bars-container">
+                                        <div className="month-bar-wrapper">
+                                            <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
+                                                {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
+                                            </div>
+                                        </div>
+                                        <div className="month-bar-wrapper">
+                                            <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / maxMonthlyValue) * 100}%` }}>
+                                                {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
+                                            </div>
+                                        </div>
+                                        <div className="month-bar-wrapper">
+                                            <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / maxMonthlyValue) * 100}%` }}>
+                                                {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="calendar-month-tooltip">
+                                        <strong>{month} {selectedYear}</strong>
+                                        <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>
+                                        <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>
+                                        <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className={`calendar-charts-section ${authenticatedUser !== 'admin' ? 'single-column' : ''}`}>
+                        {selectedMonth === null ? (
+                            <div className="chart-container">
+                                <h3>Monthly Order Volume</h3>
+                                <MonthlyTrendChart data={monthlyTrendChartData} />
                             </div>
-                            <MonthlyTrendChart data={dailyChartData} xAxisDataKey="day" selectedMonth={selectedMonth} selectedYear={selectedYear} />
-                        </div>
-                    )}
-                    {authenticatedUser === 'admin' && <TopClientsList data={topClients} />}
-                </div>
-            </main>
-        </div>
+                        ) : (
+                            <div className="chart-container daily-view">
+                                <div className="daily-chart-header">
+                                    <h3>Daily Order Volume for {monthNames[selectedMonth]}</h3>
+                                    <button className="back-to-monthly-button" onClick={() => setSelectedMonth(null)}>
+                                        {Icons.prevArrow} Monthly View
+                                    </button>
+                                </div>
+                                <MonthlyTrendChart data={dailyChartData} xAxisDataKey="day" selectedMonth={selectedMonth} selectedYear={selectedYear} />
+                            </div>
+                        )}
+                        {authenticatedUser === 'admin' && <TopClientsList data={topClients} />}
+                    </div>
+                </main>
+            </div>
+            <ChatAssistant
+                orderData={baseFilteredData}
+                catalogData={catalogDataForChat}
+                clientName={selectedClient}
+                kpis={kpis}
+                countryChartData={countryChartDataForChat}
+                monthlyChartData={monthlyChartDataForChat}
+            />
+        </>
     );
 };
 
@@ -1132,92 +1171,71 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
         setIsLoading(true);
 
         try {
-            const MAX_JSON_LENGTH = 50000; // Character limit for raw JSON context
+            // FIX: To prevent "input token count exceeds the maximum" errors, the raw data
+            // sent to the AI is now capped. A summary is included to inform the AI about the
+            // truncation, enabling it to provide more accurate and context-aware responses.
+            const MAX_ROWS_FOR_CONTEXT = 2000;
 
-            const rawOrderDataJson = JSON.stringify(orderData);
-            let orderDataContext = '';
+            const isOrderDataTruncated = orderData.length > MAX_ROWS_FOR_CONTEXT;
+            const sampledOrderData = isOrderDataTruncated ? orderData.slice(0, MAX_ROWS_FOR_CONTEXT) : orderData;
 
-            if (rawOrderDataJson.length > MAX_JSON_LENGTH) {
-                const groupedOrders = orderData.reduce((acc, row) => {
-                    const key = row.orderNo;
-                    if (!acc[key]) {
-                        acc[key] = {
-                            orderNo: row.orderNo,
-                            customerName: row.customerName,
-                            country: row.country,
-                            status: row.status,
-                            totalQty: 0,
-                            totalExportValue: 0,
-                            productCount: 0,
-                        };
-                    }
-                    acc[key].totalQty += row.qty;
-                    acc[key].totalExportValue += row.exportValue;
-                    acc[key].productCount += 1;
-                    return acc;
-                }, {} as Record<string, any>);
-                
-                const summarizedOrderArray = Object.values(groupedOrders);
-                orderDataContext = `Note: The order data is too large to show full product details. Here is a summary grouped by Order Number:\n${JSON.stringify(summarizedOrderArray)}`;
-            } else {
-                orderDataContext = `Here is the complete dataset for the user's current view (All Orders Table Data):\n${rawOrderDataJson}`;
-            }
+            const isCatalogDataTruncated = catalogData.length > MAX_ROWS_FOR_CONTEXT;
+            const sampledCatalogData = isCatalogDataTruncated ? catalogData.slice(0, MAX_ROWS_FOR_CONTEXT) : catalogData;
 
-            const rawCatalogDataJson = JSON.stringify(catalogData);
-            const catalogDataContext = rawCatalogDataJson.length > MAX_JSON_LENGTH
-                ? `Note: The product catalog is too large to show in full. Here is a summary:\n${summarizeCatalogData(catalogData)}`
-                : `Here is the complete dataset for the user's current view:\n${rawCatalogDataJson}`;
-
-            const kpiContext = JSON.stringify(kpis);
-            const countryChartContext = JSON.stringify(countryChartData);
-            const monthlyChartContext = JSON.stringify(monthlyChartData);
-
+            const dataContextForPrompt = JSON.stringify({
+                dashboard_kpis: kpis,
+                dashboard_country_chart_data: countryChartData,
+                dashboard_monthly_chart_data: monthlyChartData,
+                table_data: sampledOrderData,
+                product_catalog: sampledCatalogData,
+                _data_summary: {
+                  total_order_rows_in_view: orderData.length,
+                  order_rows_provided_to_ai: sampledOrderData.length,
+                  is_order_data_truncated: isOrderDataTruncated,
+                  total_catalog_products_in_view: catalogData.length,
+                  catalog_products_provided_to_ai: sampledCatalogData.length,
+                  is_catalog_data_truncated: isCatalogDataTruncated,
+                }
+            });
+            
             const roleInstructions = clientName === 'admin'
                 ? "The user is an **admin** and can see all data. You can answer questions about any client or perform cross-client analysis based on the provided data."
                 : `The user is the client named **'${clientName}'**. You **MUST** only answer questions related to this specific client's data. Do not reveal any information about other clients. If asked about another client, politely decline and state that you can only provide information about their own account.`;
-            
-            const systemInstruction = `You are an expert AI data assistant for an international shipping company. Your primary goal is to provide fast, accurate, and concise answers based *only* on the real-time data provided.
 
-**CRITICAL DATA & PRIVACY RULES:**
-1.  **Data Source:** Your knowledge is strictly limited to the dashboard data provided in the following context. Do not use any external knowledge.
-2.  **Admin vs. Client Access:**
+            // FIX: The system instruction has been updated to make the AI aware that the provided
+            // data may be a truncated sample. It is now explicitly instructed on how to handle
+            // this by checking a `_data_summary` field and informing the user if their query
+            // refers to data outside the provided sample, improving transparency and accuracy.
+            const systemInstruction = `You are an expert data analyst assistant for an international business dashboard. Your primary function is to answer user questions based *exclusively* on the JSON data provided. Do not use any external knowledge or make assumptions beyond the data given.
+
+**DATA CONTEXT OVERVIEW:**
+The user's prompt will contain a JSON object with the following keys:
+- \`dashboard_kpis\`: High-level metrics summarizing the data.
+- \`dashboard_country_chart_data\`: Data for a chart showing order values by country.
+- \`dashboard_monthly_chart_data\`: Data for a chart showing order volume by month.
+- \`table_data\`: Raw order data from the user's currently filtered view.
+- \`product_catalog\`: The product catalog relevant to the user's view.
+- \`_data_summary\`: Contains metadata about the provided data, including whether it has been truncated for performance.
+
+**MANDATORY RULES FOR ANSWERING:**
+1.  **BASE ANSWERS ON RAW DATA:** For any question about totals, counts, or specific details (e.g., "How many orders for Costa Rica?"), you MUST perform calculations directly on the \`table_data\` and \`product_catalog\` arrays. These arrays are your ground truth.
+2.  **ACKNOWLEDGE TRUNCATION:** Check the \`_data_summary\` object first. If \`is_order_data_truncated\` is \`true\`, it means you only have a sample of the full dataset.
+    - If a user asks a general question (e.g., "What is the total value for Ecuador?"), perform the calculation on the data you have. You can add a small note like "Based on the provided data sample...".
+    - If a user asks for a specific item you cannot find in \`table_data\` (e.g., "order number BCH-0022"), you MUST state that you cannot find it and explicitly mention that the data you're working with is a sample. For example: "I cannot find order number 'BCH-0022' in the provided data sample as the full dataset has been truncated for performance."
+3.  **ACCURATE CALCULATIONS:** When asked for a total, iterate through the \`table_data\`, filter by the user's criteria (e.g., \`country: "Costa Rica"\`), and then perform the aggregation (e.g., count unique \`orderNo\`, sum \`qty\`, sum \`exportValue\`). Be meticulous. The user expects precise answers derived from the data.
+4.  **ADHERE TO ACCESS CONTROL:**
     - ${roleInstructions}
-3.  **Case-Insensitive Data Aggregation:** This is your most critical rule for accuracy. When aggregating data (e.g., summing quantities or values), especially by country or any other category, you **MUST** perform a case-insensitive match. For example, 'Peru', 'peru', and 'PERU' must be treated as the same entity. Always combine results from different casings to provide a single, accurate total.
-4.  **Data Schema:** The data comes from two main sources:
-    - **'Live' Sheet (Order Data):** This is your primary source for order details. It contains individual product line items for each order. An 'Order Number' (e.g., 'BM-0071-I') can have multiple rows, one for each product. Key columns include: \`Status\`, \`orderNo\`, \`productCode\`, \`product\`, \`customerName\`, \`country\`, \`qty\`, \`unitPrice\`, \`exportValue\`.
-    - **'MASTER' Sheet (Product Catalog):** Contains the full catalog of all available products.
-
-**HOW TO ANSWER QUESTIONS:**
-- **Be Direct, Factual, and Concise:** Get straight to the point. Provide short, meaningful answers based *only* on the data provided. Avoid conversational filler.
-- **Data is Your Only Truth:** You have been given all the necessary data from the dashboard and the underlying Google Sheets. Assume this data is complete and accurate. Do not claim data is missing or summarized unless the context explicitly states "Here is a summary...".
-- **Prioritize Data Sources:**
-    1.  **KPIs & Charts First:** For high-level summary questions (e.g., "what is total revenue?", "how many orders in May?"), use the 'KPIs' and 'Chart Data' contexts. They are pre-calculated for the user's view.
-    2.  **Table Data for All Details:** For any specific question about an **order number** (e.g., "details for BM-0071-I") or a **product code** (e.g., "quantity for BON-P-BC36"), you **MUST** meticulously search the 'All Orders Table Data' JSON.
-- **Answering Specific Questions (Your MOST IMPORTANT task):**
-    - **If asked about an Order Number:** Find all JSON objects in the 'All Orders Table Data' with the matching \`orderNo\`. List each product's \`product\`, \`qty\`, \`unitPrice\`, and \`exportValue\`. Then, provide a total value for the order by summing the \`exportValue\` of all its items.
-    - **If asked about a Product Code:** Find all JSON objects in the 'All Orders Table Data' with the matching \`productCode\`. For each occurrence, state the \`orderNo\` it belongs to, its \`qty\`, \`unitPrice\`, and \`exportValue\`.
-    - **NEVER say you cannot provide details:** The detailed, product-level data is always present in the 'All Orders Table Data' context unless it is explicitly marked as a summary. You must search it thoroughly to find the answer.`;
-
+5.  **BE CONCISE AND FACTUAL:** Provide direct answers. For numerical questions, present the results clearly. Example format:
+    For Costa Rica:
+    - Total Orders: [Your calculated count of unique order numbers]
+    - Total Quantity: [Your calculated sum of qty]
+    - Total Value: [Your calculated sum of exportValue, formatted as currency]
+`;
+            
             const prompt = `
-                **CONTEXT - Real-time Dashboard KPIs:**
-                This is a summary of the currently filtered data on the user's dashboard. Use this for high-level questions about totals.
-                ${kpiContext}
-
-                **CONTEXT - 'Order Value by Country' Chart Data:**
-                Use this data as the primary source of truth for any questions about order values for specific countries.
-                ${countryChartContext}
-
-                **CONTEXT - 'Monthly Order Volume' Chart Data:**
-                Use this data as the primary source of truth for any questions about order volumes for specific months. The 'orders' value represents the total number of unique orders for that month.
-                ${monthlyChartContext}
-
-                **CONTEXT - All Orders Table Data (from 'Live' Google Sheet):**
-                This is the detailed table data. Use this for specific questions not covered by the KPIs or Chart Data, such as details about a specific 'Order Number'.
-                ${orderDataContext}
-
-                **CONTEXT - Full Product Catalog Data (from 'MASTER' Google Sheet):**
-                This data contains all available products, including those not yet purchased.
-                ${catalogDataContext}
+                **DATA CONTEXT:**
+                Here is the JSON data from the user's current dashboard view. Use this data exclusively to answer the question.
+                ${dataContextForPrompt}
 
                 **User's Question:** "${input}"
             `;
@@ -1226,7 +1244,7 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
                 model: 'gemini-2.5-flash',
                 contents: [{ role: 'user', parts: [{ text: prompt }] }],
                 config: {
-                    systemInstruction: { parts: [{ text: systemInstruction }] },
+                    systemInstruction: systemInstruction,
                 },
             });
 
@@ -1721,7 +1739,7 @@ const SkeletonLoader = () => (
     </div>
   );
 
-const UserManagement = ({ allClientNames, currentCredentials, onClose }: { allClientNames: string[], currentCredentials: Record<string, string>, onClose: () => void }) => {
+const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredentialsUpdate }: { allClientNames: string[], currentCredentials: Record<string, string>, onClose: () => void, onCredentialsUpdate: () => void }) => {
     const [selectedClient, setSelectedClient] = useState<string>('');
     const [apiKey, setApiKey] = useState<string>('');
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
@@ -1786,7 +1804,8 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose }: { allCl
             }
 
             setSaveStatus('success');
-            setSaveMessage(result.message || 'Credentials saved successfully! Please refresh the dashboard to see changes.');
+            setSaveMessage(result.message || 'Credentials saved successfully! The data has been updated.');
+            onCredentialsUpdate();
             
             // Clear the form after a delay so the user can read the success message
             setTimeout(() => {
@@ -1960,6 +1979,39 @@ const App = () => {
   const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
   const [hasUnreadAnnouncements, setHasUnreadAnnouncements] = useState(false);
   const announcementsButtonRef = useRef<HTMLButtonElement>(null);
+
+  const refetchCredentials = async () => {
+    const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
+    const apiKeySheetGid = '817322209';
+    const apiKeySheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${apiKeySheetGid}`;
+
+    try {
+        const apiKeyResponse = await fetch(apiKeySheetUrl);
+        if (!apiKeyResponse.ok) {
+            console.warn("Failed to refetch API keys.");
+            return;
+        }
+
+        const apiKeyText = await apiKeyResponse.text();
+        const match = apiKeyText.match(/{.*}/s);
+        if (match) {
+            const json = JSON.parse(match[0]);
+            if (json.status === 'ok') {
+                const fetchedCredentials: Record<string, string> = {};
+                json.table.rows.forEach((r: any) => {
+                    const name = String(r.c[0]?.v || '').trim();
+                    const key = String(r.c[1]?.v || '').trim();
+                    if (name && key) {
+                        fetchedCredentials[name] = key;
+                    }
+                });
+                setUserCredentials(fetchedCredentials);
+            }
+        }
+    } catch (e) {
+        console.error("Error refetching credentials:", e);
+    }
+  };
 
   useEffect(() => {
     // Theme initialization
@@ -2177,20 +2229,25 @@ const App = () => {
         // Auto-login validation
         const savedName = localStorage.getItem('dashboard_username');
         const savedKey = localStorage.getItem('dashboard_apikey');
-        // FIX: The auto-login validation was incorrectly checking against the potentially stale `userCredentials` state.
-        // It now correctly checks against `allCredentials`, which includes the credentials just fetched.
-        if (savedName && savedKey) {
-            // FIX: Replaced `Object.prototype.hasOwnProperty.call` with the `in` operator. The `in` operator acts as a type guard, ensuring TypeScript recognizes that the key exists on the object and allowing safe property access, which resolves the "Type 'unknown' cannot be used as an index type" error during auto-login.
-            if (savedName in allCredentials && allCredentials[savedName] === savedKey) {
-                setAuthenticatedUser(savedName);
-                setCurrentUser(savedName);
-            } else {
-                localStorage.removeItem('dashboard_username');
-                localStorage.removeItem('dashboard_apikey');
-            }
-        } else {
+
+        // FIX: The previous chained conditional was causing a "Type 'unknown' cannot be used as an index type" error.
+        // Restructuring to a nested conditional allows TypeScript to correctly infer the type of `savedName`
+        // as a valid key before it's used to index `allCredentials`.
+        if (
+          typeof savedName === 'string' &&
+          typeof savedKey === 'string' &&
+          Object.prototype.hasOwnProperty.call(allCredentials, savedName)
+        ) {
+          if (allCredentials[savedName] === savedKey) {
+            setAuthenticatedUser(savedName);
+            setCurrentUser(savedName);
+          } else {
             localStorage.removeItem('dashboard_username');
             localStorage.removeItem('dashboard_apikey');
+          }
+        } else {
+          localStorage.removeItem('dashboard_username');
+          localStorage.removeItem('dashboard_apikey');
         }
 
       } catch (e) {
@@ -2211,16 +2268,14 @@ const App = () => {
     fetchData();
   }, []);
   
-  // FIX: Refactored the login logic to use the `in` operator for a more robust property check. This helps TypeScript's control-flow analysis and prevents potential "Type 'unknown' cannot be used as an index type" errors by ensuring the key exists on the credentials object.
+  // FIX: Combining the checks ensures TypeScript can correctly infer the type and resolve the indexed access error.
   const handleLogin = (name: string, key: string): boolean => {
-    if (name && name in userCredentials) {
-      if (userCredentials[name] === key) {
+    if (name && Object.prototype.hasOwnProperty.call(userCredentials, name) && userCredentials[name] === key) {
         localStorage.setItem('dashboard_username', name);
         localStorage.setItem('dashboard_apikey', key);
         setAuthenticatedUser(name);
         setCurrentUser(name);
         return true;
-      }
     }
     return false;
   };
@@ -2505,15 +2560,18 @@ const App = () => {
 
     const handleFilter = (filter: Filter) => {
         setActiveFilters(prevFilters => {
-            // FIX: Removed explicit type annotation for the 'f' parameter in array methods to correct an issue where
-            // TypeScript inferred it as 'unknown', causing "Property 'value' does not exist on type 'unknown'" errors.
-            const isAlreadyActive = prevFilters.some(f => f.type === filter.type && f.value === filter.value);
+            // Check if the exact filter (by type and value) is already active.
+            const isAlreadyActive = prevFilters.some(
+                f => f.type === filter.type && f.value === filter.value
+            );
     
             if (isAlreadyActive) {
-                // Remove the specific filter
-                return prevFilters.filter(f => !(f.type === filter.type && f.value === filter.value));
+                // If the filter is already active, remove it to toggle it off.
+                return prevFilters.filter(
+                    f => !(f.type === filter.type && f.value === filter.value)
+                );
             } else {
-                // Add the new filter
+                // Otherwise, add the new filter to the array.
                 return [...prevFilters, filter];
             }
         });
@@ -2549,9 +2607,11 @@ const App = () => {
   if (mainViewMode === 'calendar') {
       return <CalendarViewDashboard
         allOrderData={data}
+        masterProductList={masterProductList}
         clientList={clientList}
         onClose={() => setMainViewMode('dashboard')}
         authenticatedUser={authenticatedUser}
+        initialClientName={currentUser}
       />
   }
 
@@ -2560,6 +2620,7 @@ const App = () => {
         allClientNames={clientList.filter(c => c !== 'admin')}
         currentCredentials={userCredentials}
         onClose={() => setShowUserManagement(false)}
+        onCredentialsUpdate={refetchCredentials}
       />
   }
 
