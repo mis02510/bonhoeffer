@@ -1,6 +1,5 @@
 
 
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -1015,7 +1014,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
             )}
             {drillDownState.level === 2 && (
                  <div className="instruction-container">
-                    <p>Tip: Double-click a shipped sub-order to see product details.</p>
+                    <p>Tip: Double-click a sub-order to see its product details.</p>
                 </div>
             )}
             <div className="table-wrapper" ref={tableWrapperRef}>
@@ -2064,9 +2063,9 @@ const App = () => {
       if (drillDownState.level === 1) {
           setDrillDownState({ level: 2, baseOrder: row.baseOrderNo, subOrder: null });
       } else if (drillDownState.level === 2) {
-          // User requested drilldown only for shipped orders
           const status = row.originalStatus?.toUpperCase();
-          if (status === 'SHIPPED' || status === 'COMPLETE') {
+          // Allow drilldown for shipped, complete, or in-process (plan) orders.
+          if (status === 'SHIPPED' || status === 'COMPLETE' || status === 'PLAN') {
               setDrillDownState({ level: 3, baseOrder: drillDownState.baseOrder, subOrder: row.orderNo });
           }
       }
@@ -2334,15 +2333,15 @@ const App = () => {
         // sufficient to narrow the type for the indexer in this environment, which
         // was causing a "Type 'unknown' cannot be used as an index type" error.
         if (typeof savedName === 'string' && savedName && typeof savedKey === 'string' && savedKey) {
-          // FIX: Re-assigning `savedName` to a new constant helps TypeScript's type inference within
-          // this complex closure, resolving a "Type 'unknown' cannot be used as an index type" error.
-          const name = savedName;
+          // FIX: In some TypeScript environments, re-assigning a type-guarded variable can cause it
+          // to lose its narrowed type. Using the original `savedName` variable directly ensures
+          // the `string` type is preserved for indexing, fixing the error.
           if (
-            Object.prototype.hasOwnProperty.call(allCredentials, name) &&
-            allCredentials[name] === savedKey
+            Object.prototype.hasOwnProperty.call(allCredentials, savedName) &&
+            allCredentials[savedName] === savedKey
           ) {
-            setAuthenticatedUser(name);
-            setCurrentUser(name);
+            setAuthenticatedUser(savedName);
+            setCurrentUser(savedName);
           } else {
             localStorage.removeItem('dashboard_username');
             localStorage.removeItem('dashboard_apikey');
