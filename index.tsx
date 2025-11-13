@@ -1,4 +1,6 @@
 
+
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -191,7 +193,7 @@ const CalendarKpiCard = ({ title, value, icon, variant }) => (
 );
 
 // FIX: Added types for props to make them optional and fix call site errors.
-const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selectedYear }: { data: any[], xAxisDataKey?: string, selectedMonth?: number | null, selectedYear?: number }) => {
+const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selectedYear }: { data: any[], xAxisDataKey?: string, selectedMonth?: number | null, selectedYear?: string }) => {
     const barLabelFormatter = (value: number) => (value > 0 ? value : '');
 
     // FIX: Added optional types for props passed by Recharts to fix TypeScript error.
@@ -200,20 +202,55 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
         value: number;
         dataKey: string;
         fill: string;
+        payload: any;
     }
     const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: TooltipPayload[]; label?: any; }) => {
         if (active && payload && payload.length) {
             let displayLabel = label;
-            if (xAxisDataKey === 'day' && selectedMonth !== null && selectedYear) {
-                const date = new Date(selectedYear, selectedMonth, label);
+            const isDailyView = xAxisDataKey === 'day';
+    
+            if (isDailyView && selectedMonth !== null && selectedYear) {
+                const date = new Date(parseInt(selectedYear, 10), selectedMonth, label);
                 displayLabel = formatDateDDMMMYY(date.toISOString());
             }
+    
+            const dataPoint = payload[0].payload;
+            const hasMetrics = payload.some(p => p.value > 0);
+            
+            const hasTotals = dataPoint.totalValue > 0 || dataPoint.totalQty > 0;
+    
+            // If there's nothing to show at all, render nothing.
+            if (!hasMetrics && !(isDailyView && hasTotals)) return null;
+
+            const shippedOrderNumbers = dataPoint.shippedOrderNumbers || [];
+    
             return (
-                <div className="recharts-default-tooltip" style={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)', borderRadius: '8px', padding: '0.5rem 1rem' }}>
+                <div className="recharts-default-tooltip" style={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)', borderRadius: '8px', padding: '0.5rem 1rem', maxWidth: '350px' }}>
                     <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>{displayLabel}</p>
-                    {payload.map(p => (
-                        <p key={p.dataKey} style={{ margin: 0, color: p.fill }}>{`${p.name}: ${p.value}`}</p>
-                    ))}
+                    {/* This part is for both views: shows Received, In Process, Shipped if they have a value */}
+                    {payload.map(p => {
+                       if (p.value > 0) {
+                           return (
+                               <div key={p.dataKey}>
+                                   <p style={{ margin: 0, color: p.fill }}>{`${p.name}: ${p.value}`}</p>
+                                   {p.dataKey === 'shipped' && isDailyView && shippedOrderNumbers.length > 0 && (
+                                       <p style={{ margin: '0.1rem 0 0.5rem 0.5rem', color: p.fill, wordBreak: 'break-word', whiteSpace: 'normal', fontSize: '0.85em', lineHeight: '1.4' }}>
+                                           <strong>Order No:</strong> {shippedOrderNumbers.join(', ')}
+                                       </p>
+                                   )}
+                               </div>
+                           )
+                       }
+                       return null;
+                    })}
+    
+                    {/* This part is ONLY for the daily view */}
+                    {isDailyView && hasTotals && (
+                      <div style={{marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--grid-stroke)'}}>
+                        {dataPoint.totalValue > 0 && <p style={{ margin: 0 }}>{`Total Order Value: ${formatCurrency(dataPoint.totalValue)}`}</p>}
+                        {dataPoint.totalQty > 0 && <p style={{ margin: 0 }}>{`Total Order Qty: ${formatNumber(dataPoint.totalQty)}`}</p>}
+                      </div>
+                    )}
                 </div>
             );
         }
@@ -288,27 +325,46 @@ interface CalendarViewDashboardProps {
     onClose: () => void;
     authenticatedUser: string | null;
     initialClientName: string;
+    initialYear: string;
+    onYearChange: (year: string) => void;
 }
 
-const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, onClose, authenticatedUser, initialClientName }: CalendarViewDashboardProps) => {
+const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, onClose, authenticatedUser, initialClientName, initialYear, onYearChange }: CalendarViewDashboardProps) => {
     const monthNames = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], []);
     
     const years = useMemo(() => {
-        const yearSet = new Set<number>();
-        allOrderData.forEach(d => {
-            const orderDate = parseDate(d.orderDate);
-            if (orderDate) yearSet.add(orderDate.getFullYear());
-            
-            const stuffingDate = parseDate(d.stuffingMonth);
-            if(stuffingDate) yearSet.add(stuffingDate.getFullYear());
-        });
-        return Array.from(yearSet).sort((a, b) => b - a);
+        const yearSet = new Set<string>(allOrderData.map(d => d.fy).filter(Boolean));
+// FIX: Add explicit types to sort callback to prevent errors with 'unknown' type.
+        return Array.from(yearSet).sort((a: string, b: string) => b.localeCompare(a));
     }, [allOrderData]);
 
-    const [selectedYear, setSelectedYear] = useState(years.length > 0 ? years[0] : new Date().getFullYear());
+    const getEffectiveYear = (year: string) => {
+        if (year !== 'All' && years.includes(year)) {
+            return year;
+        }
+        return years.length > 0 ? years[0] : new Date().getFullYear().toString();
+    };
+
+    const [selectedYear, setSelectedYear] = useState<string>(() => getEffectiveYear(initialYear));
     const [selectedCountry, setSelectedCountry] = useState('All');
     const [selectedClient, setSelectedClient] = useState(initialClientName === 'admin' ? 'All' : initialClientName);
     const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+
+    // Effect to sync with parent's year selection if it changes
+    useEffect(() => {
+        const effectiveYear = getEffectiveYear(initialYear);
+        if (selectedYear !== effectiveYear) {
+            setSelectedYear(effectiveYear);
+            setSelectedMonth(null); // Reset month view when year changes from parent
+        }
+    }, [initialYear, years]);
+    
+    const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newYear = e.target.value;
+        setSelectedYear(newYear);
+        onYearChange(newYear);
+        setSelectedMonth(null);
+    };
     
     // Base data filtered only by client/country, NOT by year. Used for consistent calculations.
     const baseFilteredData = useMemo(() => {
@@ -319,13 +375,9 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
         });
     }, [allOrderData, selectedCountry, selectedClient]);
 
-    // Data filtered by year based on ORDER DATE. Used for "Received" and "Planned" counts.
-    const filteredData = useMemo(() => {
-        return baseFilteredData.filter(d => {
-            const date = parseDate(d.orderDate);
-            const yearMatch = date ? date.getFullYear() === selectedYear : false;
-            return yearMatch;
-        });
+    // Data filtered by the selected Fiscal Year. This is the primary data source for this component.
+    const dataForYear = useMemo(() => {
+        return baseFilteredData.filter(d => d.fy === selectedYear);
     }, [baseFilteredData, selectedYear]);
     
     const countries = useMemo(() => {
@@ -333,82 +385,62 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
         if (authenticatedUser !== 'admin') {
             dataForCountryList = allOrderData.filter(d => d.customerName === authenticatedUser);
         }
-        return ['All', ...new Set(dataForCountryList.filter(d => {
-            const date = parseDate(d.orderDate);
-            return date && date.getFullYear() === selectedYear;
-        }).map(d => d.country).filter(Boolean).sort())];
+        return ['All', ...new Set(dataForCountryList.filter(d => d.fy === selectedYear).map(d => d.country).filter(Boolean).sort())];
     }, [allOrderData, selectedYear, authenticatedUser]);
 
 
-    const clientsForYear = useMemo(() => ['All', ...new Set(allOrderData.filter(d => {
-        const date = parseDate(d.orderDate);
-        return date && date.getFullYear() === selectedYear;
-    }).map(d => d.customerName).filter(Boolean).sort())], [allOrderData, selectedYear]);
+    const clientsForYear = useMemo(() => ['All', ...new Set(allOrderData.filter(d => d.fy === selectedYear).map(d => d.customerName).filter(Boolean).sort())], [allOrderData, selectedYear]);
 
     const calendarData = useMemo(() => {
-        const baseDataForCalendar = baseFilteredData;
-
-        // --- Shipped Calculation (aligns with daily logic) ---
-        // This part is correct and robust.
+        // Shipped Calculation: Counts unique orders with a SHIPPED/COMPLETE status, grouped by their stuffing month.
         const shippedOrdersByMonth: Set<string>[] = Array.from({ length: 12 }, () => new Set());
-        baseDataForCalendar.forEach(d => {
+        dataForYear.forEach(d => {
             const status = d.originalStatus?.toUpperCase();
             if (status === 'SHIPPED' || status === 'COMPLETE') {
                 const stuffingDate = parseDate(d.stuffingMonth);
-                if (stuffingDate && stuffingDate.getFullYear() === selectedYear) {
-                    shippedOrdersByMonth[stuffingDate.getMonth()].add(d.orderNo);
+                if (stuffingDate) {
+                    shippedOrdersByMonth[stuffingDate.getMonth()].add(d.orderNo.toUpperCase());
                 }
             }
         });
 
-        // --- Received & Planned Calculation (Corrected logic) ---
-        const ordersByNo: Record<string, { 
-            finalStatus?: string; 
-            orderDate?: Date | null; 
-        }> = {};
-
-        baseDataForCalendar.forEach(d => {
-            if (!ordersByNo[d.orderNo]) {
-                ordersByNo[d.orderNo] = {};
+        // Received Calculation: Counts all unique orders, grouped by their order date month.
+        const receivedOrdersByMonth: Set<string>[] = Array.from({ length: 12 }, () => new Set());
+        const uniqueOrderDates = new Map<string, Date>(); // Store first valid order date per order
+        dataForYear.forEach(d => {
+            const orderKey = d.orderNo.toUpperCase();
+            if (!uniqueOrderDates.has(orderKey)) {
+                const orderDate = parseDate(d.orderDate);
+                if (orderDate) {
+                    uniqueOrderDates.set(orderKey, orderDate);
+                }
             }
-            const order = ordersByNo[d.orderNo];
-            if (!order.orderDate) order.orderDate = parseDate(d.orderDate);
-            
-            const currentStatus = order.finalStatus?.toUpperCase();
-            const newStatus = d.originalStatus?.toUpperCase();
+        });
+        uniqueOrderDates.forEach((date, key) => {
+            receivedOrdersByMonth[date.getMonth()].add(key);
+        });
 
-            const isNewStatusShippedOrComplete = newStatus === 'SHIPPED' || newStatus === 'COMPLETE';
-            const isCurrentStatusShippedOrComplete = currentStatus === 'SHIPPED' || currentStatus === 'COMPLETE';
-
-            if (isNewStatusShippedOrComplete) {
-                order.finalStatus = d.originalStatus;
-            } else if (newStatus === 'PLAN' && !isCurrentStatusShippedOrComplete) {
-                order.finalStatus = d.originalStatus;
-            } else if (!currentStatus) {
-                order.finalStatus = d.originalStatus;
+        // In Process (Planned) Calculation: Counts unique orders with a PLAN status, grouped by their order date month.
+        const plannedOrdersByMonth: Set<string>[] = Array.from({ length: 12 }, () => new Set());
+        dataForYear.forEach(d => {
+            const status = d.originalStatus?.toUpperCase();
+            if (status === 'PLAN') {
+                const orderDate = parseDate(d.orderDate);
+                if (orderDate) {
+                    plannedOrdersByMonth[orderDate.getMonth()].add(d.orderNo.toUpperCase());
+                }
             }
         });
 
-        // --- Combine and return final monthly data ---
+        // Combine and return final monthly data.
         return monthNames.map((_, monthIndex) => {
-            const monthlyReceived = { received: 0, planned: 0 };
-            
-            Object.values(ordersByNo).forEach(order => {
-                if (order.orderDate && order.orderDate.getFullYear() === selectedYear && order.orderDate.getMonth() === monthIndex) {
-                    monthlyReceived.received++;
-                    if (order.finalStatus?.toUpperCase() === 'PLAN') {
-                        monthlyReceived.planned++;
-                    }
-                }
-            });
-
             return {
-                received: monthlyReceived.received,
-                planned: monthlyReceived.planned,
+                received: receivedOrdersByMonth[monthIndex].size,
+                planned: plannedOrdersByMonth[monthIndex].size,
                 shipped: shippedOrdersByMonth[monthIndex].size,
             };
         });
-    }, [baseFilteredData, selectedYear, monthNames]);
+    }, [dataForYear, monthNames]);
 
     const yearlyKpis = useMemo(() => {
         return calendarData.reduce((acc, month) => {
@@ -430,92 +462,98 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
     
     const maxMonthlyValue = useMemo(() => Math.max(1, ...calendarData.map(m => Math.max(m.received, m.planned, m.shipped))), [calendarData]);
 
+    const monthlyTotals = useMemo(() => {
+        const totals = Array.from({ length: 12 }, () => ({ totalValue: 0, totalQty: 0 }));
+        dataForYear.forEach(d => {
+            const orderDate = parseDate(d.orderDate);
+            if (orderDate) {
+                const monthIndex = orderDate.getMonth();
+                totals[monthIndex].totalValue += d.exportValue;
+                totals[monthIndex].totalQty += d.qty;
+            }
+        });
+        return totals;
+    }, [dataForYear]);
+
     const monthlyTrendChartData = monthNames.map((name, index) => ({
         name,
-        ...calendarData[index]
+        ...calendarData[index],
+        ...monthlyTotals[index]
     }));
     
     const monthOrders = useMemo(() => {
         if (selectedMonth === null) return [];
-        return filteredData.filter(d => {
+        return dataForYear.filter(d => {
             const date = parseDate(d.orderDate);
             return date && date.getMonth() === selectedMonth;
         });
-    }, [filteredData, selectedMonth]);
+    }, [dataForYear, selectedMonth]);
 
     const dailyChartData = useMemo(() => {
         if (selectedMonth === null) return [];
     
-        const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-        const dailyData: { received: number, planned: number, shipped: number }[] = 
-            Array.from({ length: daysInMonth }, () => ({ received: 0, planned: 0, shipped: 0 }));
-    
-        // --- RECEIVED & PLANNED LOGIC ---
-        // Group orders in the current month by orderDate to get received/planned
-        const orders: Record<string, { orderDate: string, status?: string }> = {};
-        for (const row of monthOrders) {
-            if (!orders[row.orderNo]) {
-                orders[row.orderNo] = { orderDate: row.orderDate, status: row.originalStatus };
-            } else {
-                const currentStatus = orders[row.orderNo].status?.toUpperCase();
-                const newStatus = row.originalStatus?.toUpperCase();
-                // Status hierarchy: SHIPPED/COMPLETE > PLAN
-                if (newStatus === 'SHIPPED' || newStatus === 'COMPLETE') {
-                    orders[row.orderNo].status = row.originalStatus;
-                } else if (newStatus === 'PLAN' && currentStatus !== 'SHIPPED' && currentStatus !== 'COMPLETE') {
-                    orders[row.orderNo].status = row.originalStatus;
-                }
-            }
-        }
-    
-        for (const orderNo in orders) {
-            const order = orders[orderNo];
-            const date = parseDate(order.orderDate);
-            if (date) {
-                const dayOfMonth = date.getDate() - 1; 
-                if (dailyData[dayOfMonth]) {
-                    dailyData[dayOfMonth].received++;
-                    if (order.status?.toUpperCase() === 'PLAN') {
-                        dailyData[dayOfMonth].planned++;
-                    }
-                }
-            }
-        }
-        
-        // --- SHIPPED LOGIC (Corrected) ---
-        // Correctly count unique orders shipped per day based on stuffingMonth
-        const shippedOrdersByDay: Record<number, Set<string>> = {};
+        const daysInMonth = new Date(parseInt(selectedYear, 10), selectedMonth + 1, 0).getDate();
+        const dailyData = Array.from({ length: daysInMonth }, (_, i) => ({
+            day: i + 1,
+            totalValue: 0,
+            totalQty: 0,
+            shippedOrders: new Set<string>(),
+            receivedOrders: new Set<string>(),
+            plannedOrders: new Set<string>(),
+        }));
 
-        baseFilteredData.forEach(d => {
-            const status = d.originalStatus?.toUpperCase();
-            // Count an order as shipped if its status is SHIPPED or COMPLETE
+        const valueCountedRowIndices = new Set<number>();
+
+        // First pass for SHIPPED items.
+        dataForYear.forEach((d, index) => {
+            const status = (d.originalStatus || '').toUpperCase();
             if (status === 'SHIPPED' || status === 'COMPLETE') {
                 const stuffingDate = parseDate(d.stuffingMonth);
-                if (stuffingDate && stuffingDate.getFullYear() === selectedYear && stuffingDate.getMonth() === selectedMonth) {
-                    const dayOfMonth = stuffingDate.getDate(); // 1-based day
-                    if (!shippedOrdersByDay[dayOfMonth]) {
-                        shippedOrdersByDay[dayOfMonth] = new Set<string>();
+                if (stuffingDate && stuffingDate.getMonth() === selectedMonth) {
+                    const dayIndex = stuffingDate.getDate() - 1;
+                    if (dailyData[dayIndex]) {
+                        dailyData[dayIndex].shippedOrders.add(d.orderNo.toUpperCase());
+                        dailyData[dayIndex].totalValue += d.exportValue;
+                        dailyData[dayIndex].totalQty += d.qty;
+                        valueCountedRowIndices.add(index);
                     }
-                    shippedOrdersByDay[dayOfMonth].add(d.orderNo);
                 }
             }
         });
 
-        Object.entries(shippedOrdersByDay).forEach(([day, orderSet]) => {
-            const dayIndex = parseInt(day, 10) - 1;
-            if (dailyData[dayIndex]) {
-                dailyData[dayIndex].shipped = orderSet.size;
+        // Second pass for RECEIVED and PLANNED items.
+        dataForYear.forEach((d, index) => {
+            const orderDate = parseDate(d.orderDate);
+            if (orderDate && orderDate.getMonth() === selectedMonth) {
+                const dayIndex = orderDate.getDate() - 1;
+                if (dailyData[dayIndex]) {
+                    dailyData[dayIndex].receivedOrders.add(d.orderNo.toUpperCase());
+                    if ((d.originalStatus || '').toUpperCase() === 'PLAN') {
+                        dailyData[dayIndex].plannedOrders.add(d.orderNo.toUpperCase());
+                    }
+
+                    if (!valueCountedRowIndices.has(index)) {
+                        dailyData[dayIndex].totalValue += d.exportValue;
+                        dailyData[dayIndex].totalQty += d.qty;
+                    }
+                }
             }
         });
-    
-        return dailyData.map((dayData, index) => ({
-            day: index + 1,
-            ...dayData
+
+        // Final processing to get counts from sets
+        return dailyData.map(data => ({
+            day: data.day,
+            received: data.receivedOrders.size,
+            planned: data.plannedOrders.size,
+            shipped: data.shippedOrders.size,
+            totalValue: data.totalValue,
+            totalQty: data.totalQty,
+            shippedOrderNumbers: Array.from(data.shippedOrders),
         }));
-    }, [monthOrders, baseFilteredData, selectedMonth, selectedYear]);
+    }, [dataForYear, selectedMonth, selectedYear]);
 
     const topClients = useMemo(() => {
-        const dataToProcess = selectedMonth !== null ? monthOrders : filteredData;
+        const dataToProcess = selectedMonth !== null ? monthOrders : dataForYear;
 
         const clientData: Record<string, {
             name: string;
@@ -548,7 +586,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
             }))
             .sort((a, b) => b.value - a.value)
             .slice(0, 5);
-    }, [filteredData, monthOrders, selectedMonth]);
+    }, [dataForYear, monthOrders, selectedMonth]);
 
     // --- Data for Chat Assistant ---
     const catalogDataForChat = useMemo(() => {
@@ -590,17 +628,17 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
                     </div>
                     <div className="filters">
                         <div className="select-container">
-                            <select value={selectedYear} onChange={e => { setSelectedYear(Number(e.target.value)); setSelectedMonth(null); }}>
+                            <select value={selectedYear} onChange={handleYearChange}>
                                 {years.map(year => <option key={year} value={year}>{year}</option>)}
                             </select>
                         </div>
                         <div className="select-container">
-                            <select value={selectedCountry} onChange={e => setSelectedCountry(e.target.value)}>
+                            <select value={selectedCountry} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedCountry(e.target.value)}>
                                 {countries.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
                         </div>
                         <div className="select-container">
-                            <select value={selectedClient} onChange={e => setSelectedClient(e.target.value)} disabled={authenticatedUser !== 'admin'}>
+                            <select value={selectedClient} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedClient(e.target.value)} disabled={authenticatedUser !== 'admin'}>
                                 {authenticatedUser === 'admin' ? 
                                     clientsForYear.map(c => <option key={c} value={c}>{c}</option>) :
                                     <option value={authenticatedUser}>{authenticatedUser}</option>
@@ -618,48 +656,50 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
                         <CalendarKpiCard title="Total Orders In Process" value={formatNumber(kpis.planned)} icon={"🗓️"} variant="planned" />
                         <CalendarKpiCard title="Total Orders Shipped" value={formatNumber(kpis.shipped)} icon={"🚚"} variant="shipped" />
                     </div>
-                    <div className="calendar-grid-container">
-                        <div className="calendar-grid">
-                            {monthNames.map((month, index) => (
-                                <div 
-                                    key={month} 
-                                    className={`calendar-month-cell ${selectedMonth === index ? 'active' : ''}`}
-                                    onClick={() => setSelectedMonth(index)}
-                                >
-                                    <h3>{month}</h3>
-                                    <div className="month-bars-container">
-                                        <div className="month-bar-wrapper">
-                                            <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
-                                                {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
+                    {selectedMonth === null && (
+                        <div className="calendar-grid-container">
+                            <div className="calendar-grid">
+                                {monthNames.map((month, index) => (
+                                    <div 
+                                        key={month} 
+                                        className={`calendar-month-cell ${selectedMonth === index ? 'active' : ''}`}
+                                        onClick={() => setSelectedMonth(index)}
+                                    >
+                                        <h3>{month}</h3>
+                                        <div className="month-bars-container">
+                                            <div className="month-bar-wrapper">
+                                                <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
+                                                    {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
+                                                </div>
+                                            </div>
+                                            <div className="month-bar-wrapper">
+                                                <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / maxMonthlyValue) * 100}%` }}>
+                                                    {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
+                                                </div>
+                                            </div>
+                                            <div className="month-bar-wrapper">
+                                                <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / maxMonthlyValue) * 100}%` }}>
+                                                    {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="month-bar-wrapper">
-                                            <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / maxMonthlyValue) * 100}%` }}>
-                                                {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
-                                            </div>
-                                        </div>
-                                        <div className="month-bar-wrapper">
-                                            <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / maxMonthlyValue) * 100}%` }}>
-                                                {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
-                                            </div>
+                                        <div className="calendar-month-tooltip">
+                                            <strong>{month} {selectedYear}</strong>
+                                            <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>
+                                            <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>
+                                            <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>
                                         </div>
                                     </div>
-                                    <div className="calendar-month-tooltip">
-                                        <strong>{month} {selectedYear}</strong>
-                                        <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>
-                                        <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>
-                                        <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     <div className={`calendar-charts-section ${authenticatedUser !== 'admin' ? 'single-column' : ''}`}>
                         {selectedMonth === null ? (
                             <div className="chart-container">
                                 <h3>Monthly Order Volume</h3>
-                                <MonthlyTrendChart data={monthlyTrendChartData} />
+                                <MonthlyTrendChart data={monthlyTrendChartData} selectedYear={selectedYear}/>
                             </div>
                         ) : (
                             <div className="chart-container daily-view">
@@ -769,7 +809,7 @@ const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, ke
                         id="name"
                         type="text"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                         placeholder="e.g., admin"
                         required
                         disabled={isLoading}
@@ -781,7 +821,7 @@ const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, ke
                         id="key"
                         type="password"
                         value={key}
-                        onChange={(e) => setKey(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setKey(e.target.value)}
                         placeholder="••••••••••••"
                         required
                         disabled={isLoading}
@@ -822,103 +862,125 @@ const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filte
     );
 };
 
-const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrderView, currentUser, authenticatedUser, onShowTracking, stepData }: { data: OrderData[], title: string, isDetailedView: boolean, onOrderDoubleClick: (orderNo: string) => void, onClearOrderView: () => void, currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void, stepData: StepData[] }) => {
+const getBaseOrderNo = (orderNo: string): string => {
+    if (!orderNo) return '';
+    // This regex will capture the base part of an order number before a potential Roman numeral suffix
+    // e.g., BB-0023-I -> BB-0023, BB-0024 -> BB-0024
+    const match = orderNo.match(/(.*?)(?:-[IVXLCDM]+)?$/i);
+    // The replace call cleans up any trailing hyphen if the base part was something like 'ORDER-'
+    return match ? match[1].toUpperCase().replace(/-$/, '') : orderNo.toUpperCase();
+};
+
+const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepData, drillDownState, onRowDoubleClick, onDrillUp }: { data: OrderData[], currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void, stepData: StepData[], drillDownState: { level: number, baseOrder: string | null, subOrder: string | null }, onRowDoubleClick: (row: any) => void, onDrillUp: () => void }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const rowsPerPage = 10; // Use a fixed number of rows per page
+    const rowsPerPage = 10;
     const tableWrapperRef = useRef<HTMLDivElement>(null);
 
     const stepDataOrderNos = useMemo(() => new Set(stepData.map(s => s.orderNo)), [stepData]);
-    const stepDataMap = useMemo(() => new Map(stepData.map(d => [d.orderNo, d])), [stepData]);
 
-    const getStatusKeyword = (status: string) => (status.split('(')[0] || '').trim().toLowerCase().replace(/\s+/g, '');
-
-    const groupedData = useMemo(() => {
-        if (isDetailedView) return []; // Don't group in detailed view
-        
-        const groups: { [key: string]: OrderData[] } = data.reduce((acc, row) => {
-            if (!acc[row.orderNo]) {
-                acc[row.orderNo] = [];
-            }
-            acc[row.orderNo].push(row);
-            return acc;
-        }, {} as Record<string, OrderData[]>);
-
-        const mappedGroups = Object.values(groups).map(products => {
-            const firstProduct = products[0];
+    const { tableTitle, backButtonText } = useMemo(() => {
+        if (drillDownState.level === 3) {
             return {
-                orderNo: firstProduct.orderNo,
-                products: products,
-                productCount: products.length,
-                totalQty: products.reduce((sum, p) => sum + p.qty, 0),
-                totalExportValue: products.reduce((sum, p) => sum + p.exportValue, 0),
-                customerName: firstProduct.customerName,
-                country: firstProduct.country,
-                status: firstProduct.status, // Use calculated status for tooltip
-                originalStatus: firstProduct.originalStatus, // Use this for display
-                stuffingMonth: firstProduct.stuffingMonth,
-                hasTracking: stepDataOrderNos.has(firstProduct.orderNo), // Add tracking flag
-                imageLink: firstProduct.imageLink,
-                productCode: firstProduct.productCode,
-                category: firstProduct.category,
-                segment: firstProduct.segment,
-                product: firstProduct.product,
+                tableTitle: `Products for Sub-Order: ${drillDownState.subOrder}`,
+                backButtonText: `Back to Order ${drillDownState.baseOrder}`
             };
-        });
+        }
+        if (drillDownState.level === 2) {
+            return {
+                tableTitle: `Sub-Orders for: ${drillDownState.baseOrder}`,
+                backButtonText: 'Back to All Orders'
+            };
+        }
+        return { tableTitle: 'All Orders', backButtonText: '' };
+    }, [drillDownState]);
 
-        const getStepState = (status: string): 'completed' | 'pending' => {
-            const s = (status || '').toLowerCase();
-            if (s === 'yes' || s === 'done') {
-                return 'completed';
-            }
-            return 'pending';
-        };
+    const processedData = useMemo(() => {
+        if (drillDownState.level === 1) {
+            const groups: { [key: string]: OrderData[] } = data.reduce((acc, row) => {
+                const baseOrderNo = getBaseOrderNo(row.orderNo);
+                if (!acc[baseOrderNo]) {
+                    acc[baseOrderNo] = [];
+                }
+                acc[baseOrderNo].push(row);
+                return acc;
+            }, {} as Record<string, OrderData[]>);
 
-        const getOrderProgressScore = (orderNo: string): number => {
-            const trackingData = stepDataMap.get(orderNo);
-            if (!trackingData) {
-                return 0; // No tracking
-            }
+            return Object.entries(groups).map(([baseOrderNo, products]) => {
+                let finalStatus = 'PLAN';
+                let latestShippedDate: Date | null = null;
+                
+                products.forEach(p => {
+                    const status = p.originalStatus?.toUpperCase();
+                    const shippedDate = parseDate(p.stuffingMonth);
+                    if (status === 'SHIPPED' || status === 'COMPLETE') {
+                        finalStatus = 'SHIPPED';
+                        if (shippedDate && (!latestShippedDate || shippedDate > latestShippedDate)) {
+                            latestShippedDate = shippedDate;
+                        }
+                    }
+                });
 
-            const sobState = getStepState(trackingData.sobStatus);
-            const paymentState = getStepState(trackingData.paymentStatus);
-    
-            if (sobState === 'completed' || paymentState === 'completed') {
-                return -1; // Order is complete/shipped, sort to bottom
-            }
+                const firstProduct = products[0];
+                return {
+                    level: 1,
+                    baseOrderNo: baseOrderNo,
+                    status: finalStatus,
+                    originalStatus: finalStatus, // For styling
+                    stuffingMonth: latestShippedDate ? latestShippedDate.toISOString() : firstProduct.stuffingMonth,
+                    customerName: firstProduct.customerName,
+                    country: firstProduct.country,
+                    totalQty: products.reduce((sum, p) => sum + p.qty, 0),
+                    totalExportValue: products.reduce((sum, p) => sum + p.exportValue, 0),
+                    hasTracking: products.some(p => stepDataOrderNos.has(p.orderNo)),
+                };
+            });
+        }
 
-            const productionState = getStepState(trackingData.productionStatus);
-            const qcState = getStepState(trackingData.qualityCheckStatus);
+        if (drillDownState.level === 2) {
+            const relevantRows = data.filter(row => getBaseOrderNo(row.orderNo) === drillDownState.baseOrder);
+            const subGroups: { [key: string]: OrderData[] } = relevantRows.reduce((acc, row) => {
+                if (!acc[row.orderNo]) {
+                    acc[row.orderNo] = [];
+                }
+                acc[row.orderNo].push(row);
+                return acc;
+            }, {} as Record<string, OrderData[]>);
 
-            if (productionState === 'completed' || qcState === 'completed') {
-                return 2; // In progress
-            }
+            return Object.entries(subGroups).map(([orderNo, products]) => {
+                const firstProduct = products[0];
+                const totalQty = products.reduce((sum, p) => sum + p.qty, 0);
+                const totalExportValue = products.reduce((sum, p) => sum + p.exportValue, 0);
+                
+                return {
+                    level: 2,
+                    orderNo,
+                    status: firstProduct.status,
+                    originalStatus: firstProduct.originalStatus,
+                    stuffingMonth: firstProduct.stuffingMonth,
+                    imageLink: firstProduct.imageLink,
+                    customerName: firstProduct.customerName,
+                    country: firstProduct.country,
+                    totalQty,
+                    totalExportValue
+                };
+            });
+        }
 
-            return 1; // All steps are pending/planned
-        };
+        if (drillDownState.level === 3) {
+            return data.filter(row => row.orderNo === drillDownState.subOrder).map(row => ({ ...row, level: 3 }));
+        }
 
-        mappedGroups.sort((a, b) => {
-            const scoreA = getOrderProgressScore(a.orderNo);
-            const scoreB = getOrderProgressScore(b.orderNo);
+        return [];
+    }, [data, drillDownState, stepDataOrderNos]);
 
-            if (scoreA !== scoreB) {
-                return scoreB - scoreA; // Higher score comes first
-            }
 
-            return a.orderNo.localeCompare(b.orderNo);
-        });
-
-        return mappedGroups;
-
-    }, [data, isDetailedView, stepDataOrderNos, stepDataMap]);
-
-    const totalItems = isDetailedView ? data.length : groupedData.length;
+    const totalItems = processedData.length;
     const totalPages = useMemo(() => Math.ceil(totalItems / rowsPerPage), [totalItems, rowsPerPage]);
 
     const paginatedData = useMemo(() => {
         const startIndex = (currentPage - 1) * rowsPerPage;
-        const items = isDetailedView ? data : groupedData;
-        return items.slice(startIndex, startIndex + rowsPerPage);
-    }, [data, groupedData, isDetailedView, currentPage, rowsPerPage]);
+        return processedData.slice(startIndex, startIndex + rowsPerPage);
+    }, [processedData, currentPage, rowsPerPage]);
 
     useEffect(() => {
         if (currentPage > totalPages && totalPages > 0) {
@@ -929,22 +991,31 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
     }, [totalPages, currentPage]);
     
     useEffect(() => {
-        setCurrentPage(1); // Reset page on data change
-    }, [data, isDetailedView]);
+        setCurrentPage(1);
+        if (tableWrapperRef.current) tableWrapperRef.current.scrollTop = 0;
+    }, [drillDownState]);
+
+
+    const getStatusKeyword = (status: string) => (status.split('(')[0] || '').trim().toLowerCase().replace(/\s+/g, '');
 
     return (
         <div className="data-table-container">
             <div className="data-table-header">
-                <h3>{title}</h3>
-                {isDetailedView && (
-                    <button className="back-button" onClick={onClearOrderView}>
-                        {Icons.prevArrow} All Orders
+                <h3>{tableTitle}</h3>
+                {drillDownState.level > 1 && (
+                    <button className="back-button" onClick={onDrillUp}>
+                        {Icons.prevArrow} {backButtonText}
                     </button>
                 )}
             </div>
-            {!isDetailedView && (
-                <div className="instruction-container">
-                    <p>Tip: Double-click on any order to see a detailed summary. Single-click an Order Number to track its progress.</p>
+            {drillDownState.level === 1 && (
+                 <div className="instruction-container">
+                    <p>Tip: Double-click an order to see sub-orders. Single-click an Order Number to track its progress.</p>
+                </div>
+            )}
+            {drillDownState.level === 2 && (
+                 <div className="instruction-container">
+                    <p>Tip: Double-click a shipped sub-order to see product details.</p>
                 </div>
             )}
             <div className="table-wrapper" ref={tableWrapperRef}>
@@ -954,82 +1025,86 @@ const DataTable = ({ data, title, isDetailedView, onOrderDoubleClick, onClearOrd
                             <th className="text-center">Status</th>
                             <th>Shipped Date</th>
                             <th>Order No</th>
-                            <th className="text-center">Image</th>
-                            {isDetailedView ? (
-                                <>
-                                    <th>Product Code</th>
-                                    <th>Category</th>
-                                    <th>Product</th>
-                                </>
-                            ) : null}
+                            {drillDownState.level > 1 && <th className="text-center">Image</th>}
+                            {drillDownState.level === 3 && <>
+                                <th>Product Code</th>
+                                <th>Category</th>
+                                <th>Product</th>
+                            </>}
                             {currentUser === 'admin' && <th>Customer</th>}
                             {currentUser === 'admin' && <th>Country</th>}
                             <th className="text-right">Qty</th>
-                            {isDetailedView ? (
-                                <>
-                                    <th className="text-right">Unit Price</th>
-                                    <th className="text-right">Order Value</th>
-                                    <th className="text-right">Fob Price</th>
-                                    <th className="text-right">MOQ</th>
-                                </>
-                            ) : (
+                            {drillDownState.level === 3 ? <>
+                                <th className="text-right">Unit Price</th>
                                 <th className="text-right">Order Value</th>
-                            )}
+                                <th className="text-right">Fob Price</th>
+                                <th className="text-right">MOQ</th>
+                            </> : <th className="text-right">Order Value</th>}
                         </tr>
                     </thead>
                     <tbody>
-                        {isDetailedView ? (
-                            (paginatedData as OrderData[]).map((row, index) => (
-                                <tr key={row.productCode + index} className={`detail-row ${stepDataOrderNos.has(row.orderNo) ? 'has-tracking' : ''}`} style={{ animationDelay: `${index * 0.05}s` }}>
-                                    <td className="text-center">
-                                        <div className="status-cell">
-                                            <span className={`status-dot ${getStatusKeyword(row.originalStatus || row.status)}`}></span>
-                                            <span className="status-text">{formatNa(row.originalStatus || row.status)}</span>
-                                        </div>
-                                    </td>
-                                    <td>{formatDateDDMMMYY(row.stuffingMonth)}</td>
-                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(row.orderNo); }} title={`Status: ${formatNa(row.status)}`}>{formatNa(row.orderNo)}</td>
-                                    <td className="product-image-cell">
+                        {paginatedData.map((row: any, index: number) => (
+                            <tr 
+                                key={row.orderNo || row.baseOrderNo || row.productCode + index} 
+                                className={`summary-row ${drillDownState.level === 1 && row.hasTracking ? 'has-tracking' : ''}`}
+                                onDoubleClick={() => onRowDoubleClick(row)}
+                                style={{ animationDelay: `${index * 0.05}s` }}
+                            >
+                                {/* Common Cells */}
+                                <td className="text-center">
+                                    <div className="status-cell">
+                                        <span className={`status-dot ${getStatusKeyword(row.originalStatus || row.status)}`}></span>
+                                        <span className="status-text">{formatNa(row.originalStatus || row.status)}</span>
+                                    </div>
+                                </td>
+                                <td>{formatDateDDMMMYY(row.stuffingMonth)}</td>
+                                
+                                {/* Level 1 Order No */}
+                                {drillDownState.level === 1 && (
+                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(row.baseOrderNo); }} title={`Status: ${formatNa(row.status)}`}>{formatNa(row.baseOrderNo)}</td>
+                                )}
+
+                                {/* Level 2 & 3 Order No */}
+                                {drillDownState.level > 1 && (
+                                     <td className="order-no-cell">{formatNa(row.orderNo)}</td>
+                                )}
+
+                                {/* Level 2 & 3 Image */}
+                                {drillDownState.level > 1 && (
+                                     <td className="product-image-cell">
                                         {row.imageLink && row.imageLink.toLowerCase() !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                                     </td>
-                                    <td>{formatNa(row.productCode)}</td>
-                                    <td>{formatNa(row.category)}</td>
-                                    <td>{formatNa(row.product)}</td>
-                                    {currentUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
-                                    {currentUser === 'admin' && <td>{formatNa(row.country)}</td>}
-                                    <td className="text-right">{formatNumber(row.qty)}</td>
-                                    <td className="value-text text-right">{row.unitPrice > 0 ? formatCurrency(row.unitPrice) : '-'}</td>
-                                    <td className="value-text text-right">{row.exportValue > 0 ? formatCurrency(row.exportValue) : '-'}</td>
-                                    <td className="value-text text-right">{row.fobPrice > 0 ? formatCurrency(row.fobPrice) : '-'}</td>
-                                    <td className="text-right">{row.moq > 0 ? formatCompactNumber(row.moq) : '-'}</td>
-                                </tr>
-                            ))
-                        ) : (
-                            (paginatedData as any[]).map((group, index) => (
-                                <tr 
-                                    key={group.orderNo}
-                                    className={`summary-row ${group.hasTracking ? 'has-tracking' : ''}`}
-                                    onDoubleClick={() => onOrderDoubleClick(group.orderNo)}
-                                    style={{ animationDelay: `${index * 0.05}s` }}
-                                >
-                                    <td className="text-center">
-                                        <div className="status-cell">
-                                            <span className={`status-dot ${getStatusKeyword(group.originalStatus || group.status)}`}></span>
-                                            <span className="status-text">{formatNa(group.originalStatus || group.status)}</span>
-                                        </div>
-                                    </td>
-                                    <td>{formatDateDDMMMYY(group.stuffingMonth)}</td>
-                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(group.orderNo); }} title={`Status: ${formatNa(group.status)}`}>{formatNa(group.orderNo)}</td>
-                                    <td className="product-image-cell">
-                                        {group.imageLink && group.imageLink.toLowerCase() !== '#n/a' ? <img src={group.imageLink} alt={group.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
-                                    </td>
-                                    {currentUser === 'admin' && <td>{formatNa(group.customerName)}</td>}
-                                    {currentUser === 'admin' && <td>{formatNa(group.country)}</td>}
-                                    <td className="text-right">{formatNumber(group.totalQty)}</td>
-                                    <td className="value-text text-right">{formatCurrency(group.totalExportValue)}</td>
-                                </tr>
-                            ))
-                        )}
+                                )}
+
+                                {/* Level 3 Product Details */}
+                                {drillDownState.level === 3 && (
+                                    <>
+                                        <td>{formatNa(row.productCode)}</td>
+                                        <td>{formatNa(row.category)}</td>
+                                        <td>{formatNa(row.product)}</td>
+                                    </>
+                                )}
+
+                                {/* Admin Columns */}
+                                {currentUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
+                                {currentUser === 'admin' && <td>{formatNa(row.country)}</td>}
+                                
+                                {/* Qty */}
+                                <td className="text-right">{formatNumber(row.totalQty ?? row.qty)}</td>
+                                
+                                {/* Values */}
+                                {drillDownState.level === 3 ? (
+                                    <>
+                                        <td className="value-text text-right">{row.unitPrice > 0 ? formatCurrency(row.unitPrice) : '-'}</td>
+                                        <td className="value-text text-right">{row.exportValue > 0 ? formatCurrency(row.exportValue) : '-'}</td>
+                                        <td className="value-text text-right">{row.fobPrice > 0 ? formatCurrency(row.fobPrice) : '-'}</td>
+                                        <td className="text-right">{row.moq > 0 ? formatCompactNumber(row.moq) : '-'}</td>
+                                    </>
+                                ) : (
+                                    <td className="value-text text-right">{formatCurrency(row.totalExportValue)}</td>
+                                )}
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
@@ -1302,7 +1377,7 @@ The user's prompt will contain a JSON object with the following keys:
                     <input 
                         type="text" 
                         value={input} 
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                         placeholder={placeholder}
                         disabled={isLoading}
@@ -1371,12 +1446,12 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientNa
                         type="text"
                         placeholder="Search by Product, Customer, Country..."
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                     />
                 </div>
                  <label className="view-switcher-label" htmlFor="nb-view-switcher">Current View:</label>
                  <div className="select-container">
-                    <select id="nb-view-switcher" value={selectedUser} onChange={e => {setSelectedUser(e.target.value); setSearchQuery('')}} disabled={authenticatedUser !== 'admin'}>
+                    <select id="nb-view-switcher" value={selectedUser} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setSelectedUser(e.target.value); setSearchQuery('')}} disabled={authenticatedUser !== 'admin'}>
                       {authenticatedUser === 'admin' ? 
                           clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)
                           : <option value={authenticatedUser}>{authenticatedUser}</option>
@@ -1647,7 +1722,7 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderDat
 
     const dotRenderer = (props: any) => {
         const { cx, cy, stroke, payload } = props;
-        if (payload.orderCount === 0) return null;
+        if (payload.value === 0) return null;
 
         const isActive = activeFilters && activeFilters.some(f => f.type === 'month' && f.value === payload.name);
         
@@ -1670,7 +1745,7 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderDat
     };
     
     interface TimeTooltipPayloadItem {
-        value: number; // This will now be the orderCount
+        value: number; // This will now be the exportValue sum
         payload: { value: number; orderCount: number; }; // The full data object from chartData
     }
     const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: TimeTooltipPayloadItem[]; label?: string; }) => {
@@ -1678,8 +1753,8 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderDat
           return (
             <div className="recharts-default-tooltip" style={{padding: '0.5rem 1rem', backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)'}}>
               <p style={{margin: '0 0 0.5rem 0', fontWeight: 'bold', color: 'var(--text-color)'}}>{label}</p>
-              <p style={{margin: 0, color: 'var(--text-color-muted)'}}>{`Orders: ${payload[0].value}`}</p>
-              <p style={{margin: 0, color: 'var(--secondary-accent)'}}>{`Value: ${formatCurrency(payload[0].payload.value)}`}</p>
+              <p style={{margin: 0, color: 'var(--secondary-accent)'}}>{`Value: ${formatCurrency(payload[0].value)}`}</p>
+              <p style={{margin: 0, color: 'var(--text-color-muted)'}}>{`Orders: ${payload[0].payload.orderCount}`}</p>
             </div>
           );
         }
@@ -1697,15 +1772,15 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderDat
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-stroke)" />
                 <XAxis dataKey="name" stroke={'var(--text-color-muted)'} />
-                <YAxis stroke={'var(--text-color-muted)'} allowDecimals={false} />
+                <YAxis stroke={'var(--text-color-muted)'} tickFormatter={formatCompactNumber} />
                 <Tooltip 
                     content={<CustomTooltip />}
                     cursor={{fill: 'var(--tooltip-cursor)'}}
                 />
-                <Line type="monotone" dataKey="orderCount" name="Order Volume" stroke="var(--secondary-accent)" strokeWidth={3} animationDuration={800} animationEasing="ease-out" dot={dotRenderer} activeDot={{ r: 8 }}>
-                    <LabelList dataKey="orderCount" position="top" formatter={(val: number) => val > 0 ? val : ''} fill="var(--text-color)" fontSize={16} fontWeight="bold" />
+                <Line type="monotone" dataKey="value" name="Order Value" stroke="var(--secondary-accent)" strokeWidth={3} animationDuration={800} animationEasing="ease-out" dot={dotRenderer} activeDot={{ r: 8 }}>
+                    <LabelList dataKey="value" position="top" formatter={(val: number) => val > 0 ? formatCompactNumber(val) : ''} fill="var(--text-color)" fontSize={16} fontWeight="bold" />
                 </Line>
-                <Area type="monotone" dataKey="orderCount" stroke="none" fill="url(#colorValue)" />
+                <Area type="monotone" dataKey="value" stroke="none" fill="url(#colorValue)" />
             </LineChart>
         </ResponsiveContainer>
     )
@@ -1852,7 +1927,7 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
                              <select 
                                 id="client-select" 
                                 value={selectedClient} 
-                                onChange={e => setSelectedClient(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedClient(e.target.value)}
                                 disabled={saveStatus === 'saving'}
                              >
                                 <option value="">-- Select a Client --</option>
@@ -1965,13 +2040,18 @@ const App = () => {
   const [userCredentials, setUserCredentials] = useState<Record<string, string>>({});
   const [currentUser, setCurrentUser] = useState('admin');
   const [activeFilters, setActiveFilters] = useState<Filter[]>([]);
-  const [viewedOrder, setViewedOrder] = useState<string | null>(null);
+  const [drillDownState, setDrillDownState] = useState({
+      level: 1,
+      baseOrder: null as string | null,
+      subOrder: null as string | null
+  });
   const [selectedOrderForTracking, setSelectedOrderForTracking] = useState<string | null>(null);
   const [showNeverBought, setShowNeverBought] = useState(false);
   const [showUserManagement, setShowUserManagement] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [selectedYear, setSelectedYear] = useState('All');
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table'>('dashboard');
   const [mainViewMode, setMainViewMode] = useState<'dashboard' | 'calendar'>('dashboard');
   const [theme, setTheme] = useState('light');
@@ -1980,6 +2060,26 @@ const App = () => {
   const [hasUnreadAnnouncements, setHasUnreadAnnouncements] = useState(false);
   const announcementsButtonRef = useRef<HTMLButtonElement>(null);
 
+  const handleRowDoubleClick = (row: any) => {
+      if (drillDownState.level === 1) {
+          setDrillDownState({ level: 2, baseOrder: row.baseOrderNo, subOrder: null });
+      } else if (drillDownState.level === 2) {
+          // User requested drilldown only for shipped orders
+          const status = row.originalStatus?.toUpperCase();
+          if (status === 'SHIPPED' || status === 'COMPLETE') {
+              setDrillDownState({ level: 3, baseOrder: drillDownState.baseOrder, subOrder: row.orderNo });
+          }
+      }
+  };
+
+  const handleDrillUp = () => {
+      if (drillDownState.level === 3) {
+          setDrillDownState({ level: 2, baseOrder: drillDownState.baseOrder, subOrder: null });
+      } else if (drillDownState.level === 2) {
+          setDrillDownState({ level: 1, baseOrder: null, subOrder: null });
+      }
+  };
+    
   const refetchCredentials = async () => {
     const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
     const apiKeySheetGid = '817322209';
@@ -2069,7 +2169,7 @@ const App = () => {
           throw new Error(`Sheet is missing required columns: ${missingHeaders.join(', ')}`);
       }
       
-      return json.table.rows.map((r: any) => {
+      return json.table.rows.map((r: { c: ({ v: any } | null)[] }) => {
           const row: any = {};
           for (const [header, key] of Object.entries(headerMapping)) {
               const index = labelToIndex.get(header);
@@ -2150,7 +2250,7 @@ const App = () => {
             if (match) {
                 const json = JSON.parse(match[0]);
                 if (json.status === 'ok') {
-                    parsedStepData = json.table.rows.map((r: any) => ({
+                    parsedStepData = json.table.rows.map((r: { c: ({ v: any } | null)[] }) => ({
                         orderNo: String(r.c[0]?.v || '').trim(),
                         productionDate: String(r.c[1]?.v || '').trim(),
                         productionStatus: String(r.c[2]?.v || '').trim(),
@@ -2210,7 +2310,7 @@ const App = () => {
             if (match) {
                 const json = JSON.parse(match[0]);
                 if (json.status === 'ok') {
-                    json.table.rows.forEach((r: any) => {
+                    json.table.rows.forEach((r: { c: ({ v: any } | null)[] }) => {
                         // FIX: Explicitly convert potential non-string values to string to prevent
                         // "Type 'unknown' cannot be used as an index type" error. The 'v' property
                         // from gviz can be of various types, and its inferred type here is 'any'.
@@ -2230,17 +2330,19 @@ const App = () => {
         const savedName = localStorage.getItem('dashboard_username');
         const savedKey = localStorage.getItem('dashboard_apikey');
 
-        // FIX: The previous chained conditional was causing a "Type 'unknown' cannot be used as an index type" error.
-        // Restructuring to a nested conditional allows TypeScript to correctly infer the type of `savedName`
-        // as a valid key before it's used to index `allCredentials`.
-        if (
-          typeof savedName === 'string' &&
-          typeof savedKey === 'string' &&
-          Object.prototype.hasOwnProperty.call(allCredentials, savedName)
-        ) {
-          if (allCredentials[savedName] === savedKey) {
-            setAuthenticatedUser(savedName);
-            setCurrentUser(savedName);
+        // FIX: Reverted to a `typeof` check because the truthiness check is not
+        // sufficient to narrow the type for the indexer in this environment, which
+        // was causing a "Type 'unknown' cannot be used as an index type" error.
+        if (typeof savedName === 'string' && savedName && typeof savedKey === 'string' && savedKey) {
+          // FIX: Re-assigning `savedName` to a new constant helps TypeScript's type inference within
+          // this complex closure, resolving a "Type 'unknown' cannot be used as an index type" error.
+          const name = savedName;
+          if (
+            Object.prototype.hasOwnProperty.call(allCredentials, name) &&
+            allCredentials[name] === savedKey
+          ) {
+            setAuthenticatedUser(name);
+            setCurrentUser(name);
           } else {
             localStorage.removeItem('dashboard_username');
             localStorage.removeItem('dashboard_apikey');
@@ -2268,14 +2370,14 @@ const App = () => {
     fetchData();
   }, []);
   
-  // FIX: Combining the checks ensures TypeScript can correctly infer the type and resolve the indexed access error.
   const handleLogin = (name: string, key: string): boolean => {
-    if (name && Object.prototype.hasOwnProperty.call(userCredentials, name) && userCredentials[name] === key) {
-        localStorage.setItem('dashboard_username', name);
-        localStorage.setItem('dashboard_apikey', key);
-        setAuthenticatedUser(name);
-        setCurrentUser(name);
-        return true;
+    // FIX: To resolve a "Type 'unknown' cannot be used as an index type" error, a `typeof` check is added as a type guard. While the function signature types `name` as a string, this explicit check appears necessary for the type checker in this environment to correctly infer the type before `name` is used as an object index.
+    if (typeof name === 'string' && userCredentials && Object.prototype.hasOwnProperty.call(userCredentials, name) && userCredentials[name] === key) {
+      localStorage.setItem('dashboard_username', name);
+      localStorage.setItem('dashboard_apikey', key);
+      setAuthenticatedUser(name);
+      setCurrentUser(name);
+      return true;
     }
     return false;
   };
@@ -2306,30 +2408,40 @@ const App = () => {
   }, {}), [data]);
 
   const clientList = useMemo(() => ['admin', ...new Set(data.map(d => d.customerName).filter(name => name && name.trim()))], [data]);
+
+  const yearList = useMemo(() => {
+    const years = new Set(data.map(d => d.fy).filter(Boolean));
+// FIX: Add explicit types to sort callback to prevent errors with 'unknown' type.
+    return ['All', ...Array.from(years).sort((a: string, b: string) => b.localeCompare(a))];
+  }, [data]);
   
   const clientFilteredData = useMemo(() => {
-    const baseData = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
+    let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
 
-    const sDate = startDate ? parseDate(startDate) : null;
-    if (sDate) sDate.setHours(0, 0, 0, 0); // Normalize to the beginning of the day
-
-    const eDate = endDate ? parseDate(endDate) : null;
-    if (eDate) eDate.setHours(23, 59, 59, 999); // Normalize to the end of the day
-
-    if (!sDate && !eDate) {
-        return baseData;
+    if (selectedYear !== 'All') {
+        filtered = filtered.filter(d => d.fy === selectedYear);
     }
 
-    return baseData.filter(d => {
-        const orderDate = parseDate(d.orderDate);
-        if (!orderDate) return false;
-        
-        const isAfterStart = sDate ? orderDate >= sDate : true;
-        const isBeforeEnd = eDate ? orderDate <= eDate : true;
-        
-        return isAfterStart && isBeforeEnd;
-    });
-  }, [data, currentUser, startDate, endDate]);
+    const sDate = startDate ? parseDate(startDate) : null;
+    if (sDate) sDate.setHours(0, 0, 0, 0);
+
+    const eDate = endDate ? parseDate(endDate) : null;
+    if (eDate) eDate.setHours(23, 59, 59, 999);
+
+    if (sDate || eDate) {
+        filtered = filtered.filter(d => {
+            const orderDate = parseDate(d.orderDate);
+            if (!orderDate) return false;
+            
+            const isAfterStart = sDate ? orderDate >= sDate : true;
+            const isBeforeEnd = eDate ? orderDate <= eDate : true;
+            
+            return isAfterStart && isBeforeEnd;
+        });
+    }
+
+    return filtered;
+  }, [data, currentUser, startDate, endDate, selectedYear]);
   
   const searchedData = useMemo(() => {
     if (!searchQuery.trim()) return clientFilteredData;
@@ -2406,13 +2518,6 @@ const App = () => {
             return true; // The item passed all filter types.
         });
     }, [searchedData, activeFilters]);
-  
-  const tableData = useMemo(() => {
-    if (viewedOrder) {
-        return finalFilteredData.filter(d => d.orderNo === viewedOrder);
-    }
-    return finalFilteredData;
-  }, [finalFilteredData, viewedOrder]);
   
   // Data for the "Never Bought" KPI card, which is client-specific
   const neverBoughtForClientData = useMemo(() => {
@@ -2556,7 +2661,7 @@ const App = () => {
         }));
   }, [finalFilteredData]);
 
-    const financialYearDisplay = 'FY:- 24-25 to 25-26';
+    const financialYearDisplay = selectedYear === 'All' ? 'FY:- 24-25 to 25-26' : `FY:- ${selectedYear}`;
 
     const handleFilter = (filter: Filter) => {
         setActiveFilters(prevFilters => {
@@ -2612,6 +2717,8 @@ const App = () => {
         onClose={() => setMainViewMode('dashboard')}
         authenticatedUser={authenticatedUser}
         initialClientName={currentUser}
+        initialYear={selectedYear}
+        onYearChange={setSelectedYear}
       />
   }
 
@@ -2703,14 +2810,14 @@ const App = () => {
                     <input
                         type="date"
                         value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStartDate(e.target.value)}
                         aria-label="Start Date"
                     />
                     <span>to</span>
                     <input
                         type="date"
                         value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEndDate(e.target.value)}
                         min={startDate}
                         aria-label="End Date"
                     />
@@ -2726,18 +2833,24 @@ const App = () => {
                       type="text"
                       placeholder={searchPlaceholder}
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                   />
               </div>
               <label className="view-switcher-label" htmlFor="view-switcher">Current View:</label>
                <div className="select-container">
-                  <select id="view-switcher" value={currentUser} onChange={e => {setCurrentUser(e.target.value); setActiveFilters([]); setViewedOrder(null); setSearchQuery(''); setStartDate(''); setEndDate(''); setAdminViewMode('dashboard');}} disabled={authenticatedUser !== 'admin'}>
+                  <select id="view-switcher" value={currentUser} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setCurrentUser(e.target.value); setActiveFilters([]); setDrillDownState({level: 1, baseOrder: null, subOrder: null}); setSearchQuery(''); setStartDate(''); setEndDate(''); setAdminViewMode('dashboard'); setSelectedYear('All');}} disabled={authenticatedUser !== 'admin'}>
                     {authenticatedUser === 'admin' ?
                       clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)
                       : <option value={authenticatedUser}>{authenticatedUser}</option>
                     }
                   </select>
                </div>
+                <label className="view-switcher-label" htmlFor="year-switcher">Year:</label>
+                <div className="select-container">
+                  <select id="year-switcher" value={selectedYear} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedYear(e.target.value)}>
+                    {yearList.map(year => <option key={year} value={year}>{year === 'All' ? 'All Years' : year}</option>)}
+                  </select>
+                </div>
                 <button className="calendar-view-button" onClick={() => setMainViewMode('calendar')}>
                     {Icons.calendar} Calendar View
                 </button>
@@ -2795,34 +2908,32 @@ const App = () => {
                         <SalesByCountryChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
                     </div>
                      <div className={`chart-container ${activeFilters.some(f => f.source === 'monthChart') ? 'active-filter-source' : ''}`}>
-                        <h3>Monthly Order Volume</h3>
+                        <h3>Monthly Order Value</h3>
                         <OrdersOverTimeChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
                     </div>
                 </div>
                 <DataTable 
-                    data={tableData} 
-                    title={viewedOrder ? `Details for Order: ${viewedOrder}` : (singleCountryName ? `All Orders for ${singleCountryName}` : "All Orders")}
-                    isDetailedView={!!viewedOrder}
-                    onOrderDoubleClick={setViewedOrder}
-                    onClearOrderView={() => setViewedOrder(null)}
+                    data={finalFilteredData} 
                     currentUser={currentUser}
                     authenticatedUser={authenticatedUser}
                     onShowTracking={setSelectedOrderForTracking}
                     stepData={stepData}
+                    drillDownState={drillDownState}
+                    onRowDoubleClick={handleRowDoubleClick}
+                    onDrillUp={handleDrillUp}
                 />
              </div>
           ) : (
             <div className={`main-content ${currentUser !== 'admin' ? 'client-view' : 'table-only-view'}`}>
                 <DataTable 
-                    data={tableData} 
-                    title={viewedOrder ? `Details for Order: ${viewedOrder}` : (singleCountryName ? `All Orders for ${singleCountryName}` : "All Orders")}
-                    isDetailedView={!!viewedOrder}
-                    onOrderDoubleClick={setViewedOrder}
-                    onClearOrderView={() => setViewedOrder(null)}
+                    data={finalFilteredData} 
                     currentUser={currentUser}
                     authenticatedUser={authenticatedUser}
                     onShowTracking={setSelectedOrderForTracking}
                     stepData={stepData}
+                    drillDownState={drillDownState}
+                    onRowDoubleClick={handleRowDoubleClick}
+                    onDrillUp={handleDrillUp}
                 />
             </div>
           )}
@@ -2848,5 +2959,8 @@ const App = () => {
   );
 };
 
-const root = createRoot(document.getElementById('root')!);
-root.render(<App />);
+const container = document.getElementById('root');
+if (container) {
+    const root = createRoot(container);
+    root.render(<App />);
+}
