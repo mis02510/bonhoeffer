@@ -1,6 +1,12 @@
 
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+
+
+
+
+
+
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Area, ResponsiveContainer, LabelList, Cell, Legend } from 'recharts';
@@ -40,7 +46,7 @@ const Icons = {
   revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   orders: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25l3.807-3.262a4.502 4.502 0 0 1 6.384 0L20.25 18" /></svg>,
   clients: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 0L5 11.529m10.232 2.234a3.75 3.75 0 0 0-4.493 0L10.5 11.529m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 16.25m10.232-2.234a3.75 3.75 0 0 1-4.493 0L7.5 13.763m7.5-4.515a3.753 3.753 0 0 0-4.493 0L10.5 6.5m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 11.25m10.232-2.234a3.75 3.75 0 0 0-4.493 0L7.5 8.763m7.5 4.515a3.75 3.75 0 0 1-4.493 0L10.5 13.75m5.007-4.515a3.75 3.75 0 0 0-4.493 0L13.5 8.763" /></svg>,
-  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898 1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
+  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
   placeholder: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>,
   prevArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>,
   nextArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>,
@@ -178,6 +184,41 @@ const summarizeCatalogData = (data: (MasterProductData | OrderData)[]): string =
     const segments = [...new Set(uniqueData.map(p => p.segment))].filter(Boolean);
 
     return `Total Unique Products: ${uniqueData.length}. Product Categories: ${categories.slice(0, 15).join(', ')}. Product Segments: ${segments.slice(0, 15).join(', ')}.`;
+};
+
+const getCurrentFiscalYear = (): string => {
+    const now = new Date();
+    const currentMonth = now.getMonth(); // 0 = January, 3 = April
+    const currentYear = now.getFullYear();
+    
+    // Fiscal year starts in April.
+    // If current month is April (3) or later, FY starts in current year.
+    // If current month is Jan, Feb, Mar (0, 1, 2), FY started in previous year.
+    const startYear = currentMonth >= 3 ? currentYear : currentYear - 1;
+    
+    const startYearShort = String(startYear).slice(-2);
+    const endYearShort = String(startYear + 1).slice(-2);
+    
+    return `${startYearShort}-${endYearShort}`;
+};
+
+const getFiscalYearFromDate = (date: Date | null): string | null => {
+    if (!date || isNaN(date.getTime())) {
+        return null;
+    }
+    
+    const month = date.getMonth(); // 0 = January, 3 = April
+    const year = date.getFullYear();
+    
+    // Fiscal year starts in April.
+    // If current month is April (3) or later, FY starts in current year.
+    // If current month is Jan, Feb, Mar (0, 1, 2), FY started in previous year.
+    const startYear = month >= 3 ? year : year - 1;
+    
+    const startYearShort = String(startYear).slice(-2);
+    const endYearShort = String(startYear + 1).slice(-2);
+    
+    return `${startYearShort}-${endYearShort}`;
 };
 
 // ### calendar view
@@ -348,6 +389,31 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
     const [selectedCountry, setSelectedCountry] = useState('All');
     const [selectedClient, setSelectedClient] = useState(initialClientName === 'admin' ? 'All' : initialClientName);
     const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    const sDate = useMemo(() => {
+        if (!startDate) return null;
+        const d = parseDate(startDate);
+        if (d) d.setHours(0, 0, 0, 0);
+        return d;
+    }, [startDate]);
+
+    const eDate = useMemo(() => {
+        if (!endDate) return null;
+        const d = parseDate(endDate);
+        if (d) d.setHours(23, 59, 59, 999);
+        return d;
+    }, [endDate]);
+
+    const isDateInRange = useCallback((checkDate: Date | null) => {
+        if (!sDate && !eDate) return true; // No date filter applied
+        if (!checkDate) return false;
+        const isAfterStart = sDate ? checkDate >= sDate : true;
+        const isBeforeEnd = eDate ? checkDate <= eDate : true;
+        return isAfterStart && isBeforeEnd;
+    }, [sDate, eDate]);
+
 
     // Effect to sync with parent's year selection if it changes
     useEffect(() => {
@@ -376,7 +442,13 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
 
     // Data filtered by the selected Fiscal Year. This is the primary data source for this component.
     const dataForYear = useMemo(() => {
-        return baseFilteredData.filter(d => d.fy === selectedYear);
+        return baseFilteredData.filter(d => {
+            const orderFY = getFiscalYearFromDate(parseDate(d.orderDate));
+            const stuffingFY = getFiscalYearFromDate(parseDate(d.stuffingMonth));
+            
+            // An order belongs to the selected year if it was received OR shipped in that year.
+            return orderFY === selectedYear || stuffingFY === selectedYear;
+        });
     }, [baseFilteredData, selectedYear]);
     
     const countries = useMemo(() => {
@@ -397,7 +469,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
             const status = d.originalStatus?.toUpperCase();
             if (status === 'SHIPPED' || status === 'COMPLETE') {
                 const stuffingDate = parseDate(d.stuffingMonth);
-                if (stuffingDate) {
+                if (stuffingDate && isDateInRange(stuffingDate) && getFiscalYearFromDate(stuffingDate) === selectedYear) {
                     shippedOrdersByMonth[stuffingDate.getMonth()].add(d.orderNo.toUpperCase());
                 }
             }
@@ -410,13 +482,15 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
             const orderKey = d.orderNo.toUpperCase();
             if (!uniqueOrderDates.has(orderKey)) {
                 const orderDate = parseDate(d.orderDate);
-                if (orderDate) {
+                if (orderDate && getFiscalYearFromDate(orderDate) === selectedYear) {
                     uniqueOrderDates.set(orderKey, orderDate);
                 }
             }
         });
         uniqueOrderDates.forEach((date, key) => {
-            receivedOrdersByMonth[date.getMonth()].add(key);
+            if (isDateInRange(date)) {
+                receivedOrdersByMonth[date.getMonth()].add(key);
+            }
         });
 
         // In Process (Planned) Calculation: Counts unique orders with a PLAN status, grouped by their order date month.
@@ -425,7 +499,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
             const status = d.originalStatus?.toUpperCase();
             if (status === 'PLAN') {
                 const orderDate = parseDate(d.orderDate);
-                if (orderDate) {
+                if (orderDate && isDateInRange(orderDate) && getFiscalYearFromDate(orderDate) === selectedYear) {
                     plannedOrdersByMonth[orderDate.getMonth()].add(d.orderNo.toUpperCase());
                 }
             }
@@ -439,7 +513,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
                 shipped: shippedOrdersByMonth[monthIndex].size,
             };
         });
-    }, [dataForYear, monthNames]);
+    }, [dataForYear, monthNames, isDateInRange, selectedYear]);
 
     const yearlyKpis = useMemo(() => {
         return calendarData.reduce((acc, month) => {
@@ -465,14 +539,14 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
         const totals = Array.from({ length: 12 }, () => ({ totalValue: 0, totalQty: 0 }));
         dataForYear.forEach(d => {
             const orderDate = parseDate(d.orderDate);
-            if (orderDate) {
+            if (orderDate && isDateInRange(orderDate) && getFiscalYearFromDate(orderDate) === selectedYear) {
                 const monthIndex = orderDate.getMonth();
                 totals[monthIndex].totalValue += d.exportValue;
                 totals[monthIndex].totalQty += d.qty;
             }
         });
         return totals;
-    }, [dataForYear]);
+    }, [dataForYear, isDateInRange, selectedYear]);
 
     const monthlyTrendChartData = monthNames.map((name, index) => ({
         name,
@@ -484,9 +558,9 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
         if (selectedMonth === null) return [];
         return dataForYear.filter(d => {
             const date = parseDate(d.orderDate);
-            return date && date.getMonth() === selectedMonth;
+            return date && date.getMonth() === selectedMonth && isDateInRange(date) && getFiscalYearFromDate(date) === selectedYear;
         });
-    }, [dataForYear, selectedMonth]);
+    }, [dataForYear, selectedMonth, isDateInRange, selectedYear]);
 
     const dailyChartData = useMemo(() => {
         if (selectedMonth === null) return [];
@@ -508,7 +582,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
             const status = (d.originalStatus || '').toUpperCase();
             if (status === 'SHIPPED' || status === 'COMPLETE') {
                 const stuffingDate = parseDate(d.stuffingMonth);
-                if (stuffingDate && stuffingDate.getMonth() === selectedMonth) {
+                if (stuffingDate && stuffingDate.getMonth() === selectedMonth && isDateInRange(stuffingDate) && getFiscalYearFromDate(stuffingDate) === selectedYear) {
                     const dayIndex = stuffingDate.getDate() - 1;
                     if (dailyData[dayIndex]) {
                         dailyData[dayIndex].shippedOrders.add(d.orderNo.toUpperCase());
@@ -523,7 +597,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
         // Second pass for RECEIVED and PLANNED items.
         dataForYear.forEach((d, index) => {
             const orderDate = parseDate(d.orderDate);
-            if (orderDate && orderDate.getMonth() === selectedMonth) {
+            if (orderDate && orderDate.getMonth() === selectedMonth && isDateInRange(orderDate) && getFiscalYearFromDate(orderDate) === selectedYear) {
                 const dayIndex = orderDate.getDate() - 1;
                 if (dailyData[dayIndex]) {
                     dailyData[dayIndex].receivedOrders.add(d.orderNo.toUpperCase());
@@ -549,7 +623,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
             totalQty: data.totalQty,
             shippedOrderNumbers: Array.from(data.shippedOrders),
         }));
-    }, [dataForYear, selectedMonth, selectedYear]);
+    }, [dataForYear, selectedMonth, selectedYear, isDateInRange]);
 
     const topClients = useMemo(() => {
         const dataToProcess = selectedMonth !== null ? monthOrders : dataForYear;
@@ -563,6 +637,11 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
 
         dataToProcess.forEach(d => {
             if (!d.customerName) return;
+            if(selectedMonth === null) {
+                const orderDate = parseDate(d.orderDate);
+                if (!orderDate || !isDateInRange(orderDate) || getFiscalYearFromDate(orderDate) !== selectedYear) return;
+            }
+
             if (!clientData[d.customerName]) {
                 clientData[d.customerName] = {
                     name: d.customerName,
@@ -585,7 +664,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
             }))
             .sort((a, b) => b.value - a.value)
             .slice(0, 5);
-    }, [dataForYear, monthOrders, selectedMonth]);
+    }, [dataForYear, monthOrders, selectedMonth, isDateInRange, selectedYear]);
 
     // --- Data for Chat Assistant ---
     const catalogDataForChat = useMemo(() => {
@@ -626,6 +705,27 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
                         </div>
                     </div>
                     <div className="filters">
+                        <div className="date-filter-container">
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                aria-label="Start Date"
+                            />
+                            <span>to</span>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                min={startDate}
+                                aria-label="End Date"
+                            />
+                            {(startDate || endDate) && (
+                                <button className="clear-date-button" onClick={() => { setStartDate(''); setEndDate(''); }}>
+                                    &times;
+                                </button>
+                            )}
+                        </div>
                         <div className="select-container">
                             <select value={selectedYear} onChange={handleYearChange}>
                                 {years.map(year => <option key={year} value={year}>{year}</option>)}
@@ -932,6 +1032,13 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                     totalExportValue: products.reduce((sum, p) => sum + p.exportValue, 0),
                     hasTracking: products.some(p => stepDataOrderNos.has(p.orderNo)),
                 };
+            }).sort((a, b) => {
+                const dateA = parseDate(a.stuffingMonth);
+                const dateB = parseDate(b.stuffingMonth);
+                if (dateA && dateB) return dateB.getTime() - dateA.getTime();
+                if (dateA) return -1;
+                if (dateB) return 1;
+                return 0;
             });
         }
 
@@ -962,11 +1069,25 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                     totalQty,
                     totalExportValue
                 };
+            }).sort((a, b) => {
+                const dateA = parseDate(a.stuffingMonth);
+                const dateB = parseDate(b.stuffingMonth);
+                if (dateA && dateB) return dateB.getTime() - dateA.getTime();
+                if (dateA) return -1;
+                if (dateB) return 1;
+                return 0;
             });
         }
 
         if (drillDownState.level === 3) {
-            return data.filter(row => row.orderNo === drillDownState.subOrder).map(row => ({ ...row, level: 3 }));
+            return data.filter(row => row.orderNo === drillDownState.subOrder).map(row => ({ ...row, level: 3 })).sort((a, b) => {
+                const dateA = parseDate(a.stuffingMonth);
+                const dateB = parseDate(b.stuffingMonth);
+                if (dateA && dateB) return dateB.getTime() - dateA.getTime();
+                if (dateA) return -1;
+                if (dateB) return 1;
+                return 0;
+            });
         }
 
         return [];
@@ -2232,7 +2353,15 @@ const App = () => {
             'Product': 'product', 'Image Link': 'imageLink', 'Unit Price': 'unitPrice',
             'Fob Price': 'fobPrice', 'MOQ': 'moq', 'Month': 'forwardingMonth', 'FY': 'fy'
         };
-        const parsedLiveData: OrderData[] = parseGvizResponse(liveText, liveHeaderMapping, ['orderNo']);
+        const parsedLiveDataWithoutFyFallback: OrderData[] = parseGvizResponse(liveText, liveHeaderMapping, ['orderNo']);
+
+        const currentFiscalYear = getCurrentFiscalYear();
+        const parsedLiveData = parsedLiveDataWithoutFyFallback.map(order => {
+            if (!order.fy || order.fy.toLowerCase() === '#n/a') {
+                return { ...order, fy: getFiscalYearFromDate(parseDate(order.orderDate)) || currentFiscalYear };
+            }
+            return order;
+        });
 
         const masterHeaderMapping = {
             'Category': 'category', 'Segment': 'segment', 'Product': 'product',
@@ -2369,9 +2498,11 @@ const App = () => {
     fetchData();
   }, []);
   
+// FIX: To resolve a "Type 'unknown' cannot be used as an index type" error, an explicit `typeof`
+// check is added to help the type-checker in this strict environment.
   const handleLogin = (name: string, key: string): boolean => {
-    // FIX: To resolve a "Type 'unknown' cannot be used as an index type" error, a `typeof` check is added as a type guard. While the function signature types `name` as a string, this explicit check appears necessary for the type checker in this environment to correctly infer the type before `name` is used as an object index.
-    if (typeof name === 'string' && userCredentials && Object.prototype.hasOwnProperty.call(userCredentials, name) && userCredentials[name] === key) {
+    // FIX: Removed the redundant `typeof name === 'string'` check. The `name` parameter is already typed as a string, and this check could confuse stricter type checkers, causing the "Type 'unknown' cannot be used as an index type" error.
+    if (userCredentials && Object.prototype.hasOwnProperty.call(userCredentials, name) && userCredentials[name] === key) {
       localStorage.setItem('dashboard_username', name);
       localStorage.setItem('dashboard_apikey', key);
       setAuthenticatedUser(name);
@@ -2418,7 +2549,18 @@ const App = () => {
     let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
 
     if (selectedYear !== 'All') {
-        filtered = filtered.filter(d => d.fy === selectedYear);
+        filtered = filtered.filter(d => {
+            // Shipped/Complete orders are judged by their stuffing month for FY filtering.
+            const status = d.originalStatus?.toUpperCase();
+            if (status === 'SHIPPED' || status === 'COMPLETE') {
+                const stuffingDate = parseDate(d.stuffingMonth);
+                return getFiscalYearFromDate(stuffingDate) === selectedYear;
+            }
+            
+            // All other orders (Received, In Process) are judged by their order date.
+            const orderDate = parseDate(d.orderDate);
+            return getFiscalYearFromDate(orderDate) === selectedYear;
+        });
     }
 
     const sDate = startDate ? parseDate(startDate) : null;
@@ -2429,11 +2571,18 @@ const App = () => {
 
     if (sDate || eDate) {
         filtered = filtered.filter(d => {
-            const orderDate = parseDate(d.orderDate);
-            if (!orderDate) return false;
+            const status = d.originalStatus?.toUpperCase();
             
-            const isAfterStart = sDate ? orderDate >= sDate : true;
-            const isBeforeEnd = eDate ? orderDate <= eDate : true;
+            // For "Received" & "In Process", use orderDate. For "Shipped", use stuffingMonth.
+            const relevantDateSource = (status === 'SHIPPED' || status === 'COMPLETE')
+                ? d.stuffingMonth
+                : d.orderDate;
+
+            const relevantDate = parseDate(relevantDateSource);
+            if (!relevantDate) return false;
+            
+            const isAfterStart = sDate ? relevantDate >= sDate : true;
+            const isBeforeEnd = eDate ? relevantDate <= eDate : true;
             
             return isAfterStart && isBeforeEnd;
         });
