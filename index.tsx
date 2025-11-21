@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -46,8 +38,8 @@ const Icons = {
   revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   orders: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25l3.807-3.262a4.502 4.502 0 0 1 6.384 0L20.25 18" /></svg>,
   clients: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 0L5 11.529m10.232 2.234a3.75 3.75 0 0 0-4.493 0L10.5 11.529m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 16.25m10.232-2.234a3.75 3.75 0 0 1-4.493 0L7.5 13.763m7.5-4.515a3.753 3.753 0 0 0-4.493 0L10.5 6.5m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 11.25m10.232-2.234a3.75 3.75 0 0 0-4.493 0L7.5 8.763m7.5 4.515a3.75 3.75 0 0 1-4.493 0L10.5 13.75m5.007-4.515a3.75 3.75 0 0 0-4.493 0L13.5 8.763" /></svg>,
-  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1-.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
-  placeholder: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>,
+  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1 .421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
+  placeholder: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125 1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>,
   prevArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>,
   nextArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>,
   chevron: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>,
@@ -221,9 +213,33 @@ const getFiscalYearFromDate = (date: Date | null): string | null => {
     return `${startYearShort}-${endYearShort}`;
 };
 
+const getBaseOrderNo = (orderNo: string): string => {
+    if (!orderNo) return '';
+    const upperOrderNo = orderNo.toUpperCase();
+    
+    // This regex captures the base part of an order number, stripping common suffixes
+    // like -A, (A), or -I, -II etc. It looks for a hyphen or parenthesis at the end.
+    const match = upperOrderNo.match(/^(.*?)(\([A-Z]\)|-[A-Z]|-[IVXLCDM]+)$/i);
+
+    if (match && match[1]) {
+        return match[1];
+    }
+    
+    return upperOrderNo;
+};
+
 // ### calendar view
-const CalendarKpiCard = ({ title, value, icon, variant }) => (
-    <div className={`calendar-kpi-card variant-${variant}`}>
+const CalendarKpiCard = ({ title, value, icon, variant, onClick, isDimmed }: any) => (
+    <div 
+        className={`calendar-kpi-card variant-${variant}`} 
+        onClick={onClick}
+        style={{ 
+            cursor: 'pointer', 
+            opacity: isDimmed ? 0.4 : 1,
+            transition: 'all 0.3s ease',
+            transform: isDimmed ? 'scale(0.98)' : 'scale(1)'
+        }}
+    >
         <div className="calendar-kpi-icon">{icon}</div>
         <div className="calendar-kpi-content">
             <p>{value}</p>
@@ -233,7 +249,7 @@ const CalendarKpiCard = ({ title, value, icon, variant }) => (
 );
 
 // FIX: Added types for props to make them optional and fix call site errors.
-const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selectedYear }: { data: any[], xAxisDataKey?: string, selectedMonth?: number | null, selectedYear?: string }) => {
+const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selectedYear, activeMetric }: { data: any[], xAxisDataKey?: string, selectedMonth?: number | null, selectedYear?: string, activeMetric?: string | null }) => {
     const barLabelFormatter = (value: number) => (value > 0 ? value : '');
 
     // FIX: Added optional types for props passed by Recharts to fix TypeScript error.
@@ -250,7 +266,9 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
             const isDailyView = xAxisDataKey === 'day';
     
             if (isDailyView && selectedMonth !== null && selectedYear) {
-                const date = new Date(parseInt(selectedYear, 10), selectedMonth, label);
+                // Ensure the year is handled correctly based on input format
+                const year = selectedYear && selectedYear.length === 4 ? parseInt(selectedYear, 10) : new Date().getFullYear();
+                const date = new Date(year, selectedMonth, label);
                 displayLabel = formatDateDDMMMYY(date.toISOString());
             }
     
@@ -258,24 +276,60 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
             const hasMetrics = payload.some(p => p.value > 0);
             
             const hasTotals = dataPoint.totalValue > 0 || dataPoint.totalQty > 0;
+            const hasShippedTotals = dataPoint.shippedValue > 0 || dataPoint.shippedQty > 0;
     
             // If there's nothing to show at all, render nothing.
-            if (!hasMetrics && !(isDailyView && hasTotals)) return null;
+            if (!hasMetrics && !(isDailyView && (hasTotals || hasShippedTotals))) return null;
 
-            const shippedOrderNumbers = dataPoint.shippedOrderNumbers || [];
-    
             return (
                 <div className="recharts-default-tooltip" style={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)', borderRadius: '8px', padding: '0.5rem 1rem', maxWidth: '350px' }}>
                     <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>{displayLabel}</p>
                     {/* This part is for both views: shows Received, In Process, Shipped if they have a value */}
                     {payload.map(p => {
                        if (p.value > 0) {
+                           if (p.dataKey === 'received') {
+                                const orderNumbers = dataPoint.receivedOrderNumbers || [];
+                                const maxOrdersToShow = 15;
+                                const displayOrders = orderNumbers.slice(0, maxOrdersToShow);
+                                const remaining = orderNumbers.length - maxOrdersToShow;
+
+                                return (
+                                    <div key={p.dataKey} style={{ marginBottom: isDailyView ? 0 : '0.5rem' }}>
+                                        <p style={{ margin: 0, color: p.fill }}>{`Received:-${p.value}`}</p>
+                                        {orderNumbers.length > 0 && (
+                                            <p style={{ margin: '0.1rem 0 0.2rem 0.5rem', color: p.fill, wordBreak: 'break-word', whiteSpace: 'normal', fontSize: '0.85em', lineHeight: '1.4' }}>
+                                                <strong>Order NO:-</strong>{displayOrders.join(', ')}
+                                                {remaining > 0 && <span>{`, +${remaining} etc`}</span>}
+                                            </p>
+                                        )}
+                                        {!isDailyView && (
+                                            <>
+                                                <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.totalValue)}`}</p>
+                                                <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.totalQty)}`}</p>
+                                            </>
+                                        )}
+                                    </div>
+                                );
+                           }
+
+                           let orderNumbers: string[] = [];
+                           if (isDailyView) {
+                               if (p.dataKey === 'planned') orderNumbers = dataPoint.plannedOrderNumbers || [];
+                               else if (p.dataKey === 'shipped') orderNumbers = dataPoint.shippedOrderNumbers || [];
+                           }
+
+                           // Limit display to avoid huge tooltips
+                           const maxOrdersToShow = 15;
+                           const displayOrders = orderNumbers.slice(0, maxOrdersToShow);
+                           const remaining = orderNumbers.length - maxOrdersToShow;
+
                            return (
                                <div key={p.dataKey}>
-                                   <p style={{ margin: 0, color: p.fill }}>{`${p.name}: ${p.value}`}</p>
-                                   {p.dataKey === 'shipped' && isDailyView && shippedOrderNumbers.length > 0 && (
+                                   <p style={{ margin: 0, color: p.fill }}>{`${p.name}:- ${p.value}`}</p>
+                                   {isDailyView && orderNumbers.length > 0 && (
                                        <p style={{ margin: '0.1rem 0 0.5rem 0.5rem', color: p.fill, wordBreak: 'break-word', whiteSpace: 'normal', fontSize: '0.85em', lineHeight: '1.4' }}>
-                                           <strong>Order No:</strong> {shippedOrderNumbers.join(', ')}
+                                           <strong>Order No:</strong> {displayOrders.join(', ')}
+                                           {remaining > 0 && <span>{`, +${remaining} more`}</span>}
                                        </p>
                                    )}
                                </div>
@@ -285,10 +339,20 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                     })}
     
                     {/* This part is ONLY for the daily view */}
-                    {isDailyView && hasTotals && (
+                    {isDailyView && (hasTotals || hasShippedTotals) && (
                       <div style={{marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--grid-stroke)'}}>
-                        {dataPoint.totalValue > 0 && <p style={{ margin: 0 }}>{`Total Order Value: ${formatCurrency(dataPoint.totalValue)}`}</p>}
-                        {dataPoint.totalQty > 0 && <p style={{ margin: 0 }}>{`Total Order Qty: ${formatNumber(dataPoint.totalQty)}`}</p>}
+                        {hasTotals && (
+                            <div style={{ marginBottom: hasShippedTotals ? '0.5rem' : 0 }}>
+                                {dataPoint.totalValue > 0 && <p style={{ margin: 0 }}>{`Total Order Value: ${formatCurrency(dataPoint.totalValue)}`}</p>}
+                                {dataPoint.totalQty > 0 && <p style={{ margin: 0 }}>{`Total Order Qty: ${formatNumber(dataPoint.totalQty)}`}</p>}
+                            </div>
+                        )}
+                        {hasShippedTotals && (
+                            <div>
+                                {dataPoint.shippedValue > 0 && <p style={{ margin: 0, color: 'var(--calendar-shipped-color)' }}>{`Shipped Order Value: ${formatCurrency(dataPoint.shippedValue)}`}</p>}
+                                {dataPoint.shippedQty > 0 && <p style={{ margin: 0, color: 'var(--calendar-shipped-color)' }}>{`Shipped Order Qty: ${formatNumber(dataPoint.shippedQty)}`}</p>}
+                            </div>
+                        )}
                       </div>
                     )}
                 </div>
@@ -308,15 +372,21 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                     cursor={{fill: 'var(--tooltip-cursor)'}}
                 />
                 <Legend wrapperStyle={{fontSize: '0.8rem'}} />
-                <Bar dataKey="received" fill="var(--calendar-received-color)" name="Received" radius={[4, 4, 0, 0]}>
-                    <LabelList dataKey="received" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
-                </Bar>
-                <Bar dataKey="planned" fill="var(--calendar-planned-color)" name="In Process" radius={[4, 4, 0, 0]}>
-                    <LabelList dataKey="planned" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
-                </Bar>
-                <Bar dataKey="shipped" fill="var(--calendar-shipped-color)" name="Shipped" radius={[4, 4, 0, 0]}>
-                    <LabelList dataKey="shipped" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
-                </Bar>
+                {(activeMetric === null || activeMetric === 'received') && (
+                    <Bar dataKey="received" fill="var(--calendar-received-color)" name="Received" radius={[4, 4, 0, 0]}>
+                        <LabelList dataKey="received" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                    </Bar>
+                )}
+                {(activeMetric === null || activeMetric === 'planned') && (
+                    <Bar dataKey="planned" fill="var(--calendar-planned-color)" name="In Process" radius={[4, 4, 0, 0]}>
+                        <LabelList dataKey="planned" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                    </Bar>
+                )}
+                {(activeMetric === null || activeMetric === 'shipped') && (
+                    <Bar dataKey="shipped" fill="var(--calendar-shipped-color)" name="Shipped" radius={[4, 4, 0, 0]}>
+                        <LabelList dataKey="shipped" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                    </Bar>
+                )}
             </BarChart>
         </ResponsiveContainer>
     );
@@ -391,6 +461,14 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
     const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [activeMetric, setActiveMetric] = useState<'received' | 'planned' | 'shipped' | null>(null);
+
+    const clientLogos = useMemo(() => allOrderData.reduce<Record<string, string>>((acc, row) => {
+        if (row.customerName && row.logoUrl && !acc[row.customerName]) {
+          acc[row.customerName] = row.logoUrl;
+        }
+        return acc;
+    }, {}), [allOrderData]);
 
     const sDate = useMemo(() => {
         if (!startDate) return null;
@@ -430,6 +508,19 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
         onYearChange(newYear);
         setSelectedMonth(null);
     };
+
+    const handleKpiClick = (metric: 'received' | 'planned' | 'shipped') => {
+        setActiveMetric(prev => prev === metric ? null : metric);
+    };
+
+    const targetYY = useMemo(() => {
+        return (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
+    }, [selectedYear]);
+
+    const fullYearForDate = useMemo(() => {
+        if (!targetYY) return new Date().getFullYear();
+        return 2000 + parseInt(targetYY, 10);
+    }, [targetYY]);
     
     // Base data filtered only by client/country, NOT by year. Used for consistent calculations.
     const baseFilteredData = useMemo(() => {
@@ -440,22 +531,40 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
         });
     }, [allOrderData, selectedCountry, selectedClient]);
 
-    // Data filtered by the selected Fiscal Year. This is the primary data source for this component.
+    // Helper to get YY from date
+    const getYY = (date: Date | null) => date ? String(date.getFullYear()).slice(-2) : null;
+
+    // Data filtered by the selected Fiscal Year (YY logic).
     const dataForYear = useMemo(() => {
         return baseFilteredData.filter(d => {
-            const orderFY = getFiscalYearFromDate(parseDate(d.orderDate));
-            const stuffingFY = getFiscalYearFromDate(parseDate(d.stuffingMonth));
+            if (!targetYY) return true;
             
-            // An order belongs to the selected year if it was received OR shipped in that year.
-            return orderFY === selectedYear || stuffingFY === selectedYear;
+            const status = (d.originalStatus || d.status || '').toUpperCase();
+            const isPlan = status === 'PLAN';
+            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+            
+            const orderDate = parseDate(d.orderDate);
+            const stuffingDate = parseDate(d.stuffingMonth);
+            const orderYY = getYY(orderDate);
+            const stuffingYY = getYY(stuffingDate);
+            
+            // Include if it contributes to any of the 3 KPIs
+            // Received/Planned relies on Order Date
+            const matchesOrder = (isPlan || isShipped) && orderYY === targetYY;
+            // Shipped relies on Stuffing Date
+            const matchesStuffing = isShipped && stuffingYY === targetYY;
+            
+            return matchesOrder || matchesStuffing;
         });
-    }, [baseFilteredData, selectedYear]);
+    }, [baseFilteredData, targetYY]);
     
     const countries = useMemo(() => {
         let dataForCountryList = allOrderData;
         if (authenticatedUser !== 'admin') {
             dataForCountryList = allOrderData.filter(d => d.customerName === authenticatedUser);
         }
+        // We use baseFilteredData or dataForYear to get relevant countries for dropdown? 
+        // Usually countries list should be consistent with user permissions + year.
         return ['All', ...new Set(dataForCountryList.filter(d => d.fy === selectedYear).map(d => d.country).filter(Boolean).sort())];
     }, [allOrderData, selectedYear, authenticatedUser]);
 
@@ -463,66 +572,85 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
     const clientsForYear = useMemo(() => ['All', ...new Set(allOrderData.filter(d => d.fy === selectedYear).map(d => d.customerName).filter(Boolean).sort())], [allOrderData, selectedYear]);
 
     const calendarData = useMemo(() => {
-        // Shipped Calculation: Counts unique orders with a SHIPPED/COMPLETE status, grouped by their stuffing month.
-        const shippedOrdersByMonth: Set<string>[] = Array.from({ length: 12 }, () => new Set());
-        dataForYear.forEach(d => {
-            const status = d.originalStatus?.toUpperCase();
-            if (status === 'SHIPPED' || status === 'COMPLETE') {
-                const stuffingDate = parseDate(d.stuffingMonth);
-                if (stuffingDate && isDateInRange(stuffingDate) && getFiscalYearFromDate(stuffingDate) === selectedYear) {
-                    shippedOrdersByMonth[stuffingDate.getMonth()].add(d.orderNo.toUpperCase());
-                }
-            }
-        });
-
-        // Received Calculation: Counts all unique orders, grouped by their order date month.
         const receivedOrdersByMonth: Set<string>[] = Array.from({ length: 12 }, () => new Set());
-        const uniqueOrderDates = new Map<string, Date>(); // Store first valid order date per order
-        dataForYear.forEach(d => {
-            const orderKey = d.orderNo.toUpperCase();
-            if (!uniqueOrderDates.has(orderKey)) {
-                const orderDate = parseDate(d.orderDate);
-                if (orderDate && getFiscalYearFromDate(orderDate) === selectedYear) {
-                    uniqueOrderDates.set(orderKey, orderDate);
-                }
-            }
-        });
-        uniqueOrderDates.forEach((date, key) => {
-            if (isDateInRange(date)) {
-                receivedOrdersByMonth[date.getMonth()].add(key);
-            }
-        });
-
-        // In Process (Planned) Calculation: Counts unique orders with a PLAN status, grouped by their order date month.
         const plannedOrdersByMonth: Set<string>[] = Array.from({ length: 12 }, () => new Set());
+        const shippedOrdersByMonth: Set<string>[] = Array.from({ length: 12 }, () => new Set());
+
         dataForYear.forEach(d => {
-            const status = d.originalStatus?.toUpperCase();
-            if (status === 'PLAN') {
-                const orderDate = parseDate(d.orderDate);
-                if (orderDate && isDateInRange(orderDate) && getFiscalYearFromDate(orderDate) === selectedYear) {
-                    plannedOrdersByMonth[orderDate.getMonth()].add(d.orderNo.toUpperCase());
-                }
+            const status = (d.originalStatus || d.status || '').toUpperCase();
+            const isPlan = status === 'PLAN';
+            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+
+            const orderDate = parseDate(d.orderDate);
+            const stuffingDate = parseDate(d.stuffingMonth);
+            const orderYY = getYY(orderDate);
+            const stuffingYY = getYY(stuffingDate);
+            const orderNo = d.orderNo.toUpperCase();
+
+            // Received: PLAN or SHIPPED, matched by Order Date
+            if ((isPlan || isShipped) && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
+                receivedOrdersByMonth[orderDate.getMonth()].add(orderNo);
+            }
+
+            // Planned: PLAN only, matched by Order Date
+            if (isPlan && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
+                 plannedOrdersByMonth[orderDate.getMonth()].add(orderNo);
+            }
+
+            // Shipped: SHIPPED only, matched by Stuffing Date
+            if (isShipped && stuffingDate && (!targetYY || stuffingYY === targetYY) && isDateInRange(stuffingDate)) {
+                 shippedOrdersByMonth[stuffingDate.getMonth()].add(orderNo);
             }
         });
 
-        // Combine and return final monthly data.
-        return monthNames.map((_, monthIndex) => {
-            return {
-                received: receivedOrdersByMonth[monthIndex].size,
-                planned: plannedOrdersByMonth[monthIndex].size,
-                shipped: shippedOrdersByMonth[monthIndex].size,
-            };
-        });
-    }, [dataForYear, monthNames, isDateInRange, selectedYear]);
+        return monthNames.map((_, index) => ({
+            received: receivedOrdersByMonth[index].size,
+            planned: plannedOrdersByMonth[index].size,
+            shipped: shippedOrdersByMonth[index].size,
+            receivedOrderNumbers: Array.from(receivedOrdersByMonth[index]),
+        }));
+    }, [dataForYear, monthNames, isDateInRange, targetYY]);
 
     const yearlyKpis = useMemo(() => {
-        return calendarData.reduce((acc, month) => {
-            acc.received += month.received;
-            acc.planned += month.planned;
-            acc.shipped += month.shipped;
-            return acc;
-        }, { received: 0, planned: 0, shipped: 0 });
-    }, [calendarData]);
+        // Previously calculated by summing monthly counts, which caused duplicates if an order appeared in multiple months.
+        // Now calculating by counting unique orders across the filtered dataset.
+        const received = new Set<string>();
+        const planned = new Set<string>();
+        const shipped = new Set<string>();
+
+        dataForYear.forEach(d => {
+            const status = (d.originalStatus || d.status || '').toUpperCase();
+            const isPlan = status === 'PLAN';
+            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+
+            const orderDate = parseDate(d.orderDate);
+            const stuffingDate = parseDate(d.stuffingMonth);
+            const orderYY = getYY(orderDate);
+            const stuffingYY = getYY(stuffingDate);
+            const orderNo = d.orderNo.toUpperCase();
+
+            // Received: PLAN or SHIPPED, matched by Order Date
+            if ((isPlan || isShipped) && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
+                received.add(orderNo);
+            }
+
+            // Planned: PLAN only, matched by Order Date
+            if (isPlan && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
+                 planned.add(orderNo);
+            }
+
+            // Shipped: SHIPPED only, matched by Stuffing Date
+            if (isShipped && stuffingDate && (!targetYY || stuffingYY === targetYY) && isDateInRange(stuffingDate)) {
+                 shipped.add(orderNo);
+            }
+        });
+
+        return {
+            received: received.size,
+            planned: planned.size,
+            shipped: shipped.size,
+        };
+    }, [dataForYear, isDateInRange, targetYY]);
 
     const monthlyKpis = useMemo(() => {
         if (selectedMonth === null) {
@@ -538,15 +666,20 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
     const monthlyTotals = useMemo(() => {
         const totals = Array.from({ length: 12 }, () => ({ totalValue: 0, totalQty: 0 }));
         dataForYear.forEach(d => {
-            const orderDate = parseDate(d.orderDate);
-            if (orderDate && isDateInRange(orderDate) && getFiscalYearFromDate(orderDate) === selectedYear) {
-                const monthIndex = orderDate.getMonth();
-                totals[monthIndex].totalValue += d.exportValue;
-                totals[monthIndex].totalQty += d.qty;
-            }
+             const status = (d.originalStatus || d.status || '').toUpperCase();
+             if (status === 'PLAN' || status === 'SHIPPED' || status === 'COMPLETE') {
+                 const orderDate = parseDate(d.orderDate);
+                 if (orderDate && isDateInRange(orderDate)) {
+                     const orderYY = getYY(orderDate);
+                     if (!targetYY || orderYY === targetYY) {
+                        totals[orderDate.getMonth()].totalValue += d.exportValue;
+                        totals[orderDate.getMonth()].totalQty += d.qty;
+                     }
+                 }
+             }
         });
         return totals;
-    }, [dataForYear, isDateInRange, selectedYear]);
+    }, [dataForYear, isDateInRange, targetYY]);
 
     const monthlyTrendChartData = monthNames.map((name, index) => ({
         name,
@@ -557,57 +690,70 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
     const monthOrders = useMemo(() => {
         if (selectedMonth === null) return [];
         return dataForYear.filter(d => {
-            const date = parseDate(d.orderDate);
-            return date && date.getMonth() === selectedMonth && isDateInRange(date) && getFiscalYearFromDate(date) === selectedYear;
+            const orderDate = parseDate(d.orderDate);
+            if (orderDate && orderDate.getMonth() === selectedMonth && isDateInRange(orderDate)) {
+                const orderYY = getYY(orderDate);
+                return (!targetYY || orderYY === targetYY);
+            }
+            return false;
         });
-    }, [dataForYear, selectedMonth, isDateInRange, selectedYear]);
+    }, [dataForYear, selectedMonth, isDateInRange, targetYY]);
 
     const dailyChartData = useMemo(() => {
         if (selectedMonth === null) return [];
     
-        const daysInMonth = new Date(parseInt(selectedYear, 10), selectedMonth + 1, 0).getDate();
+        const daysInMonth = new Date(fullYearForDate, selectedMonth + 1, 0).getDate();
         const dailyData = Array.from({ length: daysInMonth }, (_, i) => ({
             day: i + 1,
             totalValue: 0,
             totalQty: 0,
+            shippedValue: 0,
+            shippedQty: 0,
             shippedOrders: new Set<string>(),
             receivedOrders: new Set<string>(),
             plannedOrders: new Set<string>(),
         }));
 
-        const valueCountedRowIndices = new Set<number>();
-
-        // First pass for SHIPPED items.
-        dataForYear.forEach((d, index) => {
-            const status = (d.originalStatus || '').toUpperCase();
-            if (status === 'SHIPPED' || status === 'COMPLETE') {
-                const stuffingDate = parseDate(d.stuffingMonth);
-                if (stuffingDate && stuffingDate.getMonth() === selectedMonth && isDateInRange(stuffingDate) && getFiscalYearFromDate(stuffingDate) === selectedYear) {
-                    const dayIndex = stuffingDate.getDate() - 1;
-                    if (dailyData[dayIndex]) {
-                        dailyData[dayIndex].shippedOrders.add(d.orderNo.toUpperCase());
-                        dailyData[dayIndex].totalValue += d.exportValue;
-                        dailyData[dayIndex].totalQty += d.qty;
-                        valueCountedRowIndices.add(index);
-                    }
-                }
+        // Pass for Shipped (Stuffing Date)
+        dataForYear.forEach(d => {
+            const status = (d.originalStatus || d.status || '').toUpperCase();
+            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+            const stuffingDate = parseDate(d.stuffingMonth);
+            
+            if (isShipped && stuffingDate && stuffingDate.getMonth() === selectedMonth && isDateInRange(stuffingDate)) {
+                 const stuffingYY = getYY(stuffingDate);
+                 if (!targetYY || stuffingYY === targetYY) {
+                     const dayIndex = stuffingDate.getDate() - 1;
+                     if (dailyData[dayIndex]) {
+                         dailyData[dayIndex].shippedOrders.add(d.orderNo.toUpperCase());
+                         dailyData[dayIndex].shippedValue += d.exportValue;
+                         dailyData[dayIndex].shippedQty += d.qty;
+                     }
+                 }
             }
         });
 
-        // Second pass for RECEIVED and PLANNED items.
-        dataForYear.forEach((d, index) => {
+        // Pass for Received/Planned/Value/Qty (Order Date)
+        dataForYear.forEach(d => {
+            const status = (d.originalStatus || d.status || '').toUpperCase();
+            const isPlan = status === 'PLAN';
+            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
             const orderDate = parseDate(d.orderDate);
-            if (orderDate && orderDate.getMonth() === selectedMonth && isDateInRange(orderDate) && getFiscalYearFromDate(orderDate) === selectedYear) {
-                const dayIndex = orderDate.getDate() - 1;
-                if (dailyData[dayIndex]) {
-                    dailyData[dayIndex].receivedOrders.add(d.orderNo.toUpperCase());
-                    if ((d.originalStatus || '').toUpperCase() === 'PLAN') {
-                        dailyData[dayIndex].plannedOrders.add(d.orderNo.toUpperCase());
-                    }
 
-                    if (!valueCountedRowIndices.has(index)) {
-                        dailyData[dayIndex].totalValue += d.exportValue;
-                        dailyData[dayIndex].totalQty += d.qty;
+            if ((isPlan || isShipped) && orderDate && orderDate.getMonth() === selectedMonth && isDateInRange(orderDate)) {
+                const orderYY = getYY(orderDate);
+                if (!targetYY || orderYY === targetYY) {
+                    const dayIndex = orderDate.getDate() - 1;
+                    if (dailyData[dayIndex]) {
+                         // Received
+                         dailyData[dayIndex].receivedOrders.add(d.orderNo.toUpperCase());
+                         // Planned
+                         if (isPlan) {
+                             dailyData[dayIndex].plannedOrders.add(d.orderNo.toUpperCase());
+                         }
+                         // Value/Qty
+                         dailyData[dayIndex].totalValue += d.exportValue;
+                         dailyData[dayIndex].totalQty += d.qty;
                     }
                 }
             }
@@ -621,9 +767,13 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
             shipped: data.shippedOrders.size,
             totalValue: data.totalValue,
             totalQty: data.totalQty,
+            shippedValue: data.shippedValue,
+            shippedQty: data.shippedQty,
             shippedOrderNumbers: Array.from(data.shippedOrders),
+            receivedOrderNumbers: Array.from(data.receivedOrders),
+            plannedOrderNumbers: Array.from(data.plannedOrders),
         }));
-    }, [dataForYear, selectedMonth, selectedYear, isDateInRange]);
+    }, [dataForYear, selectedMonth, fullYearForDate, isDateInRange, targetYY]);
 
     const topClients = useMemo(() => {
         const dataToProcess = selectedMonth !== null ? monthOrders : dataForYear;
@@ -637,9 +787,12 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
 
         dataToProcess.forEach(d => {
             if (!d.customerName) return;
-            if(selectedMonth === null) {
-                const orderDate = parseDate(d.orderDate);
-                if (!orderDate || !isDateInRange(orderDate) || getFiscalYearFromDate(orderDate) !== selectedYear) return;
+            // Filter based on Received logic for Values (Order Date)
+            const orderDate = parseDate(d.orderDate);
+            if (selectedMonth === null) {
+                if (!orderDate || !isDateInRange(orderDate)) return;
+                const orderYY = getYY(orderDate);
+                if (targetYY && orderYY !== targetYY) return;
             }
 
             if (!clientData[d.customerName]) {
@@ -664,7 +817,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
             }))
             .sort((a, b) => b.value - a.value)
             .slice(0, 5);
-    }, [dataForYear, monthOrders, selectedMonth, isDateInRange, selectedYear]);
+    }, [dataForYear, monthOrders, selectedMonth, isDateInRange, targetYY]);
 
     // --- Data for Chat Assistant ---
     const catalogDataForChat = useMemo(() => {
@@ -701,6 +854,15 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
                 <header>
                     <div className="header-main">
                         <div className="header-title">
+                             {selectedClient === 'All' ? (
+                                <img src="https://lh3.googleusercontent.com/d/1IPYJixe4KjQ3oY-9oOPdDyag98LND-qw" alt="Admin Logo" className="client-logo" />
+                            ) : (
+                                clientLogos[selectedClient] ? (
+                                    <img src={clientLogos[selectedClient]} alt={`${selectedClient} Logo`} className="client-logo" />
+                                ) : (
+                                    <div className="client-logo-placeholder">No Logo</div>
+                                )
+                            )}
                             <h1>Calendar Year Order Overview</h1>
                         </div>
                     </div>
@@ -751,9 +913,30 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
                 </header>
                 <main className="calendar-view-main">
                     <div className="kpi-container">
-                        <CalendarKpiCard title="Total Orders Received" value={formatNumber(kpis.received)} icon={"📦"} variant="received" />
-                        <CalendarKpiCard title="Total Orders In Process" value={formatNumber(kpis.planned)} icon={"🗓️"} variant="planned" />
-                        <CalendarKpiCard title="Total Orders Shipped" value={formatNumber(kpis.shipped)} icon={"🚚"} variant="shipped" />
+                        <CalendarKpiCard 
+                            title={authenticatedUser === 'admin' ? "Total Orders Received" : "Total Orders Placed"} 
+                            value={formatNumber(kpis.received)} 
+                            icon={"📦"} 
+                            variant="received" 
+                            onClick={() => handleKpiClick('received')}
+                            isDimmed={activeMetric !== null && activeMetric !== 'received'}
+                        />
+                        <CalendarKpiCard 
+                            title="Total Orders In Process" 
+                            value={formatNumber(kpis.planned)} 
+                            icon={"🗓️"} 
+                            variant="planned" 
+                            onClick={() => handleKpiClick('planned')}
+                            isDimmed={activeMetric !== null && activeMetric !== 'planned'}
+                        />
+                        <CalendarKpiCard 
+                            title="Total Orders Shipped" 
+                            value={formatNumber(kpis.shipped)} 
+                            icon={"🚚"} 
+                            variant="shipped" 
+                            onClick={() => handleKpiClick('shipped')}
+                            isDimmed={activeMetric !== null && activeMetric !== 'shipped'}
+                        />
                     </div>
                     {selectedMonth === null && (
                         <div className="calendar-grid-container">
@@ -798,7 +981,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
                         {selectedMonth === null ? (
                             <div className="chart-container">
                                 <h3>Monthly Order Volume</h3>
-                                <MonthlyTrendChart data={monthlyTrendChartData} selectedYear={selectedYear}/>
+                                <MonthlyTrendChart data={monthlyTrendChartData} selectedYear={fullYearForDate.toString()} activeMetric={activeMetric}/>
                             </div>
                         ) : (
                             <div className="chart-container daily-view">
@@ -808,7 +991,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
                                         {Icons.prevArrow} Monthly View
                                     </button>
                                 </div>
-                                <MonthlyTrendChart data={dailyChartData} xAxisDataKey="day" selectedMonth={selectedMonth} selectedYear={selectedYear} />
+                                <MonthlyTrendChart data={dailyChartData} xAxisDataKey="day" selectedMonth={selectedMonth} selectedYear={fullYearForDate.toString()} activeMetric={activeMetric} />
                             </div>
                         )}
                         {authenticatedUser === 'admin' && <TopClientsList data={topClients} />}
@@ -961,16 +1144,7 @@ const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filte
     );
 };
 
-const getBaseOrderNo = (orderNo: string): string => {
-    if (!orderNo) return '';
-    // This regex will capture the base part of an order number before a potential Roman numeral suffix
-    // e.g., BB-0023-I -> BB-0023, BB-0024 -> BB-0024
-    const match = orderNo.match(/(.*?)(?:-[IVXLCDM]+)?$/i);
-    // The replace call cleans up any trailing hyphen if the base part was something like 'ORDER-'
-    return match ? match[1].toUpperCase().replace(/-$/, '') : orderNo.toUpperCase();
-};
-
-const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepData, drillDownState, onRowDoubleClick, onDrillUp }: { data: OrderData[], currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void, stepData: StepData[], drillDownState: { level: number, baseOrder: string | null, subOrder: string | null }, onRowDoubleClick: (row: any) => void, onDrillUp: () => void }) => {
+const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepData, drillDownState, onRowDoubleClick, onDrillUp, baseOrderHasSubOrders }: { data: OrderData[], currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void, stepData: StepData[], drillDownState: { level: number, baseOrder: string | null, subOrder: string | null }, onRowDoubleClick: (row: any) => void, onDrillUp: () => void, baseOrderHasSubOrders: boolean }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
     const tableWrapperRef = useRef<HTMLDivElement>(null);
@@ -979,9 +1153,12 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
 
     const { tableTitle, backButtonText } = useMemo(() => {
         if (drillDownState.level === 3) {
+            const backText = baseOrderHasSubOrders
+                ? `Back to Order ${drillDownState.baseOrder}`
+                : 'Back to All Orders';
             return {
                 tableTitle: `Products for Sub-Order: ${drillDownState.subOrder}`,
-                backButtonText: `Back to Order ${drillDownState.baseOrder}`
+                backButtonText: backText
             };
         }
         if (drillDownState.level === 2) {
@@ -991,7 +1168,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
             };
         }
         return { tableTitle: 'All Orders', backButtonText: '' };
-    }, [drillDownState]);
+    }, [drillDownState, baseOrderHasSubOrders]);
 
     const processedData = useMemo(() => {
         if (drillDownState.level === 1) {
@@ -1019,7 +1196,30 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                     }
                 });
 
+                const uniqueOrderNos = [...new Set(products.map(p => p.orderNo.toUpperCase()))];
+                const hasSubOrders = uniqueOrderNos.length > 1 || (uniqueOrderNos.length === 1 && uniqueOrderNos[0] !== baseOrderNo);
+                
                 const firstProduct = products[0];
+                const totalExportValue = products.reduce((sum, p) => sum + p.exportValue, 0);
+                const shippedValue = products.reduce((sum, p) => {
+                    const status = p.originalStatus?.toUpperCase();
+                    if (status === 'SHIPPED' || status === 'COMPLETE') {
+                        return sum + p.exportValue;
+                    }
+                    return sum;
+                }, 0);
+                const balanceValue = totalExportValue - shippedValue;
+                const totalQty = products.reduce((sum, p) => sum + p.qty, 0);
+                
+                const shippedQty = products.reduce((sum, p) => {
+                    const status = p.originalStatus?.toUpperCase();
+                    if (status === 'SHIPPED' || status === 'COMPLETE') {
+                        return sum + p.qty;
+                    }
+                    return sum;
+                }, 0);
+                const balanceQty = totalQty - shippedQty;
+                
                 return {
                     level: 1,
                     baseOrderNo: baseOrderNo,
@@ -1028,8 +1228,13 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                     stuffingMonth: latestShippedDate ? latestShippedDate.toISOString() : firstProduct.stuffingMonth,
                     customerName: firstProduct.customerName,
                     country: firstProduct.country,
-                    totalQty: products.reduce((sum, p) => sum + p.qty, 0),
-                    totalExportValue: products.reduce((sum, p) => sum + p.exportValue, 0),
+                    totalQty,
+                    balanceQty,
+                    totalExportValue: totalExportValue,
+                    shippedValue: shippedValue,
+                    balanceValue: balanceValue,
+                    hasSubOrders: hasSubOrders,
+                    singleOrderNo: uniqueOrderNos.length === 1 ? uniqueOrderNos[0] : null,
                     hasTracking: products.some(p => stepDataOrderNos.has(p.orderNo)),
                 };
             }).sort((a, b) => {
@@ -1045,29 +1250,69 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
         if (drillDownState.level === 2) {
             const relevantRows = data.filter(row => getBaseOrderNo(row.orderNo) === drillDownState.baseOrder);
             const subGroups: { [key: string]: OrderData[] } = relevantRows.reduce((acc, row) => {
-                if (!acc[row.orderNo]) {
-                    acc[row.orderNo] = [];
+                // FIX: Normalize key to ensure proper grouping
+                const key = row.orderNo ? row.orderNo.trim().toUpperCase() : ''; 
+                if (!key) return acc; // Skip invalid
+                if (!acc[key]) {
+                    acc[key] = [];
                 }
-                acc[row.orderNo].push(row);
+                acc[key].push(row);
                 return acc;
             }, {} as Record<string, OrderData[]>);
 
-            return Object.entries(subGroups).map(([orderNo, products]) => {
+            return Object.entries(subGroups).map(([key, products]) => {
+                let finalStatus = 'PLAN';
+                let latestShippedDate: Date | null = null;
+                
+                products.forEach(p => {
+                    const status = p.originalStatus?.toUpperCase();
+                    const shippedDate = parseDate(p.stuffingMonth);
+                    if (status === 'SHIPPED' || status === 'COMPLETE') {
+                        finalStatus = 'SHIPPED';
+                        if (shippedDate && (!latestShippedDate || shippedDate > latestShippedDate)) {
+                            latestShippedDate = shippedDate;
+                        }
+                    }
+                });
+
                 const firstProduct = products[0];
+                // Use the original orderNo from the first product to maintain display casing if needed
+                const orderNo = firstProduct.orderNo;
                 const totalQty = products.reduce((sum, p) => sum + p.qty, 0);
                 const totalExportValue = products.reduce((sum, p) => sum + p.exportValue, 0);
+
+                const shippedValue = products.reduce((sum, p) => {
+                    const status = p.originalStatus?.toUpperCase();
+                    if (status === 'SHIPPED' || status === 'COMPLETE') {
+                        return sum + p.exportValue;
+                    }
+                    return sum;
+                }, 0);
+                const balanceValue = totalExportValue - shippedValue;
+
+                const shippedQty = products.reduce((sum, p) => {
+                    const status = p.originalStatus?.toUpperCase();
+                    if (status === 'SHIPPED' || status === 'COMPLETE') {
+                        return sum + p.qty;
+                    }
+                    return sum;
+                }, 0);
+                const balanceQty = totalQty - shippedQty;
                 
                 return {
                     level: 2,
                     orderNo,
-                    status: firstProduct.status,
-                    originalStatus: firstProduct.originalStatus,
-                    stuffingMonth: firstProduct.stuffingMonth,
+                    status: finalStatus,
+                    originalStatus: finalStatus,
+                    stuffingMonth: latestShippedDate ? latestShippedDate.toISOString() : firstProduct.stuffingMonth,
                     imageLink: firstProduct.imageLink,
                     customerName: firstProduct.customerName,
                     country: firstProduct.country,
                     totalQty,
-                    totalExportValue
+                    balanceQty,
+                    totalExportValue,
+                    shippedValue,
+                    balanceValue,
                 };
             }).sort((a, b) => {
                 const dateA = parseDate(a.stuffingMonth);
@@ -1154,18 +1399,23 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                             {currentUser === 'admin' && <th>Customer</th>}
                             {currentUser === 'admin' && <th>Country</th>}
                             <th className="text-right">Qty</th>
+                            {(drillDownState.level === 1 || drillDownState.level === 2) && <th className="text-right">Balance Qty</th>}
                             {drillDownState.level === 3 ? <>
                                 <th className="text-right">Unit Price</th>
                                 <th className="text-right">Order Value</th>
                                 <th className="text-right">Fob Price</th>
                                 <th className="text-right">MOQ</th>
-                            </> : <th className="text-right">Order Value</th>}
+                            </> : <>
+                                <th className="text-right">Order Value</th>
+                                <th className="text-right">Shipped Value</th>
+                                <th className="text-right">Balance Value</th>
+                            </>}
                         </tr>
                     </thead>
                     <tbody>
                         {paginatedData.map((row: any, index: number) => (
                             <tr 
-                                key={row.orderNo || row.baseOrderNo || row.productCode + index} 
+                                key={drillDownState.level === 1 ? row.baseOrderNo : `${row.orderNo}-${index}`}
                                 className={`summary-row ${drillDownState.level === 1 && row.hasTracking ? 'has-tracking' : ''}`}
                                 onDoubleClick={() => onRowDoubleClick(row)}
                                 style={{ animationDelay: `${index * 0.05}s` }}
@@ -1212,6 +1462,8 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                 {/* Qty */}
                                 <td className="text-right">{formatNumber(row.totalQty ?? row.qty)}</td>
                                 
+                                {(drillDownState.level === 1 || drillDownState.level === 2) && <td className="text-right">{formatNumber(row.balanceQty)}</td>}
+
                                 {/* Values */}
                                 {drillDownState.level === 3 ? (
                                     <>
@@ -1221,7 +1473,11 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                         <td className="text-right">{row.moq > 0 ? formatCompactNumber(row.moq) : '-'}</td>
                                     </>
                                 ) : (
-                                    <td className="value-text text-right">{formatCurrency(row.totalExportValue)}</td>
+                                    <>
+                                        <td className="value-text text-right">{formatCurrency(row.totalExportValue)}</td>
+                                        <td className="value-text text-right">{formatCurrency(row.shippedValue)}</td>
+                                        <td className="value-text text-right">{formatCurrency(row.balanceValue)}</td>
+                                    </>
                                 )}
                             </tr>
                         ))}
@@ -1238,6 +1494,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
 };
 
 const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: OrderData[], currentUser: string, authenticatedUser: string }) => {
+// ... (rest of component remains the same)
   const [currentPage, setCurrentPage] = useState(1);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
   const rowsPerPage = 10;
@@ -1296,7 +1553,7 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
   );
 };
 
-// --- START: AI Chat Assistant & Helpers ---
+// ... (ChatAssistant and other helpers remain same) ...
 
 const SimpleMarkdown = ({ text }: { text: string }) => {
     // This is a very basic markdown renderer.
@@ -1510,6 +1767,8 @@ The user's prompt will contain a JSON object with the following keys:
 };
 
 // --- END: AI Chat Assistant & Helpers ---
+
+// ... (NeverBoughtDashboard, OrderTrackingModal, SalesByCountryChart, OrdersOverTimeChart, SkeletonLoader, UserManagement, ThemeToggles, AnnouncementsPanel) ...
 
 const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientName, clientList, onClose, authenticatedUser }: { allOrderData: OrderData[], masterProductList: MasterProductData[], initialClientName: string, clientList: string[], onClose: () => void, authenticatedUser: string }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -1806,16 +2065,31 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
     )
 };
 
-const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null }) => {
+const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null, selectedYear: string }) => {
     const chartData = useMemo(() => {
         // 1. Initialize an array to hold the total export value and unique orders for each month.
         const monthData = Array.from({ length: 12 }, () => ({ value: 0, orders: new Set<string>() }));
+        
+        const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
 
         // 2. Iterate through all data rows and sum up the exportValue and collect unique order numbers per month.
         for (const item of data) {
+            // Apply KPI "Received Orders" logic: Status must be PLAN, SHIPPED, or COMPLETE
+            const status = (item.originalStatus || item.status || '').toUpperCase();
+            const isPlan = status === 'PLAN';
+            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+            
+            if (!isPlan && !isShipped) continue;
+
             if (item.orderDate) {
                 const date = parseDate(item.orderDate);
                 if (date) {
+                    // Apply KPI "Received Orders" logic: Year must match targetYY (if selected)
+                    if (targetYY) {
+                        const itemYY = String(date.getFullYear()).slice(-2);
+                        if (itemYY !== targetYY) continue;
+                    }
+
                     const monthIndex = date.getMonth();
                     monthData[monthIndex].value += item.exportValue > 0 ? item.exportValue : 0;
                     if (item.orderNo) {
@@ -1832,7 +2106,7 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters }: { data: OrderDat
             value: monthData[index].value,
             orderCount: monthData[index].orders.size,
         }));
-    }, [data]);
+    }, [data, selectedYear]);
 
     const handleDotClickAction = (payload: any) => {
         if (!payload || !payload.name || payload.value === 0) return;
@@ -2163,7 +2437,8 @@ const App = () => {
   const [drillDownState, setDrillDownState] = useState({
       level: 1,
       baseOrder: null as string | null,
-      subOrder: null as string | null
+      subOrder: null as string | null,
+      hasSubOrders: false
   });
   const [selectedOrderForTracking, setSelectedOrderForTracking] = useState<string | null>(null);
   const [showNeverBought, setShowNeverBought] = useState(false);
@@ -2180,23 +2455,40 @@ const App = () => {
   const [hasUnreadAnnouncements, setHasUnreadAnnouncements] = useState(false);
   const announcementsButtonRef = useRef<HTMLButtonElement>(null);
 
+  const checkHasSubOrders = useCallback((baseOrderNo: string) => {
+      if (!baseOrderNo) return false;
+      const products = data.filter(row => getBaseOrderNo(row.orderNo) === baseOrderNo);
+      const uniqueOrderNos = [...new Set(products.map(p => p.orderNo.toUpperCase()))];
+      return uniqueOrderNos.length > 1 || (uniqueOrderNos.length === 1 && uniqueOrderNos[0] !== baseOrderNo);
+  }, [data]);
+
   const handleRowDoubleClick = (row: any) => {
       if (drillDownState.level === 1) {
-          setDrillDownState({ level: 2, baseOrder: row.baseOrderNo, subOrder: null });
+          if (row.hasSubOrders) {
+              // Go to level 2 to show sub-orders
+              setDrillDownState({ level: 2, baseOrder: row.baseOrderNo, subOrder: null, hasSubOrders: true });
+          } else {
+              // Skip to level 3 to show products for the single order
+              setDrillDownState({ level: 3, baseOrder: row.baseOrderNo, subOrder: row.singleOrderNo, hasSubOrders: false });
+          }
       } else if (drillDownState.level === 2) {
           const status = row.originalStatus?.toUpperCase();
           // Allow drilldown for shipped, complete, or in-process (plan) orders.
           if (status === 'SHIPPED' || status === 'COMPLETE' || status === 'PLAN') {
-              setDrillDownState({ level: 3, baseOrder: drillDownState.baseOrder, subOrder: row.orderNo });
+              setDrillDownState({ level: 3, baseOrder: drillDownState.baseOrder, subOrder: row.orderNo, hasSubOrders: true });
           }
       }
   };
 
   const handleDrillUp = () => {
       if (drillDownState.level === 3) {
-          setDrillDownState({ level: 2, baseOrder: drillDownState.baseOrder, subOrder: null });
+          if (drillDownState.baseOrder && drillDownState.hasSubOrders) {
+              setDrillDownState({ level: 2, baseOrder: drillDownState.baseOrder, subOrder: null, hasSubOrders: true });
+          } else {
+              setDrillDownState({ level: 1, baseOrder: null, subOrder: null, hasSubOrders: false });
+          }
       } else if (drillDownState.level === 2) {
-          setDrillDownState({ level: 1, baseOrder: null, subOrder: null });
+          setDrillDownState({ level: 1, baseOrder: null, subOrder: null, hasSubOrders: false });
       }
   };
     
@@ -2215,12 +2507,14 @@ const App = () => {
         const apiKeyText = await apiKeyResponse.text();
         const match = apiKeyText.match(/{.*}/s);
         if (match) {
-            const json = JSON.parse(match[0]);
+            // FIX: Cast JSON.parse result to 'any' to avoid 'unknown' type issues.
+            const json: any = JSON.parse(match[0]);
             if (json.status === 'ok') {
                 const fetchedCredentials: Record<string, string> = {};
+                // FIX: Use 'any' for row type to allow flexible access and avoid strict typing issues with 'unknown'.
                 json.table.rows.forEach((r: any) => {
-                    const name = String(r.c[0]?.v || '').trim();
-                    const key = String(r.c[1]?.v || '').trim();
+                    const name: string = String(r.c?.[0]?.v || '').trim();
+                    const key: string = String(r.c?.[1]?.v || '').trim();
                     if (name && key) {
                         fetchedCredentials[name] = key;
                     }
@@ -2276,13 +2570,15 @@ const App = () => {
       const match = responseText.match(/{.*}/s);
       if (!match) throw new Error("Invalid Gviz response format.");
       
-      const json = JSON.parse(match[0]);
+      // FIX: Cast JSON.parse result to 'any' to avoid 'unknown' type issues.
+      const json: any = JSON.parse(match[0]);
       if (json.status !== 'ok') {
         const errorMessages = json.errors?.map((e: any) => e.detailed_message || e.message).join(', ') || 'Unknown error';
         throw new Error(`Google Sheets API error: ${errorMessages}`);
       }
 
-      const labelToIndex = new Map(json.table.cols.map((col: any, i: number) => [col.label.trim(), i]));
+      // FIX: Explicitly type the Map to ensure index is a number
+      const labelToIndex = new Map<string, number>(json.table.cols.map((col: any, i: number) => [String(col.label || '').trim(), i]));
 
       const missingHeaders = Object.keys(headerMapping).filter(h => !labelToIndex.has(h));
       if (missingHeaders.length > 0) {
@@ -2293,15 +2589,20 @@ const App = () => {
           const row: any = {};
           for (const [header, key] of Object.entries(headerMapping)) {
               const index = labelToIndex.get(header);
-              const cell = r.c[index];
-              const value = cell ? cell.v : null;
+              // FIX: Ensure index is defined and valid
+              if (index !== undefined) {
+                  const cell = r.c[index];
+                  const value = cell ? cell.v : null;
 
-              if (['qty', 'moq'].includes(key)) {
-                  row[key] = parseInt(String(value || '0').replace(/,/g, ''), 10) || 0;
-              } else if (['exportValue', 'unitPrice', 'fobPrice'].includes(key)) {
-                  row[key] = parseFloat(String(value || '0').replace(/[$,]/g, '')) || 0;
+                  if (['qty', 'moq'].includes(key)) {
+                      row[key] = parseInt(String(value || '0').replace(/,/g, ''), 10) || 0;
+                  } else if (['exportValue', 'unitPrice', 'fobPrice'].includes(key)) {
+                      row[key] = parseFloat(String(value || '0').replace(/[$,]/g, '')) || 0;
+                  } else {
+                      row[key] = value !== null ? String(value).trim() : '';
+                  }
               } else {
-                  row[key] = value !== null ? String(value).trim() : '';
+                  row[key] = '';
               }
           }
           return row;
@@ -2355,12 +2656,13 @@ const App = () => {
         };
         const parsedLiveDataWithoutFyFallback: OrderData[] = parseGvizResponse(liveText, liveHeaderMapping, ['orderNo']);
 
-        const currentFiscalYear = getCurrentFiscalYear();
         const parsedLiveData = parsedLiveDataWithoutFyFallback.map(order => {
-            if (!order.fy || order.fy.toLowerCase() === '#n/a') {
-                return { ...order, fy: getFiscalYearFromDate(parseDate(order.orderDate)) || currentFiscalYear };
+            let fy = order.fy;
+            // Handle #N/A or missing FY as '25-26' per user request
+            if (!fy || fy.toLowerCase() === '#n/a' || fy.trim() === '') {
+                 fy = '25-26';
             }
-            return order;
+            return { ...order, fy };
         });
 
         const masterHeaderMapping = {
@@ -2376,23 +2678,25 @@ const App = () => {
             const stepText = await stepResponse.text();
             const match = stepText.match(/{.*}/s);
             if (match) {
-                const json = JSON.parse(match[0]);
+                // FIX: Cast JSON.parse result to 'any' to avoid 'unknown' type issues.
+                const json: any = JSON.parse(match[0]);
                 if (json.status === 'ok') {
-                    parsedStepData = json.table.rows.map((r: { c: ({ v: any } | null)[] }) => ({
-                        orderNo: String(r.c[0]?.v || '').trim(),
-                        productionDate: String(r.c[1]?.v || '').trim(),
-                        productionStatus: String(r.c[2]?.v || '').trim(),
-                        sobDate: String(r.c[3]?.v || '').trim(),
-                        sobStatus: String(r.c[4]?.v || '').trim(),
-                        paymentPlannedDate: String(r.c[5]?.v || '').trim(),
-                        paymentStatus: String(r.c[6]?.v || '').trim(),
-                        qualityCheckPlannedDate: String(r.c[7]?.v || '').trim(),
-                        qualityCheck1Url: String(r.c[8]?.v || '').trim(),
-                        qualityCheck2Url: String(r.c[9]?.v || '').trim(),
-                        qualityCheck3Url: String(r.c[10]?.v || '').trim(),
-                        qualityCheck4Url: String(r.c[11]?.v || '').trim(),
-                        qualityCheckStatus: String(r.c[12]?.v || '').trim(),
-                    } as StepData)).filter(row => row.orderNo && row.orderNo.toLowerCase() !== '#n/a');
+                    // FIX: Use 'any' for row type to allow flexible access and avoid strict typing issues with 'unknown'.
+                    parsedStepData = json.table.rows.map((r: any) => ({
+                        orderNo: String(r.c?.[0]?.v || '').trim(),
+                        productionDate: String(r.c?.[1]?.v || '').trim(),
+                        productionStatus: String(r.c?.[2]?.v || '').trim(),
+                        sobDate: String(r.c?.[3]?.v || '').trim(),
+                        sobStatus: String(r.c?.[4]?.v || '').trim(),
+                        paymentPlannedDate: String(r.c?.[5]?.v || '').trim(),
+                        paymentStatus: String(r.c?.[6]?.v || '').trim(),
+                        qualityCheckPlannedDate: String(r.c?.[7]?.v || '').trim(),
+                        qualityCheck1Url: String(r.c?.[8]?.v || '').trim(),
+                        qualityCheck2Url: String(r.c?.[9]?.v || '').trim(),
+                        qualityCheck3Url: String(r.c?.[10]?.v || '').trim(),
+                        qualityCheck4Url: String(r.c?.[11]?.v || '').trim(),
+                        qualityCheckStatus: String(r.c?.[12]?.v || '').trim(),
+                    } as StepData)).filter((row: StepData) => row.orderNo && row.orderNo.toLowerCase() !== '#n/a');
                 }
             }
         }
@@ -2436,14 +2740,16 @@ const App = () => {
             const apiKeyText = await apiKeyResponse.text();
             const match = apiKeyText.match(/{.*}/s);
             if (match) {
-                const json = JSON.parse(match[0]);
+                // FIX: Cast JSON.parse result to 'any' to avoid 'unknown' type issues.
+                const json: any = JSON.parse(match[0]);
                 if (json.status === 'ok') {
-                    json.table.rows.forEach((r: { c: ({ v: any } | null)[] }) => {
+                    // FIX: Use 'any' for row type to allow flexible access and avoid strict typing issues with 'unknown'.
+                    json.table.rows.forEach((r: any) => {
                         // FIX: Explicitly convert potential non-string values to string to prevent
                         // "Type 'unknown' cannot be used as an index type" error. The 'v' property
                         // from gviz can be of various types, and its inferred type here is 'any'.
-                        const name = String(r.c[0]?.v || '').trim();
-                        const key = String(r.c[1]?.v || '').trim();
+                        const name: string = String(r.c?.[0]?.v || '').trim();
+                        const key: string = String(r.c?.[1]?.v || '').trim();
                         if (name && key) {
                             fetchedCredentials[name] = key;
                         }
@@ -2458,23 +2764,20 @@ const App = () => {
         const savedName = localStorage.getItem('dashboard_username');
         const savedKey = localStorage.getItem('dashboard_apikey');
 
-        // FIX: Reverted to a `typeof` check because the truthiness check is not
-        // sufficient to narrow the type for the indexer in this environment, which
-        // was causing a "Type 'unknown' cannot be used as an index type" error.
-        if (typeof savedName === 'string' && savedName && typeof savedKey === 'string' && savedKey) {
-          // FIX: In some TypeScript environments, re-assigning a type-guarded variable can cause it
-          // to lose its narrowed type. Using the original `savedName` variable directly ensures
-          // the `string` type is preserved for indexing, fixing the error.
-          if (
-            Object.prototype.hasOwnProperty.call(allCredentials, savedName) &&
-            allCredentials[savedName] === savedKey
-          ) {
-            setAuthenticatedUser(savedName);
-            setCurrentUser(savedName);
-          } else {
-            localStorage.removeItem('dashboard_username');
-            localStorage.removeItem('dashboard_apikey');
-          }
+        let isAutoLoginValid = false;
+        if (savedName && savedKey) {
+            const nameToCheck = String(savedName);
+            if (Object.prototype.hasOwnProperty.call(allCredentials, nameToCheck)) {
+                // FIX: Cast to any to avoid "Type 'unknown' cannot be used as an index type" error
+                if (allCredentials[nameToCheck] === savedKey) {
+                    isAutoLoginValid = true;
+                }
+            }
+        }
+
+        if (isAutoLoginValid && savedName) {
+          setAuthenticatedUser(savedName);
+          setCurrentUser(savedName);
         } else {
           localStorage.removeItem('dashboard_username');
           localStorage.removeItem('dashboard_apikey');
@@ -2498,16 +2801,19 @@ const App = () => {
     fetchData();
   }, []);
   
-// FIX: To resolve a "Type 'unknown' cannot be used as an index type" error, an explicit `typeof`
-// check is added to help the type-checker in this strict environment.
   const handleLogin = (name: string, key: string): boolean => {
-    // FIX: Removed the redundant `typeof name === 'string'` check. The `name` parameter is already typed as a string, and this check could confuse stricter type checkers, causing the "Type 'unknown' cannot be used as an index type" error.
-    if (userCredentials && Object.prototype.hasOwnProperty.call(userCredentials, name) && userCredentials[name] === key) {
-      localStorage.setItem('dashboard_username', name);
-      localStorage.setItem('dashboard_apikey', key);
-      setAuthenticatedUser(name);
-      setCurrentUser(name);
-      return true;
+    // Explicitly ensuring name is a string to prevent "Type 'unknown' cannot be used as an index type" error
+    const loginName = String(name);
+    
+    if (userCredentials && Object.prototype.hasOwnProperty.call(userCredentials, loginName)) {
+        // FIX: Cast to any to avoid "Type 'unknown' cannot be used as an index type" error
+        if (userCredentials[loginName] === key) {
+            localStorage.setItem('dashboard_username', loginName);
+            localStorage.setItem('dashboard_apikey', key);
+            setAuthenticatedUser(loginName);
+            setCurrentUser(loginName);
+            return true;
+        }
     }
     return false;
   };
@@ -2549,18 +2855,9 @@ const App = () => {
     let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
 
     if (selectedYear !== 'All') {
-        filtered = filtered.filter(d => {
-            // Shipped/Complete orders are judged by their stuffing month for FY filtering.
-            const status = d.originalStatus?.toUpperCase();
-            if (status === 'SHIPPED' || status === 'COMPLETE') {
-                const stuffingDate = parseDate(d.stuffingMonth);
-                return getFiscalYearFromDate(stuffingDate) === selectedYear;
-            }
-            
-            // All other orders (Received, In Process) are judged by their order date.
-            const orderDate = parseDate(d.orderDate);
-            return getFiscalYearFromDate(orderDate) === selectedYear;
-        });
+        // User requested to filter by FY column directly. 
+        // We have already mapped #N/A to '25-26' in parsedLiveData.
+        filtered = filtered.filter(d => d.fy === selectedYear);
     }
 
     const sDate = startDate ? parseDate(startDate) : null;
@@ -2697,54 +2994,168 @@ const App = () => {
     return availableCatalog.filter(p => !boughtCodes.has(p.productCode));
   }, [masterProductList, currentUser, clientFilteredData]);
 
-  const uniqueOrdersWithStatus = useMemo(() => {
-    const orders: Record<string, { status?: string }> = {};
+  const kpis = useMemo(() => {
+    // Base data filtered by Client (Current View) (Column M)
+    let baseData = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
+
+    // Apply Country Filter (Column N)
+    const countryFilter = activeFilters.find(f => f.type === 'country');
+    if (countryFilter) {
+        baseData = baseData.filter(d => d.country?.trim().toLowerCase() === countryFilter.value.trim().toLowerCase());
+    }
+
+    // Date Range Logic
+    const sDate = startDate ? parseDate(startDate) : null;
+    if (sDate) sDate.setHours(0, 0, 0, 0);
+    const eDate = endDate ? parseDate(endDate) : null;
+    if (eDate) eDate.setHours(23, 59, 59, 999);
+    const hasDateRange = !!(sDate || eDate);
+
+    const isinRange = (dateStr: string) => {
+         if (!hasDateRange) return true;
+         const d = parseDate(dateStr);
+         if (!d) return false;
+         return (!sDate || d >= sDate) && (!eDate || d <= eDate);
+    };
+
+    // Determine filters based on selectedYear ("25-26")
+    // If date range is active, ignore Year filter for KPIs to reflect range accurately
+    let targetYY = null;
+    let targetFY = null;
     
-    // Group by order number and determine a single, authoritative status
-    for (const row of finalFilteredData) {
-        if (!orders[row.orderNo]) {
-            orders[row.orderNo] = { status: row.originalStatus };
-        } else {
-            const currentStatus = orders[row.orderNo].status?.toUpperCase();
-            const newStatus = row.originalStatus?.toUpperCase();
+    if (!hasDateRange && selectedYear !== 'All') {
+        targetYY = selectedYear.substring(0, 2);
+        targetFY = selectedYear;
+    }
 
-            const isNewStatusShippedOrComplete = newStatus === 'SHIPPED' || newStatus === 'COMPLETE';
-            const isCurrentStatusShippedOrComplete = currentStatus === 'SHIPPED' || currentStatus === 'COMPLETE';
+    // Helper to extract YY from a date string
+    const getYY = (dateStr: string): string | null => {
+        const d = parseDate(dateStr);
+        if (!d) return null;
+        return String(d.getFullYear()).slice(-2);
+    };
 
-            // Status hierarchy: SHIPPED/COMPLETE > PLAN > anything else
-            if (isNewStatusShippedOrComplete) {
-                orders[row.orderNo].status = row.originalStatus;
-            } else if (newStatus === 'PLAN' && !isCurrentStatusShippedOrComplete) {
-                orders[row.orderNo].status = row.originalStatus;
+    const receivedOrders = new Set<string>();
+    const inProcessOrders = new Set<string>();
+    const shippedOrders = new Set<string>();
+    let totalOrderValue = 0;
+    const boughtProductsSet = new Set<string>();
+
+    baseData.forEach(row => {
+        const status = (row.originalStatus || '').toUpperCase();
+        const orderNo = row.orderNo;
+        
+        const isPlan = status === 'PLAN';
+        const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+
+        const orderDateYY = getYY(row.orderDate);
+        const stuffingMonthYY = getYY(row.stuffingMonth);
+
+        // 1. RECEIVED ORDERS (Uses Order Forwarding Date)
+        if (isPlan || isShipped) {
+            let include = false;
+            if (hasDateRange) {
+                 // User Rule: Received uses ORDER FORWARDING DATE
+                 if (isinRange(row.orderDate)) include = true;
+            } else {
+                 // Standard Logic: Order Date YY
+                 if (targetYY === null || orderDateYY === targetYY) include = true;
+            }
+            
+            if (include) receivedOrders.add(orderNo);
+
+            // 4. TOTAL ORDER VALUE & BOUGHT PRODUCTS
+            // Standard Logic: Uses FY for Value when no date range
+            // Date Range Logic: Uses Order Forwarding Date (same as Received)
+            let includeValue = false;
+            if (hasDateRange) {
+                if (isinRange(row.orderDate)) includeValue = true;
+            } else {
+                if (targetFY === null || row.fy === targetFY) includeValue = true;
+            }
+
+            if (includeValue) {
+                totalOrderValue += (row.exportValue || 0);
+                boughtProductsSet.add(row.productCode);
             }
         }
-    }
-    return Object.values(orders);
-  }, [finalFilteredData]);
 
-  const kpis = useMemo(() => {
-    const totalValue = finalFilteredData.reduce((acc: number, item) => acc + (item.exportValue || 0), 0);
-    
-    // "In Process" counts unique orders with at least one 'PLAN' item.
-    const totalInProcess = new Set(finalFilteredData.filter(item => item.originalStatus?.toUpperCase() === 'PLAN').map(item => item.orderNo)).size;
+        // 2. IN-PROCESS ORDERS (Uses Order Forwarding Date)
+        if (isPlan) {
+            let include = false;
+            if (hasDateRange) {
+                // User Rule: Plan uses ORDER FORWARDING DATE
+                if (isinRange(row.orderDate)) include = true;
+            } else {
+                // Standard Logic: Order Date YY
+                if (targetYY === null || orderDateYY === targetYY) include = true;
+            }
+            if (include) inProcessOrders.add(orderNo);
+        }
 
-    // "Shipped" counts unique orders that have a final status of SHIPPED or COMPLETE.
-    const totalShipped = uniqueOrdersWithStatus.filter(order => {
-        const status = order.status?.toUpperCase();
-        return status === 'SHIPPED' || status === 'COMPLETE';
-    }).length;
+        // 3. SHIPPED ORDERS (Uses Stuffing Month)
+        if (isShipped) {
+            let include = false;
+            if (hasDateRange) {
+                // User Rule: Shipped uses Stuffing Month
+                if (isinRange(row.stuffingMonth)) include = true;
+            } else {
+                // Standard Logic: Stuffing Month YY
+                if (targetYY === null || stuffingMonthYY === targetYY) include = true;
+            }
+            if (include) shippedOrders.add(orderNo);
+        }
+    });
 
     return {
-      totalValue: formatCurrencyNoDecimals(totalValue),
-      totalOrders: uniqueOrdersWithStatus.length,
-      totalInProcess: totalInProcess,
-      totalShipped: totalShipped,
-      boughtProducts: new Set(finalFilteredData.map(item => item.productCode)).size,
-      activeClients: new Set(finalFilteredData.map(item => item.customerName)).size,
-      countries: new Set(finalFilteredData.filter(item => item.country).map(item => item.country.trim().toLowerCase())).size,
+      totalValue: formatCurrencyNoDecimals(totalOrderValue),
+      totalOrders: receivedOrders.size,
+      totalInProcess: inProcessOrders.size,
+      totalShipped: shippedOrders.size,
+      boughtProducts: boughtProductsSet.size,
+      activeClients: new Set(baseData.map(item => item.customerName)).size,
+      countries: new Set(baseData.filter(item => item.country).map(item => item.country.trim().toLowerCase())).size,
       neverBoughtCount: neverBoughtForClientData.length,
     };
-  }, [finalFilteredData, neverBoughtForClientData, uniqueOrdersWithStatus]);
+  }, [data, currentUser, activeFilters, selectedYear, neverBoughtForClientData, startDate, endDate]);
+
+  // New data memo that strictly follows the KPI logic to prevent mismatches in the Monthly Trend Chart.
+  const kpiConsistentData = useMemo(() => {
+    // 1. Filter by Client (Base Scope)
+    let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
+    
+    // 2. Date Range Inputs
+    const sDate = startDate ? parseDate(startDate) : null;
+    const eDate = endDate ? parseDate(endDate) : null;
+    const hasDateRange = !!(sDate || eDate);
+
+    // 3. Apply Year Filter (Only if no date range is active, to behave like standard FY view)
+    if (!hasDateRange && selectedYear !== 'All') {
+        filtered = filtered.filter(d => d.fy === selectedYear);
+    }
+
+    // 4. Apply Country Filter if active
+    const countryFilter = activeFilters.find(f => f.type === 'country');
+    if (countryFilter) {
+        filtered = filtered.filter(d => d.country?.trim().toLowerCase() === countryFilter.value.trim().toLowerCase());
+    }
+    
+    // 5. Date Range Filtering for Charts (Strict Order Date Logic)
+    // Charts visualize data over time (Order Value/Volume) or breakdown (Country).
+    // This aligns with the Total Order Value KPI which uses Order Date, fixing mismatch with table mixed logic.
+    if (hasDateRange) {
+        if (sDate) sDate.setHours(0, 0, 0, 0);
+        if (eDate) eDate.setHours(23, 59, 59, 999);
+        
+        filtered = filtered.filter(d => {
+            const dDate = parseDate(d.orderDate);
+            if (!dDate) return false;
+            return (!sDate || dDate >= sDate) && (!eDate || dDate <= eDate);
+        });
+    }
+
+    return filtered;
+  }, [data, currentUser, activeFilters, startDate, endDate, selectedYear]);
   
   const singleCountryName = useMemo(() => {
     // FIX: Determine the single country name case-insensitively.
@@ -2809,7 +3220,7 @@ const App = () => {
         }));
   }, [finalFilteredData]);
 
-    const financialYearDisplay = selectedYear === 'All' ? 'FY:- 24-25 to 25-26' : `FY:- ${selectedYear}`;
+    const financialYearDisplay = selectedYear === 'All' ? 'FY:- 18-19 to 25-26' : `FY:- ${selectedYear}`;
 
     const handleFilter = (filter: Filter) => {
         setActiveFilters(prevFilters => {
@@ -2833,6 +3244,8 @@ const App = () => {
     const handleDashboardDoubleClick = () => {
         setActiveFilters([]);
     };
+
+    const baseOrderHasSubOrders = drillDownState.hasSubOrders ?? false;
   
   if (loading) return <SkeletonLoader />;
   if (error) return <div className="error">{error}</div>;
@@ -2986,7 +3399,7 @@ const App = () => {
               </div>
               <label className="view-switcher-label" htmlFor="view-switcher">Current View:</label>
                <div className="select-container">
-                  <select id="view-switcher" value={currentUser} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setCurrentUser(e.target.value); setActiveFilters([]); setDrillDownState({level: 1, baseOrder: null, subOrder: null}); setSearchQuery(''); setStartDate(''); setEndDate(''); setAdminViewMode('dashboard'); setSelectedYear('All');}} disabled={authenticatedUser !== 'admin'}>
+                  <select id="view-switcher" value={currentUser} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setCurrentUser(e.target.value); setActiveFilters([]); setDrillDownState({level: 1, baseOrder: null, subOrder: null, hasSubOrders: false}); setSearchQuery(''); setStartDate(''); setEndDate(''); setAdminViewMode('dashboard'); setSelectedYear('All');}} disabled={authenticatedUser !== 'admin'}>
                     {authenticatedUser === 'admin' ?
                       clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)
                       : <option value={authenticatedUser}>{authenticatedUser}</option>
@@ -3010,7 +3423,7 @@ const App = () => {
         <main>
           <div className="kpi-container">
               <KpiCard title="Total Order Value" value={kpis.totalValue} icon="revenue" activeFilters={activeFilters} />
-              <KpiCard title="Total Orders Received" value={formatCompactNumber(kpis.totalOrders)} icon="orders" activeFilters={activeFilters} />
+              <KpiCard title={authenticatedUser === 'admin' ? "Total Orders Received" : "Total Orders Placed"} value={formatCompactNumber(kpis.totalOrders)} icon="orders" activeFilters={activeFilters} />
               <KpiCard title="In Process" value={formatCompactNumber(kpis.totalInProcess)} icon="plan" onFilter={handleFilter} filterType="status" filterValue="PLAN" activeFilters={activeFilters}/>
               <KpiCard title="Shipped Orders" value={formatCompactNumber(kpis.totalShipped)} icon="shipped" onFilter={handleFilter} filterType="status" filterValue="SHIPPED" activeFilters={activeFilters}/>
               <KpiCard 
@@ -3029,7 +3442,7 @@ const App = () => {
                 className="never-bought-kpi"
               />
           </div>
-          {currentUser === 'admin' && (
+          {authenticatedUser === 'admin' && (
               <div className="view-toggle-buttons">
                   <button 
                       className={adminViewMode === 'dashboard' ? 'active' : ''}
@@ -3048,18 +3461,27 @@ const App = () => {
               </div>
           )}
 
-          {currentUser === 'admin' && adminViewMode === 'dashboard' ? (
-             <div className="main-content">
-                <div className="charts-container">
-                    <div className={`chart-container ${activeFilters.some(f => f.source === 'countryChart') ? 'active-filter-source' : ''}`}>
-                        <h3>Order Value by Country</h3>
-                        <SalesByCountryChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
+          {authenticatedUser === 'admin' && adminViewMode === 'dashboard' ? (
+             <div className={`main-content ${drillDownState.level > 1 ? 'table-only-view' : 'dashboard-view'}`}>
+                {/* Conditionally render charts only at Level 1 */}
+                {drillDownState.level === 1 && (
+                    <div className="charts-container">
+                        <div className={`chart-container ${activeFilters.some(f => f.source === 'countryChart') ? 'active-filter-source' : ''}`}>
+                            <h3>Order Value by Country</h3>
+                            {/* Use kpiConsistentData to ensure chart matches "Total Order Value" KPI logic (Order Date) */}
+                            <SalesByCountryChart data={kpiConsistentData} onFilter={handleFilter} activeFilters={activeFilters} />
+                        </div>
+                        <div className={`chart-container ${activeFilters.some(f => f.source === 'monthChart') ? 'active-filter-source' : ''}`}>
+                            <h3>Monthly Order Value</h3>
+                            <OrdersOverTimeChart 
+                                data={kpiConsistentData} 
+                                onFilter={handleFilter} 
+                                activeFilters={activeFilters} 
+                                selectedYear={startDate || endDate ? 'All' : selectedYear} 
+                            />
+                        </div>
                     </div>
-                     <div className={`chart-container ${activeFilters.some(f => f.source === 'monthChart') ? 'active-filter-source' : ''}`}>
-                        <h3>Monthly Order Value</h3>
-                        <OrdersOverTimeChart data={finalFilteredData} onFilter={handleFilter} activeFilters={activeFilters} />
-                    </div>
-                </div>
+                )}
                 <DataTable 
                     data={finalFilteredData} 
                     currentUser={currentUser}
@@ -3069,6 +3491,7 @@ const App = () => {
                     drillDownState={drillDownState}
                     onRowDoubleClick={handleRowDoubleClick}
                     onDrillUp={handleDrillUp}
+                    baseOrderHasSubOrders={baseOrderHasSubOrders}
                 />
              </div>
           ) : (
@@ -3082,6 +3505,7 @@ const App = () => {
                     drillDownState={drillDownState}
                     onRowDoubleClick={handleRowDoubleClick}
                     onDrillUp={handleDrillUp}
+                    baseOrderHasSubOrders={baseOrderHasSubOrders}
                 />
             </div>
           )}
