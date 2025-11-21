@@ -2894,21 +2894,32 @@ const App = () => {
     
     return clientFilteredData.filter(d => {
         const shippedDate = formatDateDDMMMYY(d.stuffingMonth).toLowerCase();
-        const statusMatch = d.status.toLowerCase().includes(lowercasedQuery) || (d.originalStatus && d.originalStatus.toLowerCase().includes(lowercasedQuery));
+        const statusMatch = (d.status && d.status.toLowerCase().includes(lowercasedQuery)) || (d.originalStatus && d.originalStatus.toLowerCase().includes(lowercasedQuery));
+        const orderMatch = d.orderNo && d.orderNo.toLowerCase().includes(lowercasedQuery);
+
+        // Product fields
+        const productMatch = (d.product && d.product.toLowerCase().includes(lowercasedQuery));
+        const codeMatch = (d.productCode && d.productCode.toLowerCase().includes(lowercasedQuery));
+        const categoryMatch = (d.category && d.category.toLowerCase().includes(lowercasedQuery));
 
         if (currentUser === 'admin') {
+            const clientMatch = d.customerName && d.customerName.toLowerCase().includes(lowercasedQuery);
+            const countryMatch = d.country && d.country.toLowerCase().includes(lowercasedQuery);
+            
             return (
                 statusMatch ||
                 shippedDate.includes(lowercasedQuery) ||
-                d.orderNo.toLowerCase().includes(lowercasedQuery) ||
-                d.customerName.toLowerCase().includes(lowercasedQuery) ||
-                d.country.toLowerCase().includes(lowercasedQuery)
+                orderMatch ||
+                clientMatch ||
+                countryMatch ||
+                productMatch || codeMatch || categoryMatch
             );
         } else { // Client view
             return (
                 statusMatch ||
                 shippedDate.includes(lowercasedQuery) ||
-                d.orderNo.toLowerCase().includes(lowercasedQuery)
+                orderMatch ||
+                productMatch || codeMatch || categoryMatch
             );
         }
     });
@@ -3304,8 +3315,8 @@ const App = () => {
   }
   
   const searchPlaceholder = currentUser === 'admin'
-    ? "Search by Status, Date, Order, Customer, Country..."
-    : "Search by Status, Date, Order No...";
+    ? "Search Status, Date, Order, Client, Country, Product, Code, Category..."
+    : "Search Status, Date, Order, Product, Code, Category...";
 
   return (
     <>
