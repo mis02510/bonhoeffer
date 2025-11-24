@@ -1255,7 +1255,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                     shippedValue: shippedValue,
                     balanceValue: balanceValue,
                     hasSubOrders: hasSubOrders,
-                    singleOrderNo: uniqueOrderNos.length === 1 ? uniqueOrderNos[0] : null,
+                    singleOrderNo: uniqueOrderNos.length === 1 ? products[0].orderNo : null,
                     hasTracking: products.some(p => stepDataOrderNos.has(p.orderNo)),
                 };
             }).sort((a, b) => {
@@ -1320,6 +1320,8 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                 }, 0);
                 const balanceQty = totalQty - shippedQty;
                 
+                const hasTracking = products.some(p => stepDataOrderNos.has(p.orderNo));
+
                 return {
                     level: 2,
                     orderNo,
@@ -1335,6 +1337,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                     totalExportValue,
                     shippedValue,
                     balanceValue,
+                    hasTracking,
                 };
             }).sort((a, b) => {
                 const dateA = parseDate(a.stuffingMonth);
@@ -1347,7 +1350,11 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
         }
 
         if (drillDownState.level === 3) {
-            return data.filter(row => row.orderNo === drillDownState.subOrder).map(row => ({ ...row, level: 3 })).sort((a, b) => {
+            return data.filter(row => row.orderNo === drillDownState.subOrder).map(row => ({ 
+                ...row, 
+                level: 3,
+                hasTracking: stepDataOrderNos.has(row.orderNo)
+            })).sort((a, b) => {
                 const dateA = parseDate(a.stuffingMonth);
                 const dateB = parseDate(b.stuffingMonth);
                 if (dateA && dateB) return dateB.getTime() - dateA.getTime();
@@ -1439,7 +1446,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                         {paginatedData.map((row: any, index: number) => (
                             <tr 
                                 key={drillDownState.level === 1 ? row.baseOrderNo : `${row.orderNo}-${index}`}
-                                className={`summary-row ${drillDownState.level === 1 && row.hasTracking ? 'has-tracking' : ''}`}
+                                className={`summary-row ${(drillDownState.level === 1 ? (!row.hasSubOrders && row.hasTracking) : row.hasTracking) ? 'has-tracking' : ''}`}
                                 onDoubleClick={() => onRowDoubleClick(row)}
                                 style={{ animationDelay: `${index * 0.05}s` }}
                             >
@@ -1454,12 +1461,35 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                 
                                 {/* Level 1 Order No */}
                                 {drillDownState.level === 1 && (
-                                    <td className="order-no-cell clickable" onClick={(e) => { e.stopPropagation(); onShowTracking(row.baseOrderNo); }} title={`Status: ${formatNa(row.status)}`}>{formatNa(row.baseOrderNo)}</td>
+                                    row.hasSubOrders ? (
+                                        <td className="order-no-cell" title="Double click to view sub-orders">{formatNa(row.baseOrderNo)}</td>
+                                    ) : (
+                                        <td className={`order-no-cell ${row.hasTracking ? 'clickable' : ''}`} 
+                                            onClick={(e) => { 
+                                                if (row.hasTracking) { 
+                                                    e.stopPropagation(); 
+                                                    onShowTracking(row.singleOrderNo || row.baseOrderNo); 
+                                                } 
+                                            }} 
+                                            title={row.hasTracking ? `Track Order` : ''}
+                                        >
+                                            {formatNa(row.baseOrderNo)}
+                                        </td>
+                                    )
                                 )}
 
                                 {/* Level 2 & 3 Order No */}
                                 {drillDownState.level > 1 && (
-                                     <td className="order-no-cell">{formatNa(row.orderNo)}</td>
+                                     <td className={`order-no-cell ${row.hasTracking ? 'clickable' : ''}`}
+                                         onClick={(e) => {
+                                             if (row.hasTracking) {
+                                                 e.stopPropagation();
+                                                 onShowTracking(row.orderNo);
+                                             }
+                                         }}
+                                     >
+                                        {formatNa(row.orderNo)}
+                                     </td>
                                 )}
 
                                 {/* Level 2 & 3 Image */}
