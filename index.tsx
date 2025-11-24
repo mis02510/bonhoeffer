@@ -65,16 +65,16 @@ const Icons = {
   bell: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>,
   calendar: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0h18M-4.5 12h28.5" /></svg>,
   box: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>,
-  truck: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>
+  truck: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>
 };
 
 // --- Data Types ---
 interface OrderData {
   status: string;
   originalStatus?: string;
-  orderDate: string;
+  orderDate: string; // ORDER FORWARDING DATE
   stuffingMonth: string;
-  forwardingMonth?: string;
+  forwardingMonth?: string; // Month
   orderNo: string;
   customerName: string;
   country: string;
@@ -90,6 +90,10 @@ interface OrderData {
   fobPrice: number;
   moq: number;
   fy: string;
+  // NEW: Additional fields for AI context from Live Sheet
+  stuffingDate?: string;
+  etd?: string; // ETD/ SOB
+  eta?: string;
 }
 
 interface MasterProductData {
@@ -431,6 +435,7 @@ const TopClientsList = ({ data }) => (
 interface CalendarViewDashboardProps {
     allOrderData: OrderData[];
     masterProductList: MasterProductData[];
+    stepData: StepData[]; // Added stepData
     clientList: string[];
     onClose: () => void;
     authenticatedUser: string | null;
@@ -439,7 +444,7 @@ interface CalendarViewDashboardProps {
     onYearChange: (year: string) => void;
 }
 
-const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, onClose, authenticatedUser, initialClientName, initialYear, onYearChange }: CalendarViewDashboardProps) => {
+const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clientList, onClose, authenticatedUser, initialClientName, initialYear, onYearChange }: CalendarViewDashboardProps) => {
     const monthNames = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], []);
     
     const years = useMemo(() => {
@@ -530,6 +535,24 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
             return countryMatch && clientMatch;
         });
     }, [allOrderData, selectedCountry, selectedClient]);
+    
+    // AI Data: Full filtered dataset for the current context (ignoring year/month/date selection to provide broader context)
+    const aiData = useMemo(() => {
+        // If admin, we use data filtered by selected client dropdown (if specific client selected) or all if 'All'
+        if (authenticatedUser === 'admin') {
+            if (selectedClient === 'All') return allOrderData;
+            return allOrderData.filter(d => d.customerName === selectedClient);
+        }
+        // If regular user, we use their data (allOrderData is already filtered in parent but we ensure it here)
+        return allOrderData.filter(d => d.customerName === authenticatedUser);
+    }, [allOrderData, selectedClient, authenticatedUser]);
+
+    const catalogDataForChat = useMemo(() => {
+        if (selectedClient === 'All' || selectedClient === 'admin') {
+            return masterProductList;
+        }
+        return masterProductList.filter(p => p.customerName === selectedClient);
+    }, [masterProductList, selectedClient]);
 
     // Helper to get YY from date
     const getYY = (date: Date | null) => date ? String(date.getFullYear()).slice(-2) : null;
@@ -819,22 +842,15 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
             .slice(0, 5);
     }, [dataForYear, monthOrders, selectedMonth, isDateInRange, targetYY]);
 
-    // --- Data for Chat Assistant ---
-    const catalogDataForChat = useMemo(() => {
-        if (selectedClient === 'All' || selectedClient === 'admin') {
-            return masterProductList;
-        }
-        return masterProductList.filter(p => p.customerName === selectedClient);
-    }, [masterProductList, selectedClient]);
-
     const countryChartDataForChat = useMemo(() => {
-        const countryData = baseFilteredData.reduce<Record<string, { name: string; value: number }>>((acc, curr) => {
+        const countryData = baseFilteredData.reduce<Record<string, { name: string; value: number, qty: number }>>((acc, curr) => {
             if (curr.country && curr.exportValue) {
                 const key = curr.country.trim().toLowerCase();
                 if (!acc[key]) {
-                    acc[key] = { name: curr.country.trim(), value: 0 };
+                    acc[key] = { name: curr.country.trim(), value: 0, qty: 0 };
                 }
                 acc[key].value += curr.exportValue;
+                acc[key].qty += (curr.qty || 0);
             }
             return acc;
         }, {});
@@ -842,9 +858,12 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
     }, [baseFilteredData]);
 
     const monthlyChartDataForChat = useMemo(() => {
+        // Enrich monthly chart data with value and qty for chat context
         return monthlyTrendChartData.map(m => ({
             name: m.name,
-            orders: m.received
+            orders: m.received,
+            value: m.totalValue,
+            qty: m.totalQty
         }));
     }, [monthlyTrendChartData]);
 
@@ -999,8 +1018,9 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, clientList, on
                 </main>
             </div>
             <ChatAssistant
-                orderData={baseFilteredData}
+                orderData={aiData}
                 catalogData={catalogDataForChat}
+                stepData={stepData}
                 clientName={selectedClient}
                 kpis={kpis}
                 countryChartData={countryChartDataForChat}
@@ -1229,6 +1249,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                     customerName: firstProduct.customerName,
                     country: firstProduct.country,
                     totalQty,
+                    shippedQty,
                     balanceQty,
                     totalExportValue: totalExportValue,
                     shippedValue: shippedValue,
@@ -1309,6 +1330,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                     customerName: firstProduct.customerName,
                     country: firstProduct.country,
                     totalQty,
+                    shippedQty,
                     balanceQty,
                     totalExportValue,
                     shippedValue,
@@ -1399,6 +1421,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                             {currentUser === 'admin' && <th>Customer</th>}
                             {currentUser === 'admin' && <th>Country</th>}
                             <th className="text-right">Qty</th>
+                            <th className="text-right">Shipped Qty</th>
                             {(drillDownState.level === 1 || drillDownState.level === 2) && <th className="text-right">Balance Qty</th>}
                             {drillDownState.level === 3 ? <>
                                 <th className="text-right">Unit Price</th>
@@ -1461,6 +1484,14 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                 
                                 {/* Qty */}
                                 <td className="text-right">{formatNumber(row.totalQty ?? row.qty)}</td>
+                                
+                                {/* Shipped Qty */}
+                                <td className="text-right">
+                                    {drillDownState.level === 3 
+                                        ? ((row.originalStatus === 'SHIPPED' || row.originalStatus === 'COMPLETE') ? formatNumber(row.qty) : '0')
+                                        : formatNumber(row.shippedQty)
+                                    }
+                                </td>
                                 
                                 {(drillDownState.level === 1 || drillDownState.level === 2) && <td className="text-right">{formatNumber(row.balanceQty)}</td>}
 
@@ -1570,7 +1601,15 @@ const SimpleMarkdown = ({ text }: { text: string }) => {
 };
 
 
-const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartData, monthlyChartData }: { orderData: OrderData[], catalogData: any[], clientName: string, kpis: any, countryChartData: {name: string, value: number}[], monthlyChartData: {name: string, orders: number}[] }) => {
+const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, countryChartData, monthlyChartData }: { 
+    orderData: OrderData[], 
+    catalogData: any[], 
+    stepData: StepData[], // Added stepData
+    clientName: string, 
+    kpis: any, 
+    countryChartData: {name: string, value: number, qty: number}[], 
+    monthlyChartData: {name: string, orders: number, value: number, qty: number}[] 
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{role: string, text: string}[]>([]);
     const [input, setInput] = useState('');
@@ -1578,28 +1617,25 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
     const chatBodyRef = useRef<HTMLDivElement>(null);
     const [showHelpPopup, setShowHelpPopup] = useState(false);
 
-    const placeholder = "Ask about orders or products...";
-    const initialMessage = "How can I help you with your orders and our product catalog today?";
+    const placeholder = "Ask about orders, products, or status...";
+    const initialMessage = "Hello how may i help you today?";
 
     useEffect(() => {
         let intervalId: number;
         let timeoutId: number;
 
-        // Helper function to show the popup and set a timer to hide it
         const showAndHide = () => {
             setShowHelpPopup(true);
             timeoutId = window.setTimeout(() => {
                 setShowHelpPopup(false);
-            }, 10000); // Hide after 10 seconds
+            }, 10000);
         };
 
         if (isOpen) {
             setShowHelpPopup(false);
         } else {
-            // Show popup immediately when the component is ready and chat is closed
             showAndHide();
-            // Then set an interval to show it periodically
-            intervalId = window.setInterval(showAndHide, 60000); // Every minute
+            intervalId = window.setInterval(showAndHide, 60000);
         }
 
         return () => {
@@ -1623,74 +1659,156 @@ const ChatAssistant = ({ orderData, catalogData, clientName, kpis, countryChartD
         setIsLoading(true);
 
         try {
-            // FIX: To prevent "input token count exceeds the maximum" errors, the raw data
-            // sent to the AI is now capped. A summary is included to inform the AI about the
-            // truncation, enabling it to provide more accurate and context-aware responses.
-            const MAX_ROWS_FOR_CONTEXT = 2000;
-
-            const isOrderDataTruncated = orderData.length > MAX_ROWS_FOR_CONTEXT;
-            const sampledOrderData = isOrderDataTruncated ? orderData.slice(0, MAX_ROWS_FOR_CONTEXT) : orderData;
-
-            const isCatalogDataTruncated = catalogData.length > MAX_ROWS_FOR_CONTEXT;
-            const sampledCatalogData = isCatalogDataTruncated ? catalogData.slice(0, MAX_ROWS_FOR_CONTEXT) : catalogData;
-
-            const dataContextForPrompt = JSON.stringify({
-                dashboard_kpis: kpis,
-                dashboard_country_chart_data: countryChartData,
-                dashboard_monthly_chart_data: monthlyChartData,
-                table_data: sampledOrderData,
-                product_catalog: sampledCatalogData,
-                _data_summary: {
-                  total_order_rows_in_view: orderData.length,
-                  order_rows_provided_to_ai: sampledOrderData.length,
-                  is_order_data_truncated: isOrderDataTruncated,
-                  total_catalog_products_in_view: catalogData.length,
-                  catalog_products_provided_to_ai: sampledCatalogData.length,
-                  is_catalog_data_truncated: isCatalogDataTruncated,
-                }
+            // ----------------------------------------------------------------
+            // Optimization: Convert data to CSV to maximize context efficiency
+            // ----------------------------------------------------------------
+            
+            // Merge step data into orders for context
+            const stepMap = new Map(stepData.map(s => [s.orderNo, s]));
+            
+            const simplifyOrders = (rows: OrderData[]) => rows.map(r => {
+                const step = stepMap.get(r.orderNo);
+                return {
+                    Status: r.status,
+                    FY: r.fy,
+                    OrderNo: r.orderNo,
+                    Client: r.customerName,
+                    Country: r.country,
+                    Product: r.product,
+                    Code: r.productCode,
+                    Category: r.category,
+                    Segment: r.segment,
+                    Qty: r.qty,
+                    Value: r.exportValue,
+                    UnitPrice: r.unitPrice,
+                    OrderDate: r.orderDate, // ORDER FORWARDING DATE
+                    StuffingMonth: r.stuffingMonth,
+                    StuffingDate: r.stuffingDate,
+                    ETD: r.etd,
+                    ETA: r.eta,
+                    // Merged Step Data
+                    ProductionDate: step?.productionDate,
+                    ProductionStatus: step?.productionStatus,
+                    SOBDate: step?.sobDate,
+                    SOBStatus: step?.sobStatus,
+                    PaymentDate: step?.paymentPlannedDate,
+                    PaymentStatus: step?.paymentStatus,
+                    QCDate: step?.qualityCheckPlannedDate,
+                    QCStatus: step?.qualityCheckStatus,
+                };
             });
+
+            // Select minimal fields for Catalog
+            const simplifyCatalog = (rows: any[]) => rows.map(r => ({
+                Code: r.productCode,
+                Category: r.category,
+                Product: r.product,
+                Client: r.customerName,
+                Country: r.country,
+                MOQ: r.moq,
+                FobPrice: r.fobPrice
+            }));
+
+            const toCSV = (arr: any[]) => {
+                if (!arr || arr.length === 0) return "No Data";
+                const headers = Object.keys(arr[0]);
+                return [
+                    headers.join(','),
+                    ...arr.map(row => headers.map(h => {
+                        const val = row[h];
+                        const str = val === null || val === undefined ? '' : String(val);
+                        // Simple CSV escaping
+                        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                            return `"${str.replace(/"/g, '""')}"`;
+                        }
+                        return str;
+                    }).join(','))
+                ].join('\n');
+            };
+
+            // PREPARE CONTEXT: Prioritize rows based on query content to avoid truncation of key info
+            // Regex to find potential order numbers in input (e.g. BM-0071, BM-0071-I)
+            const orderNoRegex = /\b[A-Za-z0-9]+-[0-9]+(?:-[A-Za-z0-9]+)?\b/gi;
+            const mentionedIds = (userMessage.text.match(orderNoRegex) || []).map(s => s.toUpperCase());
+
+            // Create context order list
+            let contextOrders = [...orderData];
+
+            // 1. Sort by date descending (Newest first)
+            contextOrders.sort((a, b) => {
+                 const dA = parseDate(a.orderDate)?.getTime() || 0;
+                 const dB = parseDate(b.orderDate)?.getTime() || 0;
+                 return dB - dA;
+            });
+
+            // 2. If IDs are mentioned, move them to the top to ensure they aren't truncated
+            if (mentionedIds.length > 0) {
+                const priority = contextOrders.filter(o => mentionedIds.some(id => o.orderNo.toUpperCase().includes(id)));
+                const others = contextOrders.filter(o => !mentionedIds.some(id => o.orderNo.toUpperCase().includes(id)));
+                contextOrders = [...priority, ...others];
+            }
+
+            // Optimization: Reduce MAX_ROWS to balance speed vs context.
+            // Increased to 5000 to improve accuracy for older orders and comprehensive aggregation.
+            const MAX_ORDERS = 5000;
+            const MAX_CATALOG = 300;
+            
+            const truncatedOrders = contextOrders.slice(0, MAX_ORDERS);
+            const truncatedCatalog = catalogData.slice(0, MAX_CATALOG);
+            
+            const ordersCSV = toCSV(simplifyOrders(truncatedOrders));
+            const catalogCSV = toCSV(simplifyCatalog(truncatedCatalog));
+
+            // Format Chart Summaries for Prompt - include Qty for country and Value/Qty for month
+            const countryChartSummary = countryChartData.map(c => `${c.name}: Total Value $${Math.round(c.value).toLocaleString()} (Total Qty ${c.qty} units)`).join(', ');
+            const monthlyChartSummary = monthlyChartData.map(m => `${m.name}: ${m.orders} orders (Total Value $${Math.round(m.value).toLocaleString()}, Total Qty ${m.qty} units)`).join(', ');
             
             const roleInstructions = clientName === 'admin'
-                ? "The user is an **admin** and can see all data. You can answer questions about any client or perform cross-client analysis based on the provided data."
-                : `The user is the client named **'${clientName}'**. You **MUST** only answer questions related to this specific client's data. Do not reveal any information about other clients. If asked about another client, politely decline and state that you can only provide information about their own account.`;
+                ? "User is ADMIN. Access to ALL data."
+                : `User is CLIENT: '${clientName}'. ONLY discuss data where Client column matches '${clientName}'. Do NOT reveal other clients' info.`;
 
-            // FIX: The system instruction has been updated to make the AI aware that the provided
-            // data may be a truncated sample. It is now explicitly instructed on how to handle
-            // this by checking a `_data_summary` field and informing the user if their query
-            // refers to data outside the provided sample, improving transparency and accuracy.
-            const systemInstruction = `You are an expert data analyst assistant for an international business dashboard. Your primary function is to answer user questions based *exclusively* on the JSON data provided. Do not use any external knowledge or make assumptions beyond the data given.
+            const systemInstruction = `You are an expert AI Data Analyst for an international business dashboard.
 
-**DATA CONTEXT OVERVIEW:**
-The user's prompt will contain a JSON object with the following keys:
-- \`dashboard_kpis\`: High-level metrics summarizing the data.
-- \`dashboard_country_chart_data\`: Data for a chart showing order values by country.
-- \`dashboard_monthly_chart_data\`: Data for a chart showing order volume by month.
-- \`table_data\`: Raw order data from the user's currently filtered view.
-- \`product_catalog\`: The product catalog relevant to the user's view.
-- \`_data_summary\`: Contains metadata about the provided data, including whether it has been truncated for performance.
+**Goal:** Provide FAST, ACCURATE, and CONCISE answers based on the provided sheets and dashboard summaries.
 
-**MANDATORY RULES FOR ANSWERING:**
-1.  **BASE ANSWERS ON RAW DATA:** For any question about totals, counts, or specific details (e.g., "How many orders for Costa Rica?"), you MUST perform calculations directly on the \`table_data\` and \`product_catalog\` arrays. These arrays are your ground truth.
-2.  **ACKNOWLEDGE TRUNCATION:** Check the \`_data_summary\` object first. If \`is_order_data_truncated\` is \`true\`, it means you only have a sample of the full dataset.
-    - If a user asks a general question (e.g., "What is the total value for Ecuador?"), perform the calculation on the data you have. You can add a small note like "Based on the provided data sample...".
-    - If a user asks for a specific item you cannot find in \`table_data\` (e.g., "order number BCH-0022"), you MUST state that you cannot find it and explicitly mention that the data you're working with is a sample. For example: "I cannot find order number 'BCH-0022' in the provided data sample as the full dataset has been truncated for performance."
-3.  **ACCURATE CALCULATIONS:** When asked for a total, iterate through the \`table_data\`, filter by the user's criteria (e.g., \`country: "Costa Rica"\`), and then perform the aggregation (e.g., count unique \`orderNo\`, sum \`qty\`, sum \`exportValue\`). Be meticulous. The user expects precise answers derived from the data.
-4.  **ADHERE TO ACCESS CONTROL:**
-    - ${roleInstructions}
-5.  **BE CONCISE AND FACTUAL:** Provide direct answers. For numerical questions, present the results clearly. Example format:
-    For Costa Rica:
-    - Total Orders: [Your calculated count of unique order numbers]
-    - Total Quantity: [Your calculated sum of qty]
-    - Total Value: [Your calculated sum of exportValue, formatted as currency]
-`;
-            
-            const prompt = `
-                **DATA CONTEXT:**
-                Here is the JSON data from the user's current dashboard view. Use this data exclusively to answer the question.
-                ${dataContextForPrompt}
+**Your Data Sources:**
+1. **Aggregated Summaries (Charts/KPIs):** These contain the TRUE totals calculated from the full dataset.
+   - **USE THESE FOR "TOTAL" QUESTIONS** (e.g., "Total value for Peru", "Total orders in Jan").
+   - **Do NOT** try to sum the CSV rows for country/month totals manually, trust these summaries.
+   
+2. **Orders CSV (Context):** A merged view of the **"Live" sheet** (Order Details) and **"Step" sheet** (Tracking).
+   - Contains: Status, FY, OrderNo, Client, Country, Product info, Dates (Order/Forwarding, Stuffing, ETD, ETA), Qty, Value.
+   - **Tracking Columns:** ProductionDate/Status, SOBDate/Status, PaymentDate/Status, QCDate/Status.
+   - Use this for specific order inquiries (e.g., "What is the status of BM-0071?", "When is the Quality Check planned?").
+   - **Note:** "OrderDate" in CSV corresponds to "ORDER FORWARDING DATE" in the source sheet.
 
-                **User's Question:** "${input}"
-            `;
+3. **Catalog CSV (Context):** Data from the **"MASTER" sheet**.
+   - Contains: Product codes, Categories, Segments, and basic product info.
+
+**Dashboard Context:**
+- **KPIs:** ${JSON.stringify(kpis)}
+- **Order Value & Quantity by Country (Chart Summary):** [${countryChartSummary}]
+- **Monthly Order Volume & Value (Chart Summary):** [${monthlyChartSummary}]
+
+**Rules:**
+1. **Privacy:** ${roleInstructions}
+2. **Accuracy:** Trust the Chart Summaries for high-level totals. Trust the CSV for specific order details/status.
+3. **Speed:** Keep answers short. Use bullet points.
+4. **Dates:** Parse dates intelligently (e.g., "Jun-24" or "05-Jun-24").
+5. **No Hallucinations:** If data is missing (e.g., country not in chart summary), say "No data found".
+
+**Response Style:** Direct, Professional, Helpful.`;
+
+            const prompt = `Data Context (CSV):
+--- ORDERS START (Top ${truncatedOrders.length} records from Live & Step Sheets) ---
+${ordersCSV}
+--- ORDERS END ---
+
+--- CATALOG START (Top ${truncatedCatalog.length} records from Master Sheet) ---
+${catalogCSV}
+--- CATALOG END ---
+
+User Question: "${userMessage.text}"`;
 
             const responseStream = await ai.models.generateContentStream({
                 model: 'gemini-2.5-flash',
@@ -1712,7 +1830,7 @@ The user's prompt will contain a JSON object with the following keys:
 
         } catch (error) {
             console.error("Error calling Gemini API:", error);
-            const errorMessage = "Sorry, I'm having trouble connecting to my brain right now. Please try again later.";
+            const errorMessage = "I'm having trouble analyzing the data right now. Please try again in a moment.";
             setMessages(prev => {
                 const newMessages = [...prev];
                 newMessages[newMessages.length - 1].text = errorMessage;
@@ -1770,7 +1888,7 @@ The user's prompt will contain a JSON object with the following keys:
 
 // ... (NeverBoughtDashboard, OrderTrackingModal, SalesByCountryChart, OrdersOverTimeChart, SkeletonLoader, UserManagement, ThemeToggles, AnnouncementsPanel) ...
 
-const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientName, clientList, onClose, authenticatedUser }: { allOrderData: OrderData[], masterProductList: MasterProductData[], initialClientName: string, clientList: string[], onClose: () => void, authenticatedUser: string }) => {
+const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initialClientName, clientList, onClose, authenticatedUser }: { allOrderData: OrderData[], masterProductList: MasterProductData[], stepData: StepData[], initialClientName: string, clientList: string[], onClose: () => void, authenticatedUser: string }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState(initialClientName);
 
@@ -1849,6 +1967,7 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, initialClientNa
         <ChatAssistant 
           orderData={relevantOrderData} 
           catalogData={filteredCatalogData} 
+          stepData={stepData}
           clientName={selectedUser} 
           kpis={{}}
           countryChartData={[]}
@@ -2652,7 +2771,11 @@ const App = () => {
             'Products Code': 'productCode', 'Qty': 'qty', 'Export Value': 'exportValue',
             'Logo Image': 'logoUrl', 'Category': 'category', 'Segment': 'segment',
             'Product': 'product', 'Image Link': 'imageLink', 'Unit Price': 'unitPrice',
-            'Fob Price': 'fobPrice', 'MOQ': 'moq', 'Month': 'forwardingMonth', 'FY': 'fy'
+            'Fob Price': 'fobPrice', 'MOQ': 'moq', 'Month': 'forwardingMonth', 'FY': 'fy',
+            // NEW: Mappings for full AI context
+            'Stuffing Date': 'stuffingDate',
+            'ETD/ SOB': 'etd',
+            'ETA': 'eta'
         };
         const parsedLiveDataWithoutFyFallback: OrderData[] = parseGvizResponse(liveText, liveHeaderMapping, ['orderNo']);
 
@@ -3188,48 +3311,52 @@ const App = () => {
 
   const countryChartData = useMemo(() => {
     // FIX: Group country data case-insensitively to provide accurate, aggregated data for the AI assistant.
-    const countryData = finalFilteredData.reduce<Record<string, { name: string; value: number }>>((acc, curr) => {
-        if (curr.country && curr.exportValue) {
+    const countryData = kpiConsistentData.reduce<Record<string, { name: string; value: number; qty: number }>>((acc, curr) => {
+        // FIX: Removed the check for `curr.exportValue` to ensure quantities are summed correctly even if value is missing/zero.
+        if (curr.country) {
             const key = curr.country.trim().toLowerCase();
             if (!acc[key]) {
-                acc[key] = { name: curr.country.trim(), value: 0 };
+                acc[key] = { name: curr.country.trim(), value: 0, qty: 0 };
             }
             acc[key].value += curr.exportValue;
+            acc[key].qty += (curr.qty || 0);
         }
         return acc;
     }, {});
     return Object.values(countryData)
         .sort((a, b) => b.value - a.value);
-  }, [finalFilteredData]);
+  }, [kpiConsistentData]);
 
   const monthlyChartData = useMemo(() => {
-        // 1. Create a map to store the first encountered date for each unique order number.
-        const uniqueOrderDates = new Map<string, Date>();
-        for (const item of finalFilteredData) {
-            if (item.orderNo && !uniqueOrderDates.has(item.orderNo)) {
-                if (item.orderDate) {
-                    const date = parseDate(item.orderDate);
-                    if (date) {
-                        uniqueOrderDates.set(item.orderNo, date);
-                    }
-                }
-            }
+        const monthData = Array.from({ length: 12 }, () => ({ orders: new Set<string>(), value: 0, qty: 0 }));
+
+        for (const item of kpiConsistentData) {
+             // NEW: Filter status to match Chart logic. Only include relevant orders for value/qty aggregation.
+             const status = (item.originalStatus || item.status || '').toUpperCase();
+             const isPlan = status === 'PLAN';
+             const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+             
+             if (!isPlan && !isShipped) continue;
+
+             if (item.orderDate) {
+                 const date = parseDate(item.orderDate);
+                 if (date) {
+                     const monthIndex = date.getMonth();
+                     monthData[monthIndex].value += (item.exportValue || 0);
+                     monthData[monthIndex].qty += (item.qty || 0);
+                     if (item.orderNo) monthData[monthIndex].orders.add(item.orderNo);
+                 }
+             }
         }
 
-        // 2. Count the orders per month based on the unique order dates.
-        const monthCounts: Record<string, number> = {};
-        for (const date of uniqueOrderDates.values()) {
-            const month = date.toLocaleString('default', { month: 'short' });
-            monthCounts[month] = (monthCounts[month] || 0) + 1;
-        }
-
-        // 3. Format for the chart.
         const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        return monthOrder.map(month => ({
+        return monthOrder.map((month, index) => ({
             name: month,
-            orders: monthCounts[month] || 0
+            orders: monthData[index].orders.size,
+            value: monthData[index].value,
+            qty: monthData[index].qty
         }));
-  }, [finalFilteredData]);
+  }, [kpiConsistentData]);
 
     const financialYearDisplay = selectedYear === 'All' ? 'FY:- 18-19 to 25-26' : `FY:- ${selectedYear}`;
 
@@ -3258,6 +3385,13 @@ const App = () => {
 
     const baseOrderHasSubOrders = drillDownState.hasSubOrders ?? false;
   
+  // AI Data Context: Strict filtering by user permission, ignoring UI date/search filters
+  // to ensure the AI can answer questions about "all data".
+  const aiData = useMemo(() => {
+      if (currentUser === 'admin') return data;
+      return data.filter(d => d.customerName === currentUser);
+  }, [data, currentUser]);
+
   if (loading) return <SkeletonLoader />;
   if (error) return <div className="error">{error}</div>;
 
@@ -3285,6 +3419,7 @@ const App = () => {
       return <CalendarViewDashboard
         allOrderData={data}
         masterProductList={masterProductList}
+        stepData={stepData}
         clientList={clientList}
         onClose={() => setMainViewMode('dashboard')}
         authenticatedUser={authenticatedUser}
@@ -3307,6 +3442,7 @@ const App = () => {
     return <NeverBoughtDashboard 
         allOrderData={data}
         masterProductList={masterProductList}
+        stepData={stepData}
         initialClientName={currentUser}
         clientList={clientList}
         onClose={() => setShowNeverBought(false)} 
@@ -3523,8 +3659,9 @@ const App = () => {
         </main>
       </div>
       <ChatAssistant 
-          orderData={finalFilteredData} 
+          orderData={aiData} 
           catalogData={relevantCatalogData}
+          stepData={stepData}
           clientName={currentUser} 
           kpis={kpis}
           countryChartData={countryChartData}
