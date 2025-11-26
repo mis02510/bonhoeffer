@@ -304,19 +304,29 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
             const dataPoint = payload[0].payload;
             const hasMetrics = payload.some(p => p.value > 0);
             
-            const hasTotals = dataPoint.totalValue > 0 || dataPoint.totalQty > 0;
-            const hasShippedTotals = dataPoint.shippedValue > 0 || dataPoint.shippedQty > 0;
-    
+            // Determine active states
+            const showReceived = activeMetric === 'received' || activeMetric === null;
+            const showPlanned = activeMetric === 'planned' || activeMetric === null;
+            const showShipped = activeMetric === 'shipped' || activeMetric === null;
+
+            // Check if we have values to show based on selection
+            const hasReceivedTotals = showReceived && (dataPoint.totalValue > 0 || dataPoint.totalQty > 0);
+            const hasPlannedTotals = showPlanned && (dataPoint.plannedValue > 0 || dataPoint.plannedQty > 0);
+            const hasShippedTotals = showShipped && (dataPoint.shippedValue > 0 || dataPoint.shippedQty > 0);
+            
+            const hasAnyTotals = hasReceivedTotals || hasPlannedTotals || hasShippedTotals;
+
             // If there's nothing to show at all, render nothing.
-            if (!hasMetrics && !(isDailyView && (hasTotals || hasShippedTotals))) return null;
+            if (!hasMetrics && !(isDailyView && hasAnyTotals)) return null;
 
             return (
                 <div className="recharts-default-tooltip" style={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)', borderRadius: '8px', padding: '0.5rem 1rem', maxWidth: '350px' }}>
                     <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>{displayLabel}</p>
-                    {/* This part is for both views: shows Received, In Process, Shipped if they have a value */}
+                    {/* Metrics Section */}
                     {payload.map(p => {
                        if (p.value > 0) {
                            if (p.dataKey === 'received') {
+                                if (!showReceived && activeMetric !== null) return null;
                                 const orderNumbers = dataPoint.receivedOrderNumbers || [];
                                 const maxOrdersToShow = 15;
                                 const displayOrders = orderNumbers.slice(0, maxOrdersToShow);
@@ -331,6 +341,7 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                                                 {remaining > 0 && <span>{`, +${remaining} etc`}</span>}
                                             </p>
                                         )}
+                                        {/* For Monthly view, show total values here if filtered */}
                                         {!isDailyView && (
                                             <>
                                                 <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.totalValue)}`}</p>
@@ -339,6 +350,13 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                                         )}
                                     </div>
                                 );
+                           }
+
+                           if (p.dataKey === 'planned') {
+                               if (!showPlanned && activeMetric !== null) return null;
+                           }
+                           if (p.dataKey === 'shipped') {
+                               if (!showShipped && activeMetric !== null) return null;
                            }
 
                            let orderNumbers: string[] = [];
@@ -361,19 +379,38 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                                            {remaining > 0 && <span>{`, +${remaining} more`}</span>}
                                        </p>
                                    )}
+                                   {/* For Monthly view, show specific metric values here */}
+                                   {!isDailyView && p.dataKey === 'planned' && (
+                                       <>
+                                           <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.plannedValue)}`}</p>
+                                           <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.plannedQty)}`}</p>
+                                       </>
+                                   )}
+                                   {!isDailyView && p.dataKey === 'shipped' && (
+                                       <>
+                                           <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.shippedValue)}`}</p>
+                                           <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.shippedQty)}`}</p>
+                                       </>
+                                   )}
                                </div>
                            )
                        }
                        return null;
                     })}
     
-                    {/* This part is ONLY for the daily view */}
-                    {isDailyView && (hasTotals || hasShippedTotals) && (
+                    {/* This part is ONLY for the daily view totals */}
+                    {isDailyView && hasAnyTotals && (
                       <div style={{marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--grid-stroke)'}}>
-                        {hasTotals && (
-                            <div style={{ marginBottom: hasShippedTotals ? '0.5rem' : 0 }}>
-                                {dataPoint.totalValue > 0 && <p style={{ margin: 0 }}>{`Total Order Value: ${formatCurrency(dataPoint.totalValue)}`}</p>}
-                                {dataPoint.totalQty > 0 && <p style={{ margin: 0 }}>{`Total Order Qty: ${formatNumber(dataPoint.totalQty)}`}</p>}
+                        {hasReceivedTotals && (
+                            <div style={{ marginBottom: (hasPlannedTotals || hasShippedTotals) ? '0.5rem' : 0 }}>
+                                {dataPoint.totalValue > 0 && <p style={{ margin: 0, color: 'var(--calendar-received-color)' }}>{`Total Order Value: ${formatCurrency(dataPoint.totalValue)}`}</p>}
+                                {dataPoint.totalQty > 0 && <p style={{ margin: 0, color: 'var(--calendar-received-color)' }}>{`Total Order Qty: ${formatNumber(dataPoint.totalQty)}`}</p>}
+                            </div>
+                        )}
+                        {hasPlannedTotals && (
+                             <div style={{ marginBottom: hasShippedTotals ? '0.5rem' : 0 }}>
+                                {dataPoint.plannedValue > 0 && <p style={{ margin: 0, color: 'var(--calendar-planned-color)' }}>{`In Process Value: ${formatCurrency(dataPoint.plannedValue)}`}</p>}
+                                {dataPoint.plannedQty > 0 && <p style={{ margin: 0, color: 'var(--calendar-planned-color)' }}>{`In Process Qty: ${formatNumber(dataPoint.plannedQty)}`}</p>}
                             </div>
                         )}
                         {hasShippedTotals && (
@@ -693,17 +730,41 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     const maxMonthlyValue = useMemo(() => Math.max(1, ...calendarData.map(m => Math.max(m.received, m.planned, m.shipped))), [calendarData]);
 
     const monthlyTotals = useMemo(() => {
-        const totals = Array.from({ length: 12 }, () => ({ totalValue: 0, totalQty: 0 }));
+        const totals = Array.from({ length: 12 }, () => ({ 
+            totalValue: 0, totalQty: 0, 
+            plannedValue: 0, plannedQty: 0,
+            shippedValue: 0, shippedQty: 0 
+        }));
+        
         dataForYear.forEach(d => {
              const status = (d.originalStatus || d.status || '').toUpperCase();
-             if (status === 'PLAN' || status === 'SHIPPED' || status === 'COMPLETE') {
-                 const orderDate = parseDate(d.orderDate);
-                 if (orderDate && isDateInRange(orderDate)) {
-                     const orderYY = getYY(orderDate);
-                     if (!targetYY || orderYY === targetYY) {
-                        totals[orderDate.getMonth()].totalValue += d.exportValue;
-                        totals[orderDate.getMonth()].totalQty += d.qty;
-                     }
+             const isPlan = status === 'PLAN';
+             const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+             
+             // Received (Total) & Planned aggregation based on Order Date
+             const orderDate = parseDate(d.orderDate);
+             if ((isPlan || isShipped) && orderDate && isDateInRange(orderDate)) {
+                 const orderYY = getYY(orderDate);
+                 if (!targetYY || orderYY === targetYY) {
+                    const monthIdx = orderDate.getMonth();
+                    totals[monthIdx].totalValue += d.exportValue;
+                    totals[monthIdx].totalQty += d.qty;
+                    
+                    if (isPlan) {
+                        totals[monthIdx].plannedValue += d.exportValue;
+                        totals[monthIdx].plannedQty += d.qty;
+                    }
+                 }
+             }
+
+             // Shipped aggregation based on Stuffing Date
+             const stuffingDate = parseDate(d.stuffingMonth);
+             if (isShipped && stuffingDate && isDateInRange(stuffingDate)) {
+                 const stuffingYY = getYY(stuffingDate);
+                 if (!targetYY || stuffingYY === targetYY) {
+                     const monthIdx = stuffingDate.getMonth();
+                     totals[monthIdx].shippedValue += d.exportValue;
+                     totals[monthIdx].shippedQty += d.qty;
                  }
              }
         });
@@ -734,10 +795,9 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         const daysInMonth = new Date(fullYearForDate, selectedMonth + 1, 0).getDate();
         const dailyData = Array.from({ length: daysInMonth }, (_, i) => ({
             day: i + 1,
-            totalValue: 0,
-            totalQty: 0,
-            shippedValue: 0,
-            shippedQty: 0,
+            totalValue: 0, totalQty: 0,
+            plannedValue: 0, plannedQty: 0,
+            shippedValue: 0, shippedQty: 0,
             shippedOrders: new Set<string>(),
             receivedOrders: new Set<string>(),
             plannedOrders: new Set<string>(),
@@ -745,9 +805,11 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
 
         dataForYear.forEach(d => {
             const status = (d.originalStatus || d.status || '').toUpperCase();
+            const isPlan = status === 'PLAN';
             const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+
+            // Shipped Logic
             const stuffingDate = parseDate(d.stuffingMonth);
-            
             if (isShipped && stuffingDate && stuffingDate.getMonth() === selectedMonth && isDateInRange(stuffingDate)) {
                  const stuffingYY = getYY(stuffingDate);
                  if (!targetYY || stuffingYY === targetYY) {
@@ -759,25 +821,23 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                      }
                  }
             }
-        });
-
-        dataForYear.forEach(d => {
-            const status = (d.originalStatus || d.status || '').toUpperCase();
-            const isPlan = status === 'PLAN';
-            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+            
+            // Received & Planned Logic
             const orderDate = parseDate(d.orderDate);
-
             if ((isPlan || isShipped) && orderDate && orderDate.getMonth() === selectedMonth && isDateInRange(orderDate)) {
                 const orderYY = getYY(orderDate);
                 if (!targetYY || orderYY === targetYY) {
                     const dayIndex = orderDate.getDate() - 1;
                     if (dailyData[dayIndex]) {
                          dailyData[dayIndex].receivedOrders.add(d.orderNo.toUpperCase());
-                         if (isPlan) {
-                             dailyData[dayIndex].plannedOrders.add(d.orderNo.toUpperCase());
-                         }
                          dailyData[dayIndex].totalValue += d.exportValue;
                          dailyData[dayIndex].totalQty += d.qty;
+
+                         if (isPlan) {
+                             dailyData[dayIndex].plannedOrders.add(d.orderNo.toUpperCase());
+                             dailyData[dayIndex].plannedValue += d.exportValue;
+                             dailyData[dayIndex].plannedQty += d.qty;
+                         }
                     }
                 }
             }
@@ -790,6 +850,8 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             shipped: data.shippedOrders.size,
             totalValue: data.totalValue,
             totalQty: data.totalQty,
+            plannedValue: data.plannedValue,
+            plannedQty: data.plannedQty,
             shippedValue: data.shippedValue,
             shippedQty: data.shippedQty,
             shippedOrderNumbers: Array.from(data.shippedOrders),
@@ -984,9 +1046,9 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                                         </div>
                                         <div className="calendar-month-tooltip">
                                             <strong>{month} {selectedYear}</strong>
-                                            <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>
-                                            <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>
-                                            <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>
+                                            {(activeMetric === null || activeMetric === 'received') && <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>}
+                                            {(activeMetric === null || activeMetric === 'planned') && <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>}
+                                            {(activeMetric === null || activeMetric === 'shipped') && <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>}
                                         </div>
                                     </div>
                                 ))}
@@ -3580,9 +3642,8 @@ const App = () => {
       const accountRow = accountData.find(acc => acc.orderNo.includes(orderNo));
 
       // 2. Calculate Order Qty from Live Data (Sum of all products for this order)
-      // We use baseOrderNo logic to catch all parts of the order
-      const baseNo = getBaseOrderNo(orderNo);
-      const relatedLiveRows = data.filter(d => getBaseOrderNo(d.orderNo) === baseNo);
+      // FIX: Use exact order number match to avoid summing up sibling sub-orders (e.g. BP-0094-I vs BP-0094-II)
+      const relatedLiveRows = data.filter(d => d.orderNo === orderNo);
       const orderQty = relatedLiveRows.reduce((sum, r) => sum + r.qty, 0);
 
       // 3. Get Financials. Prefer Account Row if available.
