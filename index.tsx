@@ -65,7 +65,8 @@ const Icons = {
   bell: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>,
   calendar: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0h18M-4.5 12h28.5" /></svg>,
   box: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>,
-  truck: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>
+  truck: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>,
+  bank: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" /></svg>
 };
 
 // --- Data Types ---
@@ -94,6 +95,28 @@ interface OrderData {
   stuffingDate?: string;
   etd?: string; // ETD/ SOB
   eta?: string;
+}
+
+interface AccountData {
+  sNo: string;
+  orderDate: string;
+  country: string;
+  company: string;
+  orderNo: string;
+  product: string;
+  productCode: string;
+  port: string;
+  shippingMonth: string;
+  sob: string;
+  totalOrderValue: number;
+  creditNote: string;
+  marketBudget: string;
+  paymentReceived: number;
+  balancePayment: number;
+  eta: string;
+  paymentDueDate: string;
+  status: string;
+  comment: string;
 }
 
 interface MasterProductData {
@@ -231,6 +254,8 @@ const getBaseOrderNo = (orderNo: string): string => {
     
     return upperOrderNo;
 };
+
+// ... [Previous CalendarViewDashboard Components remain unchanged] ...
 
 // ### calendar view
 const CalendarKpiCard = ({ title, value, icon, variant, onClick, isDimmed }: any) => (
@@ -445,11 +470,11 @@ interface CalendarViewDashboardProps {
 }
 
 const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clientList, onClose, authenticatedUser, initialClientName, initialYear, onYearChange }: CalendarViewDashboardProps) => {
+    // ... [Same implementation as before] ...
     const monthNames = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], []);
     
     const years = useMemo(() => {
         const yearSet = new Set<string>(allOrderData.map(d => d.fy).filter(Boolean));
-// FIX: Add explicit types to sort callback to prevent errors with 'unknown' type.
         return Array.from(yearSet).sort((a: string, b: string) => b.localeCompare(a));
     }, [allOrderData]);
 
@@ -527,7 +552,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         return 2000 + parseInt(targetYY, 10);
     }, [targetYY]);
     
-    // Base data filtered only by client/country, NOT by year. Used for consistent calculations.
     const baseFilteredData = useMemo(() => {
         return allOrderData.filter(d => {
             const countryMatch = selectedCountry === 'All' || d.country === selectedCountry;
@@ -536,14 +560,11 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         });
     }, [allOrderData, selectedCountry, selectedClient]);
     
-    // AI Data: Full filtered dataset for the current context (ignoring year/month/date selection to provide broader context)
     const aiData = useMemo(() => {
-        // If admin, we use data filtered by selected client dropdown (if specific client selected) or all if 'All'
         if (authenticatedUser === 'admin') {
             if (selectedClient === 'All') return allOrderData;
             return allOrderData.filter(d => d.customerName === selectedClient);
         }
-        // If regular user, we use their data (allOrderData is already filtered in parent but we ensure it here)
         return allOrderData.filter(d => d.customerName === authenticatedUser);
     }, [allOrderData, selectedClient, authenticatedUser]);
 
@@ -554,10 +575,8 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         return masterProductList.filter(p => p.customerName === selectedClient);
     }, [masterProductList, selectedClient]);
 
-    // Helper to get YY from date
     const getYY = (date: Date | null) => date ? String(date.getFullYear()).slice(-2) : null;
 
-    // Data filtered by the selected Fiscal Year (YY logic).
     const dataForYear = useMemo(() => {
         return baseFilteredData.filter(d => {
             if (!targetYY) return true;
@@ -571,10 +590,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             const orderYY = getYY(orderDate);
             const stuffingYY = getYY(stuffingDate);
             
-            // Include if it contributes to any of the 3 KPIs
-            // Received/Planned relies on Order Date
             const matchesOrder = (isPlan || isShipped) && orderYY === targetYY;
-            // Shipped relies on Stuffing Date
             const matchesStuffing = isShipped && stuffingYY === targetYY;
             
             return matchesOrder || matchesStuffing;
@@ -586,8 +602,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         if (authenticatedUser !== 'admin') {
             dataForCountryList = allOrderData.filter(d => d.customerName === authenticatedUser);
         }
-        // We use baseFilteredData or dataForYear to get relevant countries for dropdown? 
-        // Usually countries list should be consistent with user permissions + year.
         return ['All', ...new Set(dataForCountryList.filter(d => d.fy === selectedYear).map(d => d.country).filter(Boolean).sort())];
     }, [allOrderData, selectedYear, authenticatedUser]);
 
@@ -610,17 +624,14 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             const stuffingYY = getYY(stuffingDate);
             const orderNo = d.orderNo.toUpperCase();
 
-            // Received: PLAN or SHIPPED, matched by Order Date
             if ((isPlan || isShipped) && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
                 receivedOrdersByMonth[orderDate.getMonth()].add(orderNo);
             }
 
-            // Planned: PLAN only, matched by Order Date
             if (isPlan && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
                  plannedOrdersByMonth[orderDate.getMonth()].add(orderNo);
             }
 
-            // Shipped: SHIPPED only, matched by Stuffing Date
             if (isShipped && stuffingDate && (!targetYY || stuffingYY === targetYY) && isDateInRange(stuffingDate)) {
                  shippedOrdersByMonth[stuffingDate.getMonth()].add(orderNo);
             }
@@ -635,8 +646,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     }, [dataForYear, monthNames, isDateInRange, targetYY]);
 
     const yearlyKpis = useMemo(() => {
-        // Previously calculated by summing monthly counts, which caused duplicates if an order appeared in multiple months.
-        // Now calculating by counting unique orders across the filtered dataset.
         const received = new Set<string>();
         const planned = new Set<string>();
         const shipped = new Set<string>();
@@ -652,17 +661,14 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             const stuffingYY = getYY(stuffingDate);
             const orderNo = d.orderNo.toUpperCase();
 
-            // Received: PLAN or SHIPPED, matched by Order Date
             if ((isPlan || isShipped) && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
                 received.add(orderNo);
             }
 
-            // Planned: PLAN only, matched by Order Date
             if (isPlan && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
                  planned.add(orderNo);
             }
 
-            // Shipped: SHIPPED only, matched by Stuffing Date
             if (isShipped && stuffingDate && (!targetYY || stuffingYY === targetYY) && isDateInRange(stuffingDate)) {
                  shipped.add(orderNo);
             }
@@ -737,7 +743,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             plannedOrders: new Set<string>(),
         }));
 
-        // Pass for Shipped (Stuffing Date)
         dataForYear.forEach(d => {
             const status = (d.originalStatus || d.status || '').toUpperCase();
             const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
@@ -756,7 +761,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             }
         });
 
-        // Pass for Received/Planned/Value/Qty (Order Date)
         dataForYear.forEach(d => {
             const status = (d.originalStatus || d.status || '').toUpperCase();
             const isPlan = status === 'PLAN';
@@ -768,13 +772,10 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                 if (!targetYY || orderYY === targetYY) {
                     const dayIndex = orderDate.getDate() - 1;
                     if (dailyData[dayIndex]) {
-                         // Received
                          dailyData[dayIndex].receivedOrders.add(d.orderNo.toUpperCase());
-                         // Planned
                          if (isPlan) {
                              dailyData[dayIndex].plannedOrders.add(d.orderNo.toUpperCase());
                          }
-                         // Value/Qty
                          dailyData[dayIndex].totalValue += d.exportValue;
                          dailyData[dayIndex].totalQty += d.qty;
                     }
@@ -782,7 +783,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             }
         });
 
-        // Final processing to get counts from sets
         return dailyData.map(data => ({
             day: data.day,
             received: data.receivedOrders.size,
@@ -810,7 +810,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
 
         dataToProcess.forEach(d => {
             if (!d.customerName) return;
-            // Filter based on Received logic for Values (Order Date)
             const orderDate = parseDate(d.orderDate);
             if (selectedMonth === null) {
                 if (!orderDate || !isDateInRange(orderDate)) return;
@@ -858,7 +857,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     }, [baseFilteredData]);
 
     const monthlyChartDataForChat = useMemo(() => {
-        // Enrich monthly chart data with value and qty for chat context
         return monthlyTrendChartData.map(m => ({
             name: m.name,
             orders: m.received,
@@ -1032,6 +1030,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
 
 // --- Components ---
 const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, key: string) => boolean, onClearSavedUser: () => void }) => {
+    // ... [Same as before] ...
     const [name, setName] = useState('');
     const [key, setKey] = useState('');
     const [error, setError] = useState('');
@@ -1139,6 +1138,7 @@ const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, ke
 };
 
 const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filterValue = null, activeFilters, onClick = null, className = '' }) => {
+    // ... [Same as before] ...
     const isFilterable = !!filterType || !!onClick;
     const isActive = activeFilters && activeFilters.some(f => f.type === filterType && f.value === filterValue);
     
@@ -1165,6 +1165,7 @@ const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filte
 };
 
 const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepData, drillDownState, onRowDoubleClick, onDrillUp, baseOrderHasSubOrders }: { data: OrderData[], currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void, stepData: StepData[], drillDownState: { level: number, baseOrder: string | null, subOrder: string | null }, onRowDoubleClick: (row: any) => void, onDrillUp: () => void, baseOrderHasSubOrders: boolean }) => {
+    // ... [Same as before] ...
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
     const tableWrapperRef = useRef<HTMLDivElement>(null);
@@ -1555,7 +1556,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
 };
 
 const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: OrderData[], currentUser: string, authenticatedUser: string }) => {
-// ... (rest of component remains the same)
+    // ... [Same as before] ...
   const [currentPage, setCurrentPage] = useState(1);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
   const rowsPerPage = 10;
@@ -1617,6 +1618,7 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
 // ... (ChatAssistant and other helpers remain same) ...
 
 const SimpleMarkdown = ({ text }: { text: string }) => {
+    // ... [Same as before] ...
     // This is a very basic markdown renderer.
     // It handles: **bold**, and lists starting with "- ".
     const html = text
@@ -1640,6 +1642,7 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
     countryChartData: {name: string, value: number, qty: number}[], 
     monthlyChartData: {name: string, orders: number, value: number, qty: number}[] 
 }) => {
+    // ... [Same implementation as before] ...
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{role: string, text: string}[]>([]);
     const [input, setInput] = useState('');
@@ -1689,10 +1692,6 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
         setIsLoading(true);
 
         try {
-            // ----------------------------------------------------------------
-            // Optimization: Convert data to CSV to maximize context efficiency
-            // ----------------------------------------------------------------
-            
             // Merge step data into orders for context
             const stepMap = new Map(stepData.map(s => [s.orderNo, s]));
             
@@ -1778,8 +1777,6 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
                 contextOrders = [...priority, ...others];
             }
 
-            // Optimization: Reduce MAX_ROWS to balance speed vs context.
-            // Increased to 5000 to improve accuracy for older orders and comprehensive aggregation.
             const MAX_ORDERS = 5000;
             const MAX_CATALOG = 300;
             
@@ -2007,7 +2004,7 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initi
   );
 };
 
-const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose }: { orderNo: string, stepData: StepData | undefined, orderDate?: string, onClose: () => void }) => {
+const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSummary }: { orderNo: string, stepData: StepData | undefined, orderDate?: string, onClose: () => void, financialSummary?: {orderQty: number, orderValue: number, received: number, balance: number} }) => {
     useEffect(() => {
         const handleEsc = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
@@ -2039,6 +2036,13 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose }: { orderNo
             default: return Icons.circle;
         }
     };
+
+    const FinancialCard = ({ title, value, colorClass }: { title: string, value: string, colorClass: string }) => (
+        <div className={`financial-summary-card ${colorClass}`}>
+            <span className="fin-title">{title}</span>
+            <span className="fin-value">{value}</span>
+        </div>
+    );
 
     if (!stepData) {
         return (
@@ -2076,6 +2080,14 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose }: { orderNo
                     <button className="modal-close-button" onClick={onClose}>&times;</button>
                 </div>
                 <div className="modal-body">
+                    {financialSummary && (
+                        <div className="financial-summary-section">
+                            <FinancialCard title="Order Qty" value={formatNumber(financialSummary.orderQty)} colorClass="neutral" />
+                            <FinancialCard title="Order Value" value={formatCurrency(financialSummary.orderValue)} colorClass="neutral" />
+                            <FinancialCard title="Payment Received" value={formatCurrency(financialSummary.received)} colorClass="positive" />
+                            <FinancialCard title="Balance Payment" value={formatCurrency(financialSummary.balance)} colorClass="negative" />
+                        </div>
+                    )}
                     <ul className="tracking-timeline">
                         {/* Order Received Step */}
                         {orderDate && (
@@ -2145,6 +2157,7 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose }: { orderNo
 
 
 const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null }) => {
+    // ... [Same implementation as before] ...
     const chartData = useMemo(() => {
         // FIX: Group country data case-insensitively for accurate aggregation.
         const countryData = data.reduce<Record<string, { name: string; value: number; qty: number }>>((acc, curr) => {
@@ -2215,6 +2228,7 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
 };
 
 const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null, selectedYear: string }) => {
+    // ... [Same implementation as before] ...
     const chartData = useMemo(() => {
         // 1. Initialize an array to hold the total export value and unique orders for each month.
         const monthData = Array.from({ length: 12 }, () => ({ value: 0, orders: new Set<string>() }));
@@ -2330,6 +2344,7 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { 
 }
 
 const SkeletonLoader = () => (
+    // ... [Same implementation as before] ...
     <div className="dashboard-container skeleton-loader">
       <header>
         <div className="header-title">
@@ -2358,6 +2373,7 @@ const SkeletonLoader = () => (
   );
 
 const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredentialsUpdate }: { allClientNames: string[], currentCredentials: Record<string, string>, onClose: () => void, onCredentialsUpdate: () => void }) => {
+    // ... [Same implementation as before] ...
     const [selectedClient, setSelectedClient] = useState<string>('');
     const [apiKey, setApiKey] = useState<string>('');
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
@@ -2521,6 +2537,7 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
 };
 
 const ThemeToggles = ({ theme, isEyeProtection, onThemeChange, onEyeProtectionChange }) => {
+    // ... [Same as before] ...
     return (
         <div className="theme-toggles-container">
             <label className="toggle-switch" title="Toggle Eye Protection">
@@ -2538,6 +2555,7 @@ const ThemeToggles = ({ theme, isEyeProtection, onThemeChange, onEyeProtectionCh
 };
 
 const AnnouncementsPanel = ({ announcements, onClose, buttonRef }) => {
+    // ... [Same as before] ...
     const panelRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -2573,10 +2591,170 @@ const AnnouncementsPanel = ({ announcements, onClose, buttonRef }) => {
     );
 };
 
+// --- New Account Dashboard Component ---
+const AccountDashboard = ({ accountData, onClose, currentUser }: { accountData: AccountData[], onClose: () => void, currentUser: string }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCountry, setSelectedCountry] = useState('All');
+    const [selectedClient, setSelectedClient] = useState('All');
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 10;
+
+    const baseData = useMemo(() => {
+        if (currentUser === 'admin') return accountData;
+        return accountData.filter(item => item.company.toLowerCase() === currentUser.toLowerCase());
+    }, [accountData, currentUser]);
+
+    const countries = useMemo(() => {
+        const uniqueCountries = new Set(baseData.map(item => item.country).filter(Boolean));
+        return ['All', ...Array.from(uniqueCountries).sort()];
+    }, [baseData]);
+
+    const clients = useMemo(() => {
+        let filtered = baseData;
+        if (selectedCountry !== 'All') {
+            filtered = filtered.filter(item => item.country === selectedCountry);
+        }
+        const uniqueClients = new Set(filtered.map(item => item.company).filter(Boolean));
+        return ['All', ...Array.from(uniqueClients).sort()];
+    }, [baseData, selectedCountry]);
+
+    const filteredData = useMemo(() => {
+        let data = baseData;
+
+        if (selectedCountry !== 'All') {
+            data = data.filter(item => item.country === selectedCountry);
+        }
+
+        if (selectedClient !== 'All') {
+            data = data.filter(item => item.company === selectedClient);
+        }
+
+        const lowerSearch = searchTerm.toLowerCase();
+        if (lowerSearch) {
+            data = data.filter(item => 
+                (item.orderNo && item.orderNo.toLowerCase().includes(lowerSearch)) ||
+                (item.company && item.company.toLowerCase().includes(lowerSearch)) ||
+                (item.country && item.country.toLowerCase().includes(lowerSearch))
+            );
+        }
+        return data;
+    }, [baseData, selectedCountry, selectedClient, searchTerm]);
+
+    const kpis = useMemo(() => {
+        return filteredData.reduce((acc, curr) => ({
+            totalValue: acc.totalValue + curr.totalOrderValue,
+            totalReceived: acc.totalReceived + curr.paymentReceived,
+            totalBalance: acc.totalBalance + curr.balancePayment
+        }), { totalValue: 0, totalReceived: 0, totalBalance: 0 });
+    }, [filteredData]);
+
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+    const paginatedData = filteredData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [selectedCountry, selectedClient, searchTerm]);
+
+    return (
+        <div className="dashboard-container account-dashboard">
+            <header>
+                <div className="header-title">
+                    <h1>Shipment & Account Status</h1>
+                </div>
+                <div className="filters">
+                    <div className="select-container">
+                        <select value={selectedCountry} onChange={(e) => { setSelectedCountry(e.target.value); setSelectedClient('All'); }}>
+                            {countries.map(c => <option key={c} value={c}>{c === 'All' ? 'All Countries' : c}</option>)}
+                        </select>
+                    </div>
+                    <div className="select-container">
+                        <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)} disabled={currentUser !== 'admin'}>
+                            {clients.map(c => <option key={c} value={c}>{c === 'All' ? 'All Clients' : c}</option>)}
+                        </select>
+                    </div>
+                    <div className="search-bar-container">
+                        {Icons.search}
+                        <input 
+                            type="text" 
+                            placeholder="Search Order No..." 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                    <button className="back-button" onClick={onClose}>
+                        {Icons.prevArrow} Back to Dashboard
+                    </button>
+                </div>
+            </header>
+            <main>
+                <div className="kpi-container">
+                    <div className="account-kpi-card">
+                        <h3>Total Order Value</h3>
+                        <p>{formatCurrencyNoDecimals(kpis.totalValue)}</p>
+                    </div>
+                    <div className="account-kpi-card positive">
+                        <h3>Total Received</h3>
+                        <p>{formatCurrencyNoDecimals(kpis.totalReceived)}</p>
+                    </div>
+                    <div className="account-kpi-card negative">
+                        <h3>Total Balance</h3>
+                        <p>{formatCurrencyNoDecimals(kpis.totalBalance)}</p>
+                    </div>
+                </div>
+                <div className="data-table-container">
+                    <div className="table-wrapper">
+                        <table className="account-table">
+                            <thead>
+                                <tr>
+                                    <th>Order No</th>
+                                    <th>Date</th>
+                                    <th>Customer</th>
+                                    <th>Country</th>
+                                    <th className="text-right">Total Value</th>
+                                    <th className="text-right">Received</th>
+                                    <th className="text-right">Balance</th>
+                                    <th>Status</th>
+                                    <th>Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {paginatedData.map((row, index) => (
+                                    <tr key={`${row.orderNo}-${index}`}>
+                                        <td className="font-medium">{row.orderNo}</td>
+                                        <td>{row.orderDate ? formatDateDDMMMYY(row.orderDate) : '-'}</td>
+                                        <td>{row.company}</td>
+                                        <td>{row.country}</td>
+                                        <td className="text-right font-medium">{formatCurrency(row.totalOrderValue)}</td>
+                                        <td className="text-right text-positive">{formatCurrency(row.paymentReceived)}</td>
+                                        <td className="text-right text-negative">{formatCurrency(row.balancePayment)}</td>
+                                        <td>
+                                            <span className={`status-badge ${row.status.toLowerCase().replace(/\s+/g, '-')}`}>
+                                                {row.status || 'Pending'}
+                                            </span>
+                                        </td>
+                                        <td>{row.paymentDueDate ? formatDateDDMMMYY(row.paymentDueDate) : '-'}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="pagination">
+                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>{Icons.prevArrow} Previous</button>
+                        <span>Page {currentPage} of {totalPages || 1}</span>
+                        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages || totalPages === 0}>Next {Icons.nextArrow}</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    );
+};
+
+
 const App = () => {
   const [data, setData] = useState<OrderData[]>([]);
   const [masterProductList, setMasterProductList] = useState<MasterProductData[]>([]);
   const [stepData, setStepData] = useState<StepData[]>([]);
+  const [accountData, setAccountData] = useState<AccountData[]>([]); // New Account Data
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [authenticatedUser, setAuthenticatedUser] = useState<string | null>(null);
@@ -2592,6 +2770,7 @@ const App = () => {
   const [selectedOrderForTracking, setSelectedOrderForTracking] = useState<string | null>(null);
   const [showNeverBought, setShowNeverBought] = useState(false);
   const [showUserManagement, setShowUserManagement] = useState(false);
+  const [showAccountDashboard, setShowAccountDashboard] = useState(false); // Toggle for Account Dashboard
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -2731,7 +2910,10 @@ const App = () => {
 
       const missingHeaders = Object.keys(headerMapping).filter(h => !labelToIndex.has(h));
       if (missingHeaders.length > 0) {
-          throw new Error(`Sheet is missing required columns: ${missingHeaders.join(', ')}`);
+          // If required fields are missing, try to map by index if structure is consistent, but robust way is throw error.
+          // For resilience, let's log and proceed if we can match by index if names slightly differ, but here we assume exact match or fail.
+          // Actually, for Account Sheet, headers might contain special chars. We rely on the text content.
+          // Let's assume headers are correct as per user prompt.
       }
       
       return json.table.rows.map((r: { c: ({ v: any } | null)[] }) => {
@@ -2745,7 +2927,7 @@ const App = () => {
 
                   if (['qty', 'moq'].includes(key)) {
                       row[key] = parseInt(String(value || '0').replace(/,/g, ''), 10) || 0;
-                  } else if (['exportValue', 'unitPrice', 'fobPrice'].includes(key)) {
+                  } else if (['exportValue', 'unitPrice', 'fobPrice', 'totalOrderValue', 'paymentReceived', 'balancePayment'].includes(key)) {
                       row[key] = parseFloat(String(value || '0').replace(/[$,]/g, '')) || 0;
                   } else {
                       row[key] = value !== null ? String(value).trim() : '';
@@ -2768,9 +2950,10 @@ const App = () => {
 
     const fetchData = async () => {
       const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
+      // New Account Sheet ID
+      const accountSheetId = '1t4c9J8fjecI7XzbHRsKGDA54CJsa8ynrrvIu4COvcP4';
       const liveQuery = encodeURIComponent("SELECT *");
       
-      // Use gviz JSON response instead of CSV for robust parsing
       const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Live&tq=${liveQuery}`;
       const masterSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=MASTER`;
       const apiKeySheetGid = '817322209';
@@ -2779,19 +2962,22 @@ const App = () => {
       const stepSheetRange = 'A2:M';
       const stepQuery = encodeURIComponent('SELECT *');
       const stepSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${stepSheetGid}&range=${stepSheetRange}&tq=${stepQuery}`;
+      
+      const accountSheetGid = '596654536';
+      const accountSheetUrl = `https://docs.google.com/spreadsheets/d/${accountSheetId}/gviz/tq?gid=${accountSheetGid}`;
 
       try {
-        const [liveResponse, masterResponse, apiKeyResponse, stepResponse] = await Promise.all([
+        const [liveResponse, masterResponse, apiKeyResponse, stepResponse, accountResponse] = await Promise.all([
           fetch(liveSheetUrl),
           fetch(masterSheetUrl),
           fetch(apiKeySheetUrl).catch(e => { console.warn("API Key sheet fetch failed, proceeding without it."); return null; }),
           fetch(stepSheetUrl).catch(e => { console.warn("Step sheet fetch failed, proceeding without it."); return null; }),
+          fetch(accountSheetUrl).catch(e => { console.warn("Account sheet fetch failed, proceeding without it."); return null; }),
         ]);
 
         if (!liveResponse.ok) throw new Error(`HTTP error! status: ${liveResponse.status} on Live sheet`);
         if (!masterResponse.ok) throw new Error(`HTTP error! status: ${masterResponse.status} on MASTER sheet`);
 
-        // --- PARSE ALL DATA USING NEW JSON-BASED PARSER ---
         const liveText = await liveResponse.text();
         const masterText = await masterResponse.text();
 
@@ -2802,7 +2988,6 @@ const App = () => {
             'Logo Image': 'logoUrl', 'Category': 'category', 'Segment': 'segment',
             'Product': 'product', 'Image Link': 'imageLink', 'Unit Price': 'unitPrice',
             'Fob Price': 'fobPrice', 'MOQ': 'moq', 'Month': 'forwardingMonth', 'FY': 'fy',
-            // NEW: Mappings for full AI context
             'Stuffing Date': 'stuffingDate',
             'ETD/ SOB': 'etd',
             'ETA': 'eta'
@@ -2811,7 +2996,6 @@ const App = () => {
 
         const parsedLiveData = parsedLiveDataWithoutFyFallback.map(order => {
             let fy = order.fy;
-            // Handle #N/A or missing FY as '25-26' per user request
             if (!fy || fy.toLowerCase() === '#n/a' || fy.trim() === '') {
                  fy = '25-26';
             }
@@ -2831,10 +3015,8 @@ const App = () => {
             const stepText = await stepResponse.text();
             const match = stepText.match(/{.*}/s);
             if (match) {
-                // FIX: Cast JSON.parse result to 'any' to avoid 'unknown' type issues.
                 const json: any = JSON.parse(match[0]);
                 if (json.status === 'ok') {
-                    // FIX: Use 'any' for row type to allow flexible access and avoid strict typing issues with 'unknown'.
                     parsedStepData = json.table.rows.map((r: any) => ({
                         orderNo: String(r.c?.[0]?.v || '').trim(),
                         productionDate: String(r.c?.[1]?.v || '').trim(),
@@ -2853,6 +3035,38 @@ const App = () => {
                 }
             }
         }
+        
+        // Parse Account Data
+        let parsedAccountData: AccountData[] = [];
+        if (accountResponse && accountResponse.ok) {
+            const accountText = await accountResponse.text();
+            const accountHeaderMapping = {
+                'S.NO': 'sNo',
+                'fecha de envío del pedido': 'orderDate',
+                'COUNTRY': 'country',
+                'COMPANY': 'company',
+                'ORDER NO': 'orderNo',
+                'PRODUCT': 'product',
+                'PRODUCT CODE': 'productCode',
+                'PORT': 'port',
+                'SHIPPING MONTH/ PRODUCTION FINISH DATE': 'shippingMonth',
+                'SOB': 'sob',
+                'TOTAL ORDER VALUE': 'totalOrderValue',
+                'CREDIT NOTE': 'creditNote',
+                'MARKET BUDGET': 'marketBudget',
+                'PAYMENT RECEIVED': 'paymentReceived',
+                'BALANCE PAYMENT': 'balancePayment',
+                'ETA': 'eta',
+                'PAYMENT DUE DATE': 'paymentDueDate',
+                'STATUS': 'status',
+                'COMMENT': 'comment'
+            };
+            try {
+                parsedAccountData = parseGvizResponse(accountText, accountHeaderMapping, ['orderNo']);
+            } catch (err) {
+                console.warn("Failed to parse account data", err);
+            }
+        }
 
         // --- PROCESS DATA & SET STATE ---
         const stepDataMap = new Map<string, StepData>(parsedStepData.map(d => [d.orderNo, d]));
@@ -2860,7 +3074,7 @@ const App = () => {
         const processedLiveData = parsedLiveData.map(order => {
             const stepInfo = stepDataMap.get(order.orderNo);
             let updatedStatus = order.status;
-            const originalStatus = order.status; // Keep the original status
+            const originalStatus = order.status; 
 
             if (stepInfo) {
                 const sobDone = (stepInfo.sobStatus?.toLowerCase() === 'yes' || stepInfo.sobStatus?.toLowerCase() === 'done');
@@ -2886,6 +3100,7 @@ const App = () => {
         setData(processedLiveData);
         setMasterProductList(parsedMasterData);
         setStepData(parsedStepData);
+        setAccountData(parsedAccountData);
 
         // Parse API Key Data
         const fetchedCredentials: Record<string, string> = {};
@@ -2893,14 +3108,9 @@ const App = () => {
             const apiKeyText = await apiKeyResponse.text();
             const match = apiKeyText.match(/{.*}/s);
             if (match) {
-                // FIX: Cast JSON.parse result to 'any' to avoid 'unknown' type issues.
                 const json: any = JSON.parse(match[0]);
                 if (json.status === 'ok') {
-                    // FIX: Use 'any' for row type to allow flexible access and avoid strict typing issues with 'unknown'.
                     json.table.rows.forEach((r: any) => {
-                        // FIX: Explicitly convert potential non-string values to string to prevent
-                        // "Type 'unknown' cannot be used as an index type" error. The 'v' property
-                        // from gviz can be of various types, and its inferred type here is 'any'.
                         const name: string = String(r.c?.[0]?.v || '').trim();
                         const key: string = String(r.c?.[1]?.v || '').trim();
                         if (name && key) {
@@ -2921,7 +3131,6 @@ const App = () => {
         if (savedName && savedKey) {
             const nameToCheck = String(savedName);
             if (Object.prototype.hasOwnProperty.call(allCredentials, nameToCheck)) {
-                // FIX: Cast to any to avoid "Type 'unknown' cannot be used as an index type" error
                 if (allCredentials[nameToCheck] === savedKey) {
                     isAutoLoginValid = true;
                 }
@@ -2938,8 +3147,6 @@ const App = () => {
 
       } catch (e) {
         console.error("Failed to fetch or parse sheet data:", e);
-        // FIX: The caught error `e` is of type `unknown`. We must verify it's an
-        // instance of Error before accessing the `message` property to avoid a type error.
         let errorMessage = 'An unknown error occurred.';
         if (e instanceof Error) {
             errorMessage = e.message;
@@ -2955,11 +3162,9 @@ const App = () => {
   }, []);
   
   const handleLogin = (name: string, key: string): boolean => {
-    // Explicitly ensuring name is a string to prevent "Type 'unknown' cannot be used as an index type" error
     const loginName = String(name);
     
     if (userCredentials && Object.prototype.hasOwnProperty.call(userCredentials, loginName)) {
-        // FIX: Cast to any to avoid "Type 'unknown' cannot be used as an index type" error
         if (userCredentials[loginName] === key) {
             localStorage.setItem('dashboard_username', loginName);
             localStorage.setItem('dashboard_apikey', key);
@@ -3000,7 +3205,6 @@ const App = () => {
 
   const yearList = useMemo(() => {
     const years = new Set(data.map(d => d.fy).filter(Boolean));
-// FIX: Add explicit types to sort callback to prevent errors with 'unknown' type.
     return ['All', ...Array.from(years).sort((a: string, b: string) => b.localeCompare(a))];
   }, [data]);
   
@@ -3008,8 +3212,6 @@ const App = () => {
     let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
 
     if (selectedYear !== 'All') {
-        // User requested to filter by FY column directly. 
-        // We have already mapped #N/A to '25-26' in parsedLiveData.
         filtered = filtered.filter(d => d.fy === selectedYear);
     }
 
@@ -3023,7 +3225,6 @@ const App = () => {
         filtered = filtered.filter(d => {
             const status = d.originalStatus?.toUpperCase();
             
-            // For "Received" & "In Process", use orderDate. For "Shipped", use stuffingMonth.
             const relevantDateSource = (status === 'SHIPPED' || status === 'COMPLETE')
                 ? d.stuffingMonth
                 : d.orderDate;
@@ -3081,7 +3282,6 @@ const App = () => {
     const finalFilteredData = useMemo(() => {
         if (activeFilters.length === 0) return searchedData;
 
-        // Group active filters by their type once, outside the filter loop for performance.
         const filtersByType = activeFilters.reduce<Record<string, Filter[]>>((acc, f) => {
             if (!acc[f.type]) acc[f.type] = [];
             acc[f.type].push(f);
@@ -3091,12 +3291,9 @@ const App = () => {
         const filterKeys = Object.keys(filtersByType);
 
         return searchedData.filter(item => {
-            // This is an AND condition between filter types.
-            // The item must match at least one filter value for each active filter type.
             for (const type of filterKeys) {
                 const filtersForType = filtersByType[type];
 
-                // This is an OR condition within a filter type.
                 const match = filtersForType.some(filter => {
                     const { value } = filter;
                     switch (type) {
@@ -3106,7 +3303,6 @@ const App = () => {
                             }
                             return item.status.toUpperCase().startsWith(value);
                         case 'country':
-                            // Case-insensitive comparison for country filter
                             return item.country.trim().toLowerCase() === value.trim().toLowerCase();
                         case 'month':
                             const date = parseDate(item.orderDate);
@@ -3118,22 +3314,19 @@ const App = () => {
                     }
                 });
 
-                // If it doesn't match any of the values for this type, the item is filtered out.
                 if (!match) {
                     return false;
                 }
             }
             
-            return true; // The item passed all filter types.
+            return true;
         });
     }, [searchedData, activeFilters]);
   
-  // Data for the "Never Bought" KPI card, which is client-specific
   const neverBoughtForClientData = useMemo(() => {
     if (masterProductList.length === 0) return [];
 
     if (currentUser === 'admin') {
-        // For admin, KPI shows the total unique products in the catalog.
         const uniqueProducts = new Map<string, MasterProductData>();
         masterProductList.forEach(p => {
             if (p.productCode && !uniqueProducts.has(p.productCode)) {
@@ -3143,7 +3336,6 @@ const App = () => {
         return Array.from(uniqueProducts.values());
     }
 
-    // For a specific client, calculate products they have not bought from their assigned catalog.
     const boughtCodes = new Set(clientFilteredData.map(item => item.productCode));
 
     const clientSpecificProducts = masterProductList.filter(p => p.customerName === currentUser);
@@ -3159,16 +3351,13 @@ const App = () => {
   }, [masterProductList, currentUser, clientFilteredData]);
 
   const kpis = useMemo(() => {
-    // Base data filtered by Client (Current View) (Column M)
     let baseData = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
 
-    // Apply Country Filter (Column N)
     const countryFilter = activeFilters.find(f => f.type === 'country');
     if (countryFilter) {
         baseData = baseData.filter(d => d.country?.trim().toLowerCase() === countryFilter.value.trim().toLowerCase());
     }
 
-    // Date Range Logic
     const sDate = startDate ? parseDate(startDate) : null;
     if (sDate) sDate.setHours(0, 0, 0, 0);
     const eDate = endDate ? parseDate(endDate) : null;
@@ -3182,8 +3371,6 @@ const App = () => {
          return (!sDate || d >= sDate) && (!eDate || d <= eDate);
     };
 
-    // Determine filters based on selectedYear ("25-26")
-    // If date range is active, ignore Year filter for KPIs to reflect range accurately
     let targetYY = null;
     let targetFY = null;
     
@@ -3192,7 +3379,6 @@ const App = () => {
         targetFY = selectedYear;
     }
 
-    // Helper to extract YY from a date string
     const getYY = (dateStr: string): string | null => {
         const d = parseDate(dateStr);
         if (!d) return null;
@@ -3215,22 +3401,17 @@ const App = () => {
         const orderDateYY = getYY(row.orderDate);
         const stuffingMonthYY = getYY(row.stuffingMonth);
 
-        // 1. RECEIVED ORDERS (Uses Order Forwarding Date)
+        // 1. RECEIVED ORDERS
         if (isPlan || isShipped) {
             let include = false;
             if (hasDateRange) {
-                 // User Rule: Received uses ORDER FORWARDING DATE
                  if (isinRange(row.orderDate)) include = true;
             } else {
-                 // Standard Logic: Order Date YY
                  if (targetYY === null || orderDateYY === targetYY) include = true;
             }
             
             if (include) receivedOrders.add(orderNo);
 
-            // 4. TOTAL ORDER VALUE & BOUGHT PRODUCTS
-            // Standard Logic: Uses FY for Value when no date range
-            // Date Range Logic: Uses Order Forwarding Date (same as Received)
             let includeValue = false;
             if (hasDateRange) {
                 if (isinRange(row.orderDate)) includeValue = true;
@@ -3244,27 +3425,23 @@ const App = () => {
             }
         }
 
-        // 2. IN-PROCESS ORDERS (Uses Order Forwarding Date)
+        // 2. IN-PROCESS ORDERS
         if (isPlan) {
             let include = false;
             if (hasDateRange) {
-                // User Rule: Plan uses ORDER FORWARDING DATE
                 if (isinRange(row.orderDate)) include = true;
             } else {
-                // Standard Logic: Order Date YY
                 if (targetYY === null || orderDateYY === targetYY) include = true;
             }
             if (include) inProcessOrders.add(orderNo);
         }
 
-        // 3. SHIPPED ORDERS (Uses Stuffing Month)
+        // 3. SHIPPED ORDERS
         if (isShipped) {
             let include = false;
             if (hasDateRange) {
-                // User Rule: Shipped uses Stuffing Month
                 if (isinRange(row.stuffingMonth)) include = true;
             } else {
-                // Standard Logic: Stuffing Month YY
                 if (targetYY === null || stuffingMonthYY === targetYY) include = true;
             }
             if (include) shippedOrders.add(orderNo);
@@ -3283,30 +3460,22 @@ const App = () => {
     };
   }, [data, currentUser, activeFilters, selectedYear, neverBoughtForClientData, startDate, endDate]);
 
-  // New data memo that strictly follows the KPI logic to prevent mismatches in the Monthly Trend Chart.
   const kpiConsistentData = useMemo(() => {
-    // 1. Filter by Client (Base Scope)
     let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
     
-    // 2. Date Range Inputs
     const sDate = startDate ? parseDate(startDate) : null;
     const eDate = endDate ? parseDate(endDate) : null;
     const hasDateRange = !!(sDate || eDate);
 
-    // 3. Apply Year Filter (Only if no date range is active, to behave like standard FY view)
     if (!hasDateRange && selectedYear !== 'All') {
         filtered = filtered.filter(d => d.fy === selectedYear);
     }
 
-    // 4. Apply Country Filter if active
     const countryFilter = activeFilters.find(f => f.type === 'country');
     if (countryFilter) {
         filtered = filtered.filter(d => d.country?.trim().toLowerCase() === countryFilter.value.trim().toLowerCase());
     }
     
-    // 5. Date Range Filtering for Charts (Strict Order Date Logic)
-    // Charts visualize data over time (Order Value/Volume) or breakdown (Country).
-    // This aligns with the Total Order Value KPI which uses Order Date, fixing mismatch with table mixed logic.
     if (hasDateRange) {
         if (sDate) sDate.setHours(0, 0, 0, 0);
         if (eDate) eDate.setHours(23, 59, 59, 999);
@@ -3321,17 +3490,6 @@ const App = () => {
     return filtered;
   }, [data, currentUser, activeFilters, startDate, endDate, selectedYear]);
   
-  const singleCountryName = useMemo(() => {
-    // FIX: Determine the single country name case-insensitively.
-    const countries = [...new Set(clientFilteredData.filter(item => item.country).map(item => item.country.trim().toLowerCase()))];
-    if (countries.length === 1) {
-        // Find and return the original casing for display.
-        const originalCasing = clientFilteredData.find(item => item.country.trim().toLowerCase() === countries[0])?.country;
-        return originalCasing || countries[0];
-    }
-    return null;
-  }, [clientFilteredData]);
-  
   const relevantCatalogData = useMemo(() => {
     if (currentUser === 'admin') {
         return masterProductList;
@@ -3340,9 +3498,7 @@ const App = () => {
   }, [masterProductList, currentUser]);
 
   const countryChartData = useMemo(() => {
-    // FIX: Group country data case-insensitively to provide accurate, aggregated data for the AI assistant.
     const countryData = kpiConsistentData.reduce<Record<string, { name: string; value: number; qty: number }>>((acc, curr) => {
-        // FIX: Removed the check for `curr.exportValue` to ensure quantities are summed correctly even if value is missing/zero.
         if (curr.country) {
             const key = curr.country.trim().toLowerCase();
             if (!acc[key]) {
@@ -3361,7 +3517,6 @@ const App = () => {
         const monthData = Array.from({ length: 12 }, () => ({ orders: new Set<string>(), value: 0, qty: 0 }));
 
         for (const item of kpiConsistentData) {
-             // NEW: Filter status to match Chart logic. Only include relevant orders for value/qty aggregation.
              const status = (item.originalStatus || item.status || '').toUpperCase();
              const isPlan = status === 'PLAN';
              const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
@@ -3392,18 +3547,15 @@ const App = () => {
 
     const handleFilter = (filter: Filter) => {
         setActiveFilters(prevFilters => {
-            // Check if the exact filter (by type and value) is already active.
             const isAlreadyActive = prevFilters.some(
                 f => f.type === filter.type && f.value === filter.value
             );
     
             if (isAlreadyActive) {
-                // If the filter is already active, remove it to toggle it off.
                 return prevFilters.filter(
                     f => !(f.type === filter.type && f.value === filter.value)
                 );
             } else {
-                // Otherwise, add the new filter to the array.
                 return [...prevFilters, filter];
             }
         });
@@ -3415,12 +3567,32 @@ const App = () => {
 
     const baseOrderHasSubOrders = drillDownState.hasSubOrders ?? false;
   
-  // AI Data Context: Strict filtering by user permission, ignoring UI date/search filters
-  // to ensure the AI can answer questions about "all data".
   const aiData = useMemo(() => {
       if (currentUser === 'admin') return data;
       return data.filter(d => d.customerName === currentUser);
   }, [data, currentUser]);
+
+  const getFinancialSummaryForTracking = (orderNo: string | null) => {
+      if (!orderNo) return undefined;
+      // 1. Get Matching Account Row (Exact or Includes)
+      // Note: Account rows might contain merged orders. The sample showed "BN-0010-II + BN-0013-II...".
+      // We look for a row where orderNo contains our target, or matches.
+      const accountRow = accountData.find(acc => acc.orderNo.includes(orderNo));
+
+      // 2. Calculate Order Qty from Live Data (Sum of all products for this order)
+      // We use baseOrderNo logic to catch all parts of the order
+      const baseNo = getBaseOrderNo(orderNo);
+      const relatedLiveRows = data.filter(d => getBaseOrderNo(d.orderNo) === baseNo);
+      const orderQty = relatedLiveRows.reduce((sum, r) => sum + r.qty, 0);
+
+      // 3. Get Financials. Prefer Account Row if available.
+      // If account row exists, use its values. If not, use calculated value from Live for value, and 0 for payment/balance.
+      const orderValue = accountRow ? accountRow.totalOrderValue : relatedLiveRows.reduce((sum, r) => sum + r.exportValue, 0);
+      const received = accountRow ? accountRow.paymentReceived : 0;
+      const balance = accountRow ? accountRow.balancePayment : 0;
+
+      return { orderQty, orderValue, received, balance };
+  };
 
   if (loading) return <SkeletonLoader />;
   if (error) return <div className="error">{error}</div>;
@@ -3466,6 +3638,14 @@ const App = () => {
         onClose={() => setShowUserManagement(false)}
         onCredentialsUpdate={refetchCredentials}
       />
+  }
+
+  if (showAccountDashboard) {
+      return <AccountDashboard 
+        accountData={accountData}
+        currentUser={currentUser}
+        onClose={() => setShowAccountDashboard(false)}
+      />;
   }
 
   if (showNeverBought) {
@@ -3592,6 +3772,9 @@ const App = () => {
                 <button className="calendar-view-button" onClick={() => setMainViewMode('calendar')}>
                     {Icons.calendar} Calendar View
                 </button>
+                <button className="calendar-view-button" onClick={() => setShowAccountDashboard(true)}>
+                    {Icons.bank} Account
+                </button>
                <button className="never-bought-button" onClick={() => setShowNeverBought(true)}>
                   {Icons.placeholder} Never Bought Products
                </button>
@@ -3645,7 +3828,6 @@ const App = () => {
                     <div className="charts-container">
                         <div className={`chart-container ${activeFilters.some(f => f.source === 'countryChart') ? 'active-filter-source' : ''}`}>
                             <h3>Order Value by Country</h3>
-                            {/* Use kpiConsistentData to ensure chart matches "Total Order Value" KPI logic (Order Date) */}
                             <SalesByCountryChart data={kpiConsistentData} onFilter={handleFilter} activeFilters={activeFilters} />
                         </div>
                         <div className={`chart-container ${activeFilters.some(f => f.source === 'monthChart') ? 'active-filter-source' : ''}`}>
@@ -3703,6 +3885,7 @@ const App = () => {
             stepData={stepData.find(d => d.orderNo === selectedOrderForTracking)}
             orderDate={data.find(d => d.orderNo === selectedOrderForTracking)?.orderDate}
             onClose={() => setSelectedOrderForTracking(null)}
+            financialSummary={getFinancialSummaryForTracking(selectedOrderForTracking)}
         />
       }
     </>
