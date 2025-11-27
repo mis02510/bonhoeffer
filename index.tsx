@@ -281,15 +281,8 @@ const CalendarKpiCard = ({ title, value, icon, variant, onClick, isDimmed }: any
 const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selectedYear, activeMetric }: { data: any[], xAxisDataKey?: string, selectedMonth?: number | null, selectedYear?: string, activeMetric?: string | null }) => {
     const barLabelFormatter = (value: number) => (value > 0 ? value : '');
 
-    // FIX: Added optional types for props passed by Recharts to fix TypeScript error.
-    interface TooltipPayload {
-        name: string;
-        value: number;
-        dataKey: string;
-        fill: string;
-        payload: any;
-    }
-    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: TooltipPayload[]; label?: any; }) => {
+    // FIX: Use any[] for payload to avoid 'property does not exist on unknown' errors. Recharts payloads can be tricky.
+    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: any; }) => {
         if (active && payload && payload.length) {
             let displayLabel = label;
             const isDailyView = xAxisDataKey === 'day';
@@ -302,7 +295,7 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
             }
     
             const dataPoint = payload[0].payload;
-            const hasMetrics = payload.some(p => p.value > 0);
+            const hasMetrics = payload.some((p: any) => p.value > 0);
             
             // Determine active states
             const showReceived = activeMetric === 'received' || activeMetric === null;
@@ -323,7 +316,7 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                 <div className="recharts-default-tooltip" style={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)', borderRadius: '8px', padding: '0.5rem 1rem', maxWidth: '350px' }}>
                     <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>{displayLabel}</p>
                     {/* Metrics Section */}
-                    {payload.map(p => {
+                    {payload.map((p: any) => {
                        if (p.value > 0) {
                            if (p.dataKey === 'received') {
                                 if (!showReceived && activeMetric !== null) return null;
@@ -2363,11 +2356,8 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { 
         );
     };
     
-    interface TimeTooltipPayloadItem {
-        value: number; // This will now be the exportValue sum
-        payload: { value: number; orderCount: number; }; // The full data object from chartData
-    }
-    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: TimeTooltipPayloadItem[]; label?: string; }) => {
+    // FIX: Use any[] for payload to avoid 'property does not exist on unknown' errors. Recharts payloads can be tricky.
+    const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string; }) => {
         if (active && payload && payload.length && payload[0].value > 0) {
           return (
             <div className="recharts-default-tooltip" style={{padding: '0.5rem 1rem', backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)'}}>
