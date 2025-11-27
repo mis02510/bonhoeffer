@@ -2833,6 +2833,7 @@ const App = () => {
   const [isEyeProtection, setIsEyeProtection] = useState(false);
   const [isAnnouncementsOpen, setIsAnnouncementsOpen] = useState(false);
   const [hasUnreadAnnouncements, setHasUnreadAnnouncements] = useState(false);
+  const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
   const announcementsButtonRef = useRef<HTMLButtonElement>(null);
 
   const checkHasSubOrders = useCallback((baseOrderNo: string) => {
@@ -3153,6 +3154,7 @@ const App = () => {
         setMasterProductList(parsedMasterData);
         setStepData(parsedStepData);
         setAccountData(parsedAccountData);
+        setLastUpdateTime(new Date()); // Set Last Update Time
 
         // Parse API Key Data
         const fetchedCredentials: Record<string, string> = {};
@@ -3732,7 +3734,15 @@ const App = () => {
                     )}
                     <div className="title-and-fy">
                         <h1>{currentUser === 'admin' ? 'Global Operations Dashboard' : `Welcome, ${currentUser}`}</h1>
-                        {financialYearDisplay && <span className="financial-year-display">{financialYearDisplay}</span>}
+                        <div className="header-badges">
+                            {financialYearDisplay && <span className="financial-year-display">{financialYearDisplay}</span>}
+                            {lastUpdateTime && (
+                                <span className="last-update-display">
+                                    <span className="live-dot"></span>
+                                    Last Update : {lastUpdateTime.toLocaleTimeString('en-GB', { hour12: false })}
+                                </span>
+                            )}
+                        </div>
                     </div>
                 </div>
                 <div className="header-main-actions">
