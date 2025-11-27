@@ -1,4 +1,5 @@
 
+
 /* index.css */
 
 :root {
@@ -392,8 +393,9 @@ header {
 .header-main-actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1rem; /* Standardized gap */
     flex-shrink: 0;
+    min-height: 40px; /* Force consistent height for alignment */
 }
 
 .header-title {
@@ -625,7 +627,8 @@ header h1 {
     color: var(--error-color);
 }
 
-.never-bought-button, .user-management-button, .calendar-view-button {
+/* Specific button styles for Filter Bar items */
+.never-bought-button, .calendar-view-button {
   background-color: transparent;
   border: 1px solid var(--text-color-muted);
   color: var(--text-color-muted);
@@ -640,6 +643,13 @@ header h1 {
   gap: 0.5rem;
   transition: all 0.2s ease-in-out;
   white-space: nowrap;
+  height: 36px;
+}
+
+.user-management-button:hover, .calendar-view-button:hover {
+  border-color: var(--secondary-accent);
+  color: var(--secondary-accent);
+  background-color: rgba(54, 197, 240, 0.1);
 }
 
 .never-bought-button:hover {
@@ -647,13 +657,8 @@ header h1 {
   color: var(--error-color);
   background-color: rgba(229, 57, 53, 0.1);
 }
-.user-management-button:hover, .calendar-view-button:hover {
-  border-color: var(--secondary-accent);
-  color: var(--secondary-accent);
-  background-color: rgba(54, 197, 240, 0.1);
-}
 
-.never-bought-button svg, .user-management-button svg, .calendar-view-button svg {
+.never-bought-button svg, .calendar-view-button svg {
   width: 16px;
   height: 16px;
   stroke: var(--text-color-muted);
@@ -661,34 +666,72 @@ header h1 {
 }
 
 .never-bought-button:hover svg { stroke: var(--error-color); }
-.user-management-button:hover svg, .calendar-view-button:hover svg { stroke: var(--secondary-accent); }
+.calendar-view-button:hover svg { stroke: var(--secondary-accent); }
 
+/* --- HEADER ACTION BUTTONS (Aligned 40px Height) --- */
+
+/* User Management Button */
+.user-management-button {
+  background-color: #E0F2FE;
+  border: 1px solid #7DD3FC;
+  color: #0284C7;
+  border-radius: 9999px; /* Pill shape */
+  padding: 0 1.5rem;
+  height: 40px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  font-family: var(--font-family);
+  white-space: nowrap;
+}
+
+.user-management-button:hover {
+  background-color: #BAE6FD;
+  border-color: #0EA5E9;
+  color: #0369A1;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+}
+
+.user-management-button svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+}
+
+/* Logout Button */
 .logout-button {
   background-color: transparent;
   border: 1px solid var(--error-color);
   color: var(--error-color);
-  border-radius: 8px;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.85rem;
+  border-radius: 9999px; /* Pill shape */
+  padding: 0 1.5rem;
+  height: 40px;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
   font-family: var(--font-family);
-  font-weight: 500;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   transition: all 0.2s ease-in-out;
   white-space: nowrap;
 }
 
 .logout-button:hover {
-  background-color: rgba(229, 57, 53, 0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
+  background-color: rgba(229, 57, 53, 0.08);
+  box-shadow: 0 4px 12px rgba(229, 57, 53, 0.15);
+  transform: translateY(-1px);
 }
 
 .logout-button svg {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     stroke: currentColor;
 }
 
@@ -2019,21 +2062,30 @@ body[data-theme='dark'] .skeleton {
 .chart-skeleton { height: 250px; }
 .table-skeleton { flex: 1; }
 
-/* --- Theme Toggles --- */
+/* --- Theme Toggles & Header Interactions --- */
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem; /* Standardized gap to match parent */
+    height: 40px; /* Enforce height */
 }
 
 .announcements-container {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
 }
 
+/* Bell Icon Button */
 .announcements-button {
     background: none;
     border: none;
-    padding: 0.5rem;
+    padding: 0;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -2048,13 +2100,13 @@ body[data-theme='dark'] .skeleton {
     background-color: rgba(120, 120, 120, 0.1);
 }
 .announcements-button svg {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
 }
 .notification-dot {
     position: absolute;
-    top: 6px;
-    right: 6px;
+    top: 8px;
+    right: 8px;
     width: 8px;
     height: 8px;
     background-color: var(--error-color);
@@ -2128,14 +2180,17 @@ body[data-theme='dark'] .skeleton {
 }
 
 
+/* Theme Toggle Container */
 .theme-toggles-container {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     background-color: var(--background-color);
-    padding: 4px;
-    border-radius: 20px;
+    padding: 0 6px;
+    border-radius: 9999px; /* Pill */
     border: 1px solid var(--card-border);
+    height: 40px;
+    box-sizing: border-box;
 }
 
 .toggle-switch {
@@ -2527,7 +2582,7 @@ html[data-theme='dark'] .top-client-item.rank-3 .client-name { color: #CD7F32; }
 }
 
 /* --- Responsive Layout --- */
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
     .login-video-container {
         display: none;
     }
@@ -2536,6 +2591,7 @@ html[data-theme='dark'] .top-client-item.rank-3 .client-name { color: #CD7F32; }
         max-width: 100%;
     }
 }
+
 @media (min-width: 1024px) {
     .calendar-charts-section {
         grid-template-columns: 2fr 1fr;
@@ -2581,7 +2637,6 @@ html[data-theme='dark'] .top-client-item.rank-3 .client-name { color: #CD7F32; }
     }
 }
 
-
 @media (min-width: 768px) {
     .kpi-card-content p {
         font-size: 1.4rem;
@@ -2591,74 +2646,126 @@ html[data-theme='dark'] .top-client-item.rank-3 .client-name { color: #CD7F32; }
     }
 }
 
+/* Unified Mobile and Tablet Header Adjustments */
 @media (max-width: 1024px) {
     .dashboard-container {
         padding: 1.5rem 1rem;
     }
 
-    .data-table-header {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        align-items: center;
-        margin-bottom: 1rem;
-    }
-
-    .data-table-header h3 {
-       grid-column: auto;
-    }
-
-    .data-table-header .back-button {
-        grid-column: auto;
-        justify-self: center;
-    }
-
-    header h1 {
-        white-space: normal;
-        line-height: 1.2;
-    }
-
-    .filters {
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
+    .header-main {
+        flex-wrap: wrap;
         gap: 1rem;
     }
     
-    .filters select {
+    .header-title {
+         min-width: 0; /* allow shrinking */
+         flex: 1 1 auto;
+    }
+    
+    .header-main-actions {
+        flex: 0 1 auto;
+        margin-left: auto; /* Push to right */
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1rem 0.75rem;
+        gap: 1rem;
+    }
+
+    /* Header Layout Redesign for Mobile */
+    .header-main {
+        flex-direction: column;
+        align-items: stretch; /* Full width items */
+        gap: 1rem;
+    }
+
+    .header-title {
         width: 100%;
+        justify-content: flex-start;
+    }
+
+    header h1 {
+        white-space: normal; /* Allow text wrap */
+        line-height: 1.2;
+        font-size: 1.3rem; /* Slightly smaller for mobile */
+    }
+
+    .header-main-actions {
+        width: 100%;
+        height: auto;
+        flex-wrap: wrap;
+        justify-content: space-between; /* User Mgmt left, Actions right */
+        gap: 0.75rem;
+    }
+
+    .header-actions {
+        /* Resetting previous layout specific to desktop */
+        position: static;
+        width: auto;
+        padding: 0;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: auto; /* Ensure it stays on the right */
+    }
+
+    .announcements-container {
+        position: relative;
+        width: 36px;
+        height: 36px;
+        margin: 0;
+    }
+    
+    .announcements-button {
+        width: 36px;
+        height: 36px;
+    }
+
+    .announcements-panel {
+        width: 280px;
+        max-width: 90vw;
+        right: -60px; /* Prevent going off-screen to the left */
+        left: auto;
+        top: 100%;
+        bottom: auto;
+    }
+
+    .theme-toggles-container {
+        height: 36px;
+    }
+    
+    .toggle-switch {
+        width: 36px; /* Slightly smaller */
+    }
+
+    .logout-button, .user-management-button {
+        height: 36px; /* Compact height */
+        padding: 0 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    /* Filters: Scrollable row */
+    .filters {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: 100%;
+        justify-content: flex-start;
+        padding-bottom: 5px; /* Scrollbar space */
+        gap: 0.75rem;
+    }
+    
+    .filters::-webkit-scrollbar {
+        height: 4px;
     }
 
     .search-bar-container input,
     .search-bar-container input:focus {
-        width: 100%;
+        width: 160px; /* Prevent search bar from forcing too much width */
     }
-
-    .header-actions {
-        position: relative;
-        border-left: none;
-        padding-left: 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        padding-top: 1rem;
-        border-top: 1px solid var(--card-border);
-    }
-    .announcements-container {
-        position: static;
-        width: 100%;
-        margin-top: 1rem;
-        justify-content: center;
-    }
-    .announcements-panel {
-        width: 100%;
-        left: 0;
-        right: 0;
-        top: auto;
-        bottom: 100%;
-    }
-} /* End of media query */
+}
 
 /* --- Account Dashboard Specifics --- */
 .account-dashboard .kpi-container {
