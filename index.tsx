@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -145,6 +146,27 @@ interface StepData {
   qualityCheck2Url: string;
   qualityCheck3Url: string;
   qualityCheck4Url: string;
+}
+
+interface QueryData {
+  date: string;
+  receivedBy: string;
+  clientName: string;
+  issue: string;
+  delegatedTo: string;
+  expectedDate: string;
+  serialKey: string;
+  user: string;
+  // Stage 1
+  s1Planned: string; s1Actual: string; s1Status: string; s1Delay: string;
+  // Stage 2
+  s2Planned: string; s2Actual: string; s2Status: string; s2Delay: string;
+  // Stage 3
+  s3Planned: string; s3Actual: string; s3Status: string; s3Delay: string;
+  // Stage 4
+  s4Planned: string; s4Actual: string; s4Status: string; s4Delay: string;
+  // Stage 5
+  s5Planned: string; s5Actual: string; s5Status: string; s5Delay: string;
 }
 
 interface Filter {
@@ -338,7 +360,7 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                                         {!isDailyView && (
                                             <>
                                                 <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.totalValue)}`}</p>
-                                                <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.totalQty)}`}</p>
+                                                <p style={{ margin: '0 0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.totalQty)}`}</p>
                                             </>
                                         )}
                                     </div>
@@ -376,13 +398,13 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                                    {!isDailyView && p.dataKey === 'planned' && (
                                        <>
                                            <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.plannedValue)}`}</p>
-                                           <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.plannedQty)}`}</p>
+                                           <p style={{ margin: '0 0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.plannedQty)}`}</p>
                                        </>
                                    )}
                                    {!isDailyView && p.dataKey === 'shipped' && (
                                        <>
                                            <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.shippedValue)}`}</p>
-                                           <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.shippedQty)}`}</p>
+                                           <p style={{ margin: '0 0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.shippedQty)}`}</p>
                                        </>
                                    )}
                                </div>
@@ -1021,7 +1043,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                                     >
                                         <h3>{month}</h3>
                                         <div className="month-bars-container">
-                                            <div className="month-bar-wrapper">
+                                            <div className="month-bar wrapper">
                                                 <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
                                                     {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
                                                 </div>
@@ -1085,7 +1107,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
 
 // --- Components ---
 const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, key: string) => boolean, onClearSavedUser: () => void }) => {
-    // ... [Same as before] ...
     const [name, setName] = useState('');
     const [key, setKey] = useState('');
     const [error, setError] = useState('');
@@ -1193,7 +1214,6 @@ const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, ke
 };
 
 const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filterValue = null, activeFilters, onClick = null, className = '' }) => {
-    // ... [Same as before] ...
     const isFilterable = !!filterType || !!onClick;
     const isActive = activeFilters && activeFilters.some(f => f.type === filterType && f.value === filterValue);
     
@@ -1220,7 +1240,6 @@ const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filte
 };
 
 const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepData, drillDownState, onRowDoubleClick, onDrillUp, baseOrderHasSubOrders }: { data: OrderData[], currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void, stepData: StepData[], drillDownState: { level: number, baseOrder: string | null, subOrder: string | null }, onRowDoubleClick: (row: any) => void, onDrillUp: () => void, baseOrderHasSubOrders: boolean }) => {
-    // ... [Same as before] ...
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
     const tableWrapperRef = useRef<HTMLDivElement>(null);
@@ -1611,7 +1630,6 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
 };
 
 const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: OrderData[], currentUser: string, authenticatedUser: string }) => {
-    // ... [Same as before] ...
   const [currentPage, setCurrentPage] = useState(1);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
   const rowsPerPage = 10;
@@ -1673,7 +1691,6 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
 // ... (ChatAssistant and other helpers remain same) ...
 
 const SimpleMarkdown = ({ text }: { text: string }) => {
-    // ... [Same as before] ...
     // This is a very basic markdown renderer.
     // It handles: **bold**, and lists starting with "- ".
     const html = text
@@ -1697,7 +1714,6 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
     countryChartData: {name: string, value: number, qty: number}[], 
     monthlyChartData: {name: string, orders: number, value: number, qty: number}[] 
 }) => {
-    // ... [Same implementation as before] ...
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{role: string, text: string}[]>([]);
     const [input, setInput] = useState('');
@@ -1811,21 +1827,17 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
             };
 
             // PREPARE CONTEXT: Prioritize rows based on query content to avoid truncation of key info
-            // Regex to find potential order numbers in input (e.g. BM-0071, BM-0071-I)
             const orderNoRegex = /\b[A-Za-z0-9]+-[0-9]+(?:-[A-Za-z0-9]+)?\b/gi;
             const mentionedIds = (userMessage.text.match(orderNoRegex) || []).map(s => s.toUpperCase());
 
-            // Create context order list
             let contextOrders = [...orderData];
 
-            // 1. Sort by date descending (Newest first)
             contextOrders.sort((a, b) => {
                  const dA = parseDate(a.orderDate)?.getTime() || 0;
                  const dB = parseDate(b.orderDate)?.getTime() || 0;
                  return dB - dA;
             });
 
-            // 2. If IDs are mentioned, move them to the top to ensure they aren't truncated
             if (mentionedIds.length > 0) {
                 const priority = contextOrders.filter(o => mentionedIds.some(id => o.orderNo.toUpperCase().includes(id)));
                 const others = contextOrders.filter(o => !mentionedIds.some(id => o.orderNo.toUpperCase().includes(id)));
@@ -1841,7 +1853,6 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
             const ordersCSV = toCSV(simplifyOrders(truncatedOrders));
             const catalogCSV = toCSV(simplifyCatalog(truncatedCatalog));
 
-            // Format Chart Summaries for Prompt - include Qty for country and Value/Qty for month
             const countryChartSummary = countryChartData.map(c => `${c.name}: Total Value $${Math.round(c.value).toLocaleString()} (Total Qty ${c.qty} units)`).join(', ');
             const monthlyChartSummary = monthlyChartData.map(m => `${m.name}: ${m.orders} orders (Total Value $${Math.round(m.value).toLocaleString()}, Total Qty ${m.qty} units)`).join(', ');
             
@@ -1849,37 +1860,47 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
                 ? "User is ADMIN. Access to ALL data."
                 : `User is CLIENT: '${clientName}'. ONLY discuss data where Client column matches '${clientName}'. Do NOT reveal other clients' info.`;
 
-            const systemInstruction = `You are an expert AI Data Analyst for an international business dashboard.
+            const systemInstruction = `You are an expert AI Data Analyst for the "Global Operations Dashboard".
 
-**Goal:** Provide FAST, ACCURATE, and CONCISE answers based on the provided sheets and dashboard summaries.
+**Dashboard Structure Awareness:**
+You are integrated into a specific dashboard with the following components. Use this structure to navigate user questions:
 
-**Your Data Sources:**
-1. **Aggregated Summaries (Charts/KPIs):** These contain the TRUE totals calculated from the full dataset.
-   - **USE THESE FOR "TOTAL" QUESTIONS** (e.g., "Total value for Peru", "Total orders in Jan").
-   - **Do NOT** try to sum the CSV rows for country/month totals manually, trust these summaries.
-   
-2. **Orders CSV (Context):** A merged view of the **"Live" sheet** (Order Details) and **"Step" sheet** (Tracking).
-   - Contains: Status, FY, OrderNo, Client, Country, Product info, Dates (Order/Forwarding, Stuffing, ETD, ETA), Qty, Value.
-   - **Tracking Columns:** ProductionDate/Status, SOBDate/Status, PaymentDate/Status, QCDate/Status.
-   - Use this for specific order inquiries (e.g., "What is the status of BM-0071?", "When is the Quality Check planned?").
-   - **Note:** "OrderDate" in CSV corresponds to "ORDER FORWARDING DATE" in the source sheet.
+1. **KPI Cards:**
+   - **Total Order Value**
+   - **Total Orders Received**
+   - **In Process**
+   - **Shipped Orders**
+   - **Total No of Units**
+   - **Never Bought Products**
 
-3. **Catalog CSV (Context):** Data from the **"MASTER" sheet**.
-   - Contains: Product codes, Categories, Segments, and basic product info.
+2. **Charts:**
+   - **Order Value by Country** (Reads data labels and tooltips)
+   - **Monthly Order Value** (Reads data labels and tooltips)
 
-**Dashboard Context:**
-- **KPIs:** ${JSON.stringify(kpis)}
-- **Order Value & Quantity by Country (Chart Summary):** [${countryChartSummary}]
-- **Monthly Order Volume & Value (Chart Summary):** [${monthlyChartSummary}]
+3. **Table Structure (3 Layers):**
+   - **Layer 1 (Main): "All Orders"**
+     - Headers: Status, Shipped Date, Order No, Customer, Country, Qty, Shipped Qty, Balance Qty, Order Value, Shipped Value, Balance Value.
+   - **Layer 2 (Drill-down): "Sub-Orders"**
+     - Headers: Status, Shipped Date, Order No, Image, Customer, Country, Qty, Shipped Qty, Balance Qty, Order Value, Shipped Value, Balance Value.
+   - **Layer 3 (Detail): "Products for Sub-Order"**
+     - Headers: Status, Shipped Date, Order No, Image, Product Code, Category, Product, Customer, Country, Qty, Shipped Qty, Unit Price, Order Value, Fob Price, MOQ.
+
+**Data Sources Provided:**
+1. **Aggregated Summaries:** Use these for questions about specific Charts or KPIs mentioned above.
+2. **Orders CSV:** Merged view of "Live" (Order Details) and "Step" (Tracking) sheets. Use this for deep dives into Layer 3 data.
+3. **Catalog CSV:** "Master" sheet data.
 
 **Rules:**
 1. **Privacy:** ${roleInstructions}
-2. **Accuracy:** Trust the Chart Summaries for high-level totals. Trust the CSV for specific order details/status.
-3. **Speed:** Keep answers short. Use bullet points.
-4. **Dates:** Parse dates intelligently (e.g., "Jun-24" or "05-Jun-24").
-5. **No Hallucinations:** If data is missing (e.g., country not in chart summary), say "No data found".
+2. **Accuracy:** Give answers related ONLY to user questions based on the structure above. Do not provide unrelated data.
+3. **Context:** You know about all tables, graphs, and KPI cards listed above.
 
-**Response Style:** Direct, Professional, Helpful.`;
+**Current Dashboard Context:**
+- **KPI Values:** ${JSON.stringify(kpis)}
+- **Chart Data (Country):** [${countryChartSummary}]
+- **Chart Data (Monthly):** [${monthlyChartSummary}]
+
+**Response Style:** Direct, Professional, Accurate.`;
 
             const prompt = `Data Context (CSV):
 --- ORDERS START (Top ${truncatedOrders.length} records from Live & Step Sheets) ---
@@ -1892,8 +1913,9 @@ ${catalogCSV}
 
 User Question: "${userMessage.text}"`;
 
+            // FIX: Use gemini-3-flash-preview as recommended for basic text/data analyst tasks.
             const responseStream = await ai.models.generateContentStream({
-                model: 'gemini-2.5-flash',
+                model: 'gemini-3-flash-preview',
                 contents: [{ role: 'user', parts: [{ text: prompt }] }],
                 config: {
                     systemInstruction: systemInstruction,
@@ -2072,7 +2094,7 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
         };
     }, [onClose]);
 
-    const getStepState = (status: string, date: string): 'completed' | 'pending' | 'upcoming' => {
+    const getStepState = (status: string, date: string): 'completed' | 'pending' | 'upcoming' | 'unknown' => {
         const s = status.toLowerCase();
         if (s === 'yes' || s === 'done') {
             return 'completed';
@@ -2083,11 +2105,10 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
         return 'upcoming';
     };
 
-    const getIconForState = (state: 'completed' | 'pending' | 'upcoming') => {
+    const getIconForState = (state: string) => {
         switch (state) {
             case 'completed': return Icons.checkCircleFilled;
             case 'pending': return Icons.clock;
-            case 'upcoming': return Icons.circle;
             default: return Icons.circle;
         }
     };
@@ -2200,7 +2221,7 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
                             <div className="step-content">
                                 <h4 className="step-title">Payment</h4>
                                 <p className="step-details">Planned:- {formatDateDDMMMYY(stepData.paymentPlannedDate)}</p>
-                                <p className="step-details">Status:- {formatNa(stepData.paymentStatus) === '~' ? 'Pending' : formatNa(stepData.paymentStatus)}</p>
+                                <p style={{ margin: 0 }}>Status:- {formatNa(stepData.paymentStatus) === '~' ? 'Pending' : formatNa(stepData.paymentStatus)}</p>
                             </div>
                         </li>
                     </ul>
@@ -2212,7 +2233,6 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
 
 
 const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null }) => {
-    // ... [Same implementation as before] ...
     const chartData = useMemo(() => {
         // FIX: Group country data case-insensitively for accurate aggregation.
         const countryData = data.reduce<Record<string, { name: string; value: number; qty: number }>>((acc, curr) => {
@@ -2239,7 +2259,6 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
         onFilter({ type: 'country', value: countryName, source: 'countryChart' });
     };
 
-    // FIX: Add explicit types for recharts tooltip props to prevent type errors.
     interface CountryTooltipPayloadItem {
       value: number;
       payload: { qty: number };
@@ -2283,16 +2302,12 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
 };
 
 const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null, selectedYear: string }) => {
-    // ... [Same implementation as before] ...
     const chartData = useMemo(() => {
-        // 1. Initialize an array to hold the total export value and unique orders for each month.
         const monthData = Array.from({ length: 12 }, () => ({ value: 0, orders: new Set<string>() }));
         
         const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
 
-        // 2. Iterate through all data rows and sum up the exportValue and collect unique order numbers per month.
         for (const item of data) {
-            // Apply KPI "Received Orders" logic: Status must be PLAN, SHIPPED, or COMPLETE
             const status = (item.originalStatus || item.status || '').toUpperCase();
             const isPlan = status === 'PLAN';
             const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
@@ -2302,7 +2317,6 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { 
             if (item.orderDate) {
                 const date = parseDate(item.orderDate);
                 if (date) {
-                    // Apply KPI "Received Orders" logic: Year must match targetYY (if selected)
                     if (targetYY) {
                         const itemYY = String(date.getFullYear()).slice(-2);
                         if (itemYY !== targetYY) continue;
@@ -2317,7 +2331,6 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { 
             }
         }
 
-        // 3. Format for the chart.
         const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         return monthOrder.map((month, index) => ({
             name: month,
@@ -2356,7 +2369,6 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { 
         );
     };
     
-    // FIX: Use any[] for payload to avoid 'property does not exist on unknown' errors. Recharts payloads can be tricky.
     const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string; }) => {
         if (active && payload && payload.length && payload[0].value > 0) {
           return (
@@ -2396,7 +2408,6 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { 
 }
 
 const SkeletonLoader = () => (
-    // ... [Same implementation as before] ...
     <div className="dashboard-container skeleton-loader">
       <header>
         <div className="header-title">
@@ -2425,7 +2436,6 @@ const SkeletonLoader = () => (
   );
 
 const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredentialsUpdate }: { allClientNames: string[], currentCredentials: Record<string, string>, onClose: () => void, onCredentialsUpdate: () => void }) => {
-    // ... [Same implementation as before] ...
     const [selectedClient, setSelectedClient] = useState<string>('');
     const [apiKey, setApiKey] = useState<string>('');
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
@@ -2437,7 +2447,6 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
         } else {
             setApiKey('');
         }
-         // Do not reset status here to allow success message to persist until a new client is selected
         if (saveStatus !== 'success') {
             setSaveStatus('idle');
             setSaveMessage('');
@@ -2476,7 +2485,6 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
         try {
             const response = await fetch(webAppUrl, {
                 method: 'POST',
-                // Sending as text/plain is a common workaround for Google Apps Script to avoid CORS pre-flight issues.
                 body: JSON.stringify(dataToSave),
                 headers: {
                     'Content-Type': 'text/plain;charset=utf-8',
@@ -2493,7 +2501,6 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
             setSaveMessage(result.message || 'Credentials saved successfully! The data has been updated.');
             onCredentialsUpdate();
             
-            // Clear the form after a delay so the user can read the success message
             setTimeout(() => {
                 setSelectedClient('');
                 setApiKey('');
@@ -2504,8 +2511,6 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
         } catch (error) {
             console.error('Failed to save credentials:', error);
             setSaveStatus('error');
-            // The error from a catch block is of type 'unknown'. This refactor safely
-            // extracts the error message by checking its type, preventing a potential runtime error.
             let errorMessage = 'An unknown error occurred. This could be a CORS issue. Please check the browser console.';
             if (error instanceof Error) {
                 errorMessage = error.message;
@@ -2563,7 +2568,6 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
                                 onClick={handleGenerateKey}
                                 disabled={!selectedClient || saveStatus === 'saving'}
                              >
-                                {/* FIX: Logic was incorrectly checking credentials directly. It has been updated to use the 'apiKey' state, which is properly derived in useEffect. This ensures the button text is always in sync with the current state. */}
                                 {apiKey ? 'Regenerate Key' : 'Generate Key'}
                              </button>
                         </div>
@@ -2589,7 +2593,6 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
 };
 
 const ThemeToggles = ({ theme, isEyeProtection, onThemeChange, onEyeProtectionChange }) => {
-    // ... [Same as before] ...
     return (
         <div className="theme-toggles-container">
             <label className="toggle-switch" title="Toggle Eye Protection">
@@ -2607,7 +2610,6 @@ const ThemeToggles = ({ theme, isEyeProtection, onThemeChange, onEyeProtectionCh
 };
 
 const AnnouncementsPanel = ({ announcements, onClose, buttonRef }) => {
-    // ... [Same as before] ...
     const panelRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -2801,12 +2803,164 @@ const AccountDashboard = ({ accountData, onClose, currentUser }: { accountData: 
     );
 };
 
+const QueryTable = ({ data, lastSyncTime }: { data: QueryData[], lastSyncTime?: Date | null }) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 15;
+    const totalPages = Math.ceil(data.length / rowsPerPage);
+    const paginatedData = data.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+    const getStatusStyle = (val: string) => {
+        const v = val.toLowerCase();
+        if (/done|success|completed|paid|actual|yes/.test(v)) return 'st-success';
+        if (/pending|process|planned|review|ongoing/.test(v)) return 'st-warning';
+        if (/urgent|delay|late|failed|danger|cancel|unpaid/.test(v)) return 'st-danger';
+        if (/new|info|select/.test(v)) return 'st-info';
+        return null;
+    };
+
+    const HeaderStage = ({ title, color, colSpan }: { title: string, color: string, colSpan: number }) => (
+        <th colSpan={colSpan} style={{ backgroundColor: color, color: '#fff', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.2)' }}>
+            {title}
+        </th>
+    );
+
+    return (
+        <div className="data-table-container query-table-container" style={{ padding: 0 }}>
+            <div className="data-table-header" style={{ padding: '1.5rem', marginBottom: 0, background: 'var(--card-background)', borderBottom: '1px solid var(--card-border)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flexGrow: 1 }}>
+                    <h3 style={{ textAlign: 'left', margin: 0, fontSize: '1.25rem', fontWeight: 800 }}>Internal Query Tracker</h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.75rem', color: 'var(--text-color-muted)' }}>
+                        <div className="live-dot" style={{ width: 8, height: 8 }}></div>
+                        <span>{lastSyncTime ? `LAST SYNC: ${lastSyncTime.toLocaleTimeString()}` : 'SYNCING LIVE SPREADSHEET...'}</span>
+                    </div>
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                     <div className="stage-legend" style={{ display: 'flex', gap: '0.75rem', fontSize: '0.7rem' }}>
+                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><i style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#673AB7' }}></i> S1</span>
+                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><i style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#3F51B5' }}></i> S2</span>
+                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><i style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#2196F3' }}></i> S3</span>
+                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><i style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#00BCD4' }}></i> S4</span>
+                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><i style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#009688' }}></i> S5</span>
+                     </div>
+                </div>
+            </div>
+            <div className="table-wrapper" style={{ maxHeight: 'calc(100vh - 350px)' }}>
+                <table className="query-data-table" style={{ borderSpacing: 0 }}>
+                    <thead>
+                        {/* Row 1: Stages */}
+                        <tr>
+                            <th colSpan={8} style={{ backgroundColor: 'transparent' }}></th>
+                            <HeaderStage title="Stage-1: Update sales person" color="#673AB7" colSpan={4} />
+                            <HeaderStage title="Stage-2: Inform to client" color="#3F51B5" colSpan={4} />
+                            <HeaderStage title="Stage-3: Revised-Update sales person" color="#2196F3" colSpan={4} />
+                            <HeaderStage title="Stage-4: Inform to client (Revised Date)" color="#00BCD4" colSpan={4} />
+                            <HeaderStage title="Stage-5: Issue Status" color="#009688" colSpan={5} />
+                        </tr>
+                        {/* Row 2: Field Names */}
+                        <tr style={{ position: 'sticky', top: 38, zIndex: 50, background: 'var(--background-color)' }}>
+                            <th>Date</th>
+                            <th>Received By</th>
+                            <th>Client Name</th>
+                            <th>Issue/Query</th>
+                            <th>Delegated To</th>
+                            <th>Expected Date</th>
+                            <th>Serial Key</th>
+                            <th>User</th>
+                            {/* S1 */}
+                            <th style={{ backgroundColor: 'rgba(103, 58, 183, 0.05)' }}>Planned</th>
+                            <th style={{ backgroundColor: 'rgba(103, 58, 183, 0.05)' }}>Actual</th>
+                            <th style={{ backgroundColor: 'rgba(103, 58, 183, 0.05)' }}>Status</th>
+                            <th style={{ backgroundColor: 'rgba(103, 58, 183, 0.05)' }}>Delay</th>
+                            {/* S2 */}
+                            <th style={{ backgroundColor: 'rgba(63, 81, 181, 0.05)' }}>Planned</th>
+                            <th style={{ backgroundColor: 'rgba(63, 81, 181, 0.05)' }}>Actual</th>
+                            <th style={{ backgroundColor: 'rgba(63, 81, 181, 0.05)' }}>Status</th>
+                            <th style={{ backgroundColor: 'rgba(63, 81, 181, 0.05)' }}>Delay</th>
+                            {/* S3 */}
+                            <th style={{ backgroundColor: 'rgba(33, 150, 243, 0.05)' }}>Planned</th>
+                            <th style={{ backgroundColor: 'rgba(33, 150, 243, 0.05)' }}>Actual</th>
+                            <th style={{ backgroundColor: 'rgba(33, 150, 243, 0.05)' }}>Status</th>
+                            <th style={{ backgroundColor: 'rgba(33, 150, 243, 0.05)' }}>Delay</th>
+                            {/* S4 */}
+                            <th style={{ backgroundColor: 'rgba(0, 188, 212, 0.05)' }}>Planned</th>
+                            <th style={{ backgroundColor: 'rgba(0, 188, 212, 0.05)' }}>Actual</th>
+                            <th style={{ backgroundColor: 'rgba(0, 188, 212, 0.05)' }}>Status</th>
+                            <th style={{ backgroundColor: 'rgba(0, 188, 212, 0.05)' }}>Delay</th>
+                            {/* S5 */}
+                            <th style={{ backgroundColor: 'rgba(0, 150, 136, 0.05)' }}>Planned</th>
+                            <th style={{ backgroundColor: 'rgba(0, 150, 136, 0.05)' }}>Actual</th>
+                            <th style={{ backgroundColor: 'rgba(0, 150, 136, 0.05)' }}>Status</th>
+                            <th style={{ backgroundColor: 'rgba(0, 150, 136, 0.05)' }}>Delay</th>
+                            <th style={{ backgroundColor: 'rgba(0, 150, 136, 0.05)' }}>Requested By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {paginatedData.length > 0 ? (
+                            paginatedData.map((row, idx) => (
+                                <tr key={idx}>
+                                    <td className="timestamp">{formatDateDDMMMYY(row.date)}</td>
+                                    <td>{formatNa(row.receivedBy)}</td>
+                                    <td style={{ fontWeight: 600 }}>{formatNa(row.clientName)}</td>
+                                    <td style={{ maxWidth: 300, whiteSpace: 'normal', fontSize: '0.8rem', textAlign: 'left' }}>{formatNa(row.issue)}</td>
+                                    <td>{formatNa(row.delegatedTo)}</td>
+                                    <td className="timestamp">{formatDateDDMMMYY(row.expectedDate)}</td>
+                                    <td className="serial-key">{formatNa(row.serialKey)}</td>
+                                    <td>{formatNa(row.user)}</td>
+                                    {/* S1 */}
+                                    <td style={{ opacity: 0.8 }}>{row.s1Planned}</td>
+                                    <td style={{ opacity: 0.8 }}>{row.s1Actual}</td>
+                                    <td><span className={`pill ${getStatusStyle(row.s1Status) || ''}`}>{row.s1Status}</span></td>
+                                    <td style={{ color: row.s1Delay !== '0' ? 'var(--error-color)' : 'inherit' }}>{row.s1Delay}</td>
+                                    {/* S2 */}
+                                    <td style={{ opacity: 0.8 }}>{row.s2Planned}</td>
+                                    <td style={{ opacity: 0.8 }}>{row.s2Actual}</td>
+                                    <td><span className={`pill ${getStatusStyle(row.s2Status) || ''}`}>{row.s2Status}</span></td>
+                                    <td style={{ color: row.s2Delay !== '0' ? 'var(--error-color)' : 'inherit' }}>{row.s2Delay}</td>
+                                    {/* S3 */}
+                                    <td style={{ opacity: 0.8 }}>{row.s3Planned}</td>
+                                    <td style={{ opacity: 0.8 }}>{row.s3Actual}</td>
+                                    <td><span className={`pill ${getStatusStyle(row.s3Status) || ''}`}>{row.s3Status}</span></td>
+                                    <td style={{ color: row.s3Delay !== '0' ? 'var(--error-color)' : 'inherit' }}>{row.s3Delay}</td>
+                                    {/* S4 */}
+                                    <td style={{ opacity: 0.8 }}>{row.s4Planned}</td>
+                                    <td style={{ opacity: 0.8 }}>{row.s4Actual}</td>
+                                    <td><span className={`pill ${getStatusStyle(row.s4Status) || ''}`}>{row.s4Status}</span></td>
+                                    <td style={{ color: row.s4Delay !== '0' ? 'var(--error-color)' : 'inherit' }}>{row.s4Delay}</td>
+                                    {/* S5 */}
+                                    <td style={{ opacity: 0.8 }}>{row.s5Planned}</td>
+                                    <td style={{ opacity: 0.8 }}>{row.s5Actual}</td>
+                                    <td><span className={`pill ${getStatusStyle(row.s5Status) || ''}`}>{row.s5Status}</span></td>
+                                    <td style={{ color: row.s5Delay !== '0' ? 'var(--error-color)' : 'inherit' }}>{row.s5Delay}</td>
+                                    <td>{formatNa(row.s5Planned)}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={29} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-color-muted)' }}>
+                                    No active internal queries found.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+            <div className="pagination" style={{ padding: '1.5rem', background: '#F8FAFC', borderTop: '1px solid var(--card-border)' }}>
+                <span className="pagination-info">Page {currentPage} of {totalPages || 1} (Total {data.length} entries)</span>
+                <div className="pagination-controls">
+                    <button className="btn-nav" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>{Icons.prevArrow} Previous</button>
+                    <button className="btn-nav" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages || totalPages === 0}>Next {Icons.nextArrow}</button>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const App = () => {
   const [data, setData] = useState<OrderData[]>([]);
   const [masterProductList, setMasterProductList] = useState<MasterProductData[]>([]);
   const [stepData, setStepData] = useState<StepData[]>([]);
   const [accountData, setAccountData] = useState<AccountData[]>([]); // New Account Data
+  const [queryData, setQueryData] = useState<QueryData[]>([]); // New Query Data
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [authenticatedUser, setAuthenticatedUser] = useState<string | null>(null);
@@ -2827,7 +2981,7 @@ const App = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [selectedYear, setSelectedYear] = useState('All');
-  const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table'>('dashboard');
+  const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table' | 'query'>('dashboard');
   const [mainViewMode, setMainViewMode] = useState<'dashboard' | 'calendar'>('dashboard');
   const [theme, setTheme] = useState('light');
   const [isEyeProtection, setIsEyeProtection] = useState(false);
@@ -2846,15 +3000,12 @@ const App = () => {
   const handleRowDoubleClick = (row: any) => {
       if (drillDownState.level === 1) {
           if (row.hasSubOrders) {
-              // Go to level 2 to show sub-orders
               setDrillDownState({ level: 2, baseOrder: row.baseOrderNo, subOrder: null, hasSubOrders: true });
           } else {
-              // Skip to level 3 to show products for the single order
               setDrillDownState({ level: 3, baseOrder: row.baseOrderNo, subOrder: row.singleOrderNo, hasSubOrders: false });
           }
       } else if (drillDownState.level === 2) {
           const status = row.originalStatus?.toUpperCase();
-          // Allow drilldown for shipped, complete, or in-process (plan) orders.
           if (status === 'SHIPPED' || status === 'COMPLETE' || status === 'PLAN') {
               setDrillDownState({ level: 3, baseOrder: drillDownState.baseOrder, subOrder: row.orderNo, hasSubOrders: true });
           }
@@ -2888,11 +3039,9 @@ const App = () => {
         const apiKeyText = await apiKeyResponse.text();
         const match = apiKeyText.match(/{.*}/s);
         if (match) {
-            // FIX: Cast JSON.parse result to 'any' to avoid 'unknown' type issues.
             const json: any = JSON.parse(match[0]);
             if (json.status === 'ok') {
                 const fetchedCredentials: Record<string, string> = {};
-                // FIX: Use 'any' for row type to allow flexible access and avoid strict typing issues with 'unknown'.
                 json.table.rows.forEach((r: any) => {
                     const name: string = String(r.c?.[0]?.v || '').trim();
                     const key: string = String(r.c?.[1]?.v || '').trim();
@@ -2909,14 +3058,12 @@ const App = () => {
   };
 
   useEffect(() => {
-    // Theme initialization
     const savedTheme = localStorage.getItem('dashboard-theme');
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
     setTheme(initialTheme);
     document.documentElement.setAttribute('data-theme', initialTheme);
 
-    // Eye protection initialization
     const savedEyeProtection = localStorage.getItem('dashboard-eye-protection') === 'true';
     setIsEyeProtection(savedEyeProtection);
     if (savedEyeProtection) {
@@ -2951,29 +3098,18 @@ const App = () => {
       const match = responseText.match(/{.*}/s);
       if (!match) throw new Error("Invalid Gviz response format.");
       
-      // FIX: Cast JSON.parse result to 'any' to avoid 'unknown' type issues.
       const json: any = JSON.parse(match[0]);
       if (json.status !== 'ok') {
         const errorMessages = json.errors?.map((e: any) => e.detailed_message || e.message).join(', ') || 'Unknown error';
         throw new Error(`Google Sheets API error: ${errorMessages}`);
       }
 
-      // FIX: Explicitly type the Map to ensure index is a number
       const labelToIndex = new Map<string, number>(json.table.cols.map((col: any, i: number) => [String(col.label || '').trim(), i]));
 
-      const missingHeaders = Object.keys(headerMapping).filter(h => !labelToIndex.has(h));
-      if (missingHeaders.length > 0) {
-          // If required fields are missing, try to map by index if structure is consistent, but robust way is throw error.
-          // For resilience, let's log and proceed if we can match by index if names slightly differ, but here we assume exact match or fail.
-          // Actually, for Account Sheet, headers might contain special chars. We rely on the text content.
-          // Let's assume headers are correct as per user prompt.
-      }
-      
       return json.table.rows.map((r: { c: ({ v: any } | null)[] }) => {
           const row: any = {};
           for (const [header, key] of Object.entries(headerMapping)) {
               const index = labelToIndex.get(header);
-              // FIX: Ensure index is defined and valid
               if (index !== undefined) {
                   const cell = r.c[index];
                   const value = cell ? cell.v : null;
@@ -2994,7 +3130,6 @@ const App = () => {
     };
 
   useEffect(() => {
-    // Announcement check
     const lastReadId = localStorage.getItem('dashboard_last_announcement_id');
     const latestId = ANNOUNCEMENTS[ANNOUNCEMENTS.length - 1]?.id;
     if (latestId && lastReadId !== latestId) {
@@ -3003,7 +3138,6 @@ const App = () => {
 
     const fetchData = async () => {
       const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
-      // New Account Sheet ID
       const accountSheetId = '1t4c9J8fjecI7XzbHRsKGDA54CJsa8ynrrvIu4COvcP4';
       const liveQuery = encodeURIComponent("SELECT *");
       
@@ -3019,13 +3153,18 @@ const App = () => {
       const accountSheetGid = '596654536';
       const accountSheetUrl = `https://docs.google.com/spreadsheets/d/${accountSheetId}/gviz/tq?gid=${accountSheetGid}`;
 
+      // Query Sheet info
+      const querySheetGid = '1662570079';
+      const querySheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${querySheetGid}&range=A1:AC`;
+
       try {
-        const [liveResponse, masterResponse, apiKeyResponse, stepResponse, accountResponse] = await Promise.all([
+        const [liveResponse, masterResponse, apiKeyResponse, stepResponse, accountResponse, queryResponse] = await Promise.all([
           fetch(liveSheetUrl),
           fetch(masterSheetUrl),
           fetch(apiKeySheetUrl).catch(e => { console.warn("API Key sheet fetch failed, proceeding without it."); return null; }),
           fetch(stepSheetUrl).catch(e => { console.warn("Step sheet fetch failed, proceeding without it."); return null; }),
           fetch(accountSheetUrl).catch(e => { console.warn("Account sheet fetch failed, proceeding without it."); return null; }),
+          fetch(querySheetUrl).catch(e => { console.warn("Query sheet fetch failed, proceeding without it."); return null; }),
         ]);
 
         if (!liveResponse.ok) throw new Error(`HTTP error! status: ${liveResponse.status} on Live sheet`);
@@ -3062,7 +3201,6 @@ const App = () => {
         };
         const parsedMasterData: MasterProductData[] = parseGvizResponse(masterText, masterHeaderMapping, ['productCode']);
         
-        // Parse Step Data
         let parsedStepData: StepData[] = [];
         if (stepResponse && stepResponse.ok) {
             const stepText = await stepResponse.text();
@@ -3089,7 +3227,6 @@ const App = () => {
             }
         }
         
-        // Parse Account Data
         let parsedAccountData: AccountData[] = [];
         if (accountResponse && accountResponse.ok) {
             const accountText = await accountResponse.text();
@@ -3121,7 +3258,43 @@ const App = () => {
             }
         }
 
-        // --- PROCESS DATA & SET STATE ---
+        // Parse Query Data
+        let parsedQueryData: QueryData[] = [];
+        if (queryResponse && queryResponse.ok) {
+            const queryText = await queryResponse.text();
+            const match = queryText.match(/{.*}/s);
+            if (match) {
+                const json: any = JSON.parse(match[0]);
+                if (json.status === 'ok') {
+                    // Raw parsing for query sheet since headers are structured by stage
+                    parsedQueryData = json.table.rows.slice(1).map((r: any) => { // Skip Row 1 (Stages)
+                        const cells = r.c || [];
+                        const getVal = (idx: number) => String(cells[idx]?.v || '').trim();
+                        return {
+                            date: getVal(0),
+                            receivedBy: getVal(1),
+                            clientName: getVal(2),
+                            issue: getVal(3),
+                            delegatedTo: getVal(4),
+                            expectedDate: getVal(5),
+                            serialKey: getVal(6),
+                            user: getVal(7),
+                            // S1
+                            s1Planned: getVal(8), s1Actual: getVal(9), s1Status: getVal(10), s1Delay: getVal(11),
+                            // S2
+                            s2Planned: getVal(12), s2Actual: getVal(13), s2Status: getVal(14), s2Delay: getVal(15),
+                            // S3
+                            s3Planned: getVal(16), s3Actual: getVal(17), s3Status: getVal(18), s3Delay: getVal(19),
+                            // S4
+                            s4Planned: getVal(20), s4Actual: getVal(21), s4Status: getVal(22), s4Delay: getVal(23),
+                            // S5
+                            s5Planned: getVal(24), s5Actual: getVal(25), s5Status: getVal(26), s5Delay: getVal(27)
+                        } as QueryData;
+                    }).filter((row: QueryData) => row.date || row.clientName);
+                }
+            }
+        }
+
         const stepDataMap = new Map<string, StepData>(parsedStepData.map(d => [d.orderNo, d]));
 
         const processedLiveData = parsedLiveData.map(order => {
@@ -3154,9 +3327,9 @@ const App = () => {
         setMasterProductList(parsedMasterData);
         setStepData(parsedStepData);
         setAccountData(parsedAccountData);
-        setLastUpdateTime(new Date()); // Set Last Update Time
+        setQueryData(parsedQueryData);
+        setLastUpdateTime(new Date());
 
-        // Parse API Key Data
         const fetchedCredentials: Record<string, string> = {};
         if (apiKeyResponse && apiKeyResponse.ok) {
             const apiKeyText = await apiKeyResponse.text();
@@ -3177,7 +3350,6 @@ const App = () => {
         const allCredentials: Record<string, string> = { ...userCredentials, ...fetchedCredentials };
         setUserCredentials(allCredentials);
         
-        // Auto-login validation
         const savedName = localStorage.getItem('dashboard_username');
         const savedKey = localStorage.getItem('dashboard_apikey');
 
@@ -3305,7 +3477,6 @@ const App = () => {
         const statusMatch = (d.status && d.status.toLowerCase().includes(lowercasedQuery)) || (d.originalStatus && d.originalStatus.toLowerCase().includes(lowercasedQuery));
         const orderMatch = d.orderNo && d.orderNo.toLowerCase().includes(lowercasedQuery);
 
-        // Product fields
         const productMatch = (d.product && d.product.toLowerCase().includes(lowercasedQuery));
         const codeMatch = (d.productCode && d.productCode.toLowerCase().includes(lowercasedQuery));
         const categoryMatch = (d.category && d.category.toLowerCase().includes(lowercasedQuery));
@@ -3322,7 +3493,7 @@ const App = () => {
                 countryMatch ||
                 productMatch || codeMatch || categoryMatch
             );
-        } else { // Client view
+        } else {
             return (
                 statusMatch ||
                 shippedDate.includes(lowercasedQuery) ||
@@ -3455,7 +3626,6 @@ const App = () => {
         const orderDateYY = getYY(row.orderDate);
         const stuffingMonthYY = getYY(row.stuffingMonth);
 
-        // 1. RECEIVED ORDERS
         if (isPlan || isShipped) {
             let include = false;
             if (hasDateRange) {
@@ -3479,7 +3649,6 @@ const App = () => {
             }
         }
 
-        // 2. IN-PROCESS ORDERS
         if (isPlan) {
             let include = false;
             if (hasDateRange) {
@@ -3490,7 +3659,6 @@ const App = () => {
             if (include) inProcessOrders.add(orderNo);
         }
 
-        // 3. SHIPPED ORDERS
         if (isShipped) {
             let include = false;
             if (hasDateRange) {
@@ -3628,18 +3796,10 @@ const App = () => {
 
   const getFinancialSummaryForTracking = (orderNo: string | null) => {
       if (!orderNo) return undefined;
-      // 1. Get Matching Account Row (Exact or Includes)
-      // Note: Account rows might contain merged orders. The sample showed "BN-0010-II + BN-0013-II...".
-      // We look for a row where orderNo contains our target, or matches.
       const accountRow = accountData.find(acc => acc.orderNo.includes(orderNo));
-
-      // 2. Calculate Order Qty from Live Data (Sum of all products for this order)
-      // FIX: Use exact order number match to avoid summing up sibling sub-orders (e.g. BP-0094-I vs BP-0094-II)
       const relatedLiveRows = data.filter(d => d.orderNo === orderNo);
       const orderQty = relatedLiveRows.reduce((sum, r) => sum + r.qty, 0);
 
-      // 3. Get Financials. Prefer Account Row if available.
-      // If account row exists, use its values. If not, use calculated value from Live for value, and 0 for payment/balance.
       const orderValue = accountRow ? accountRow.totalOrderValue : relatedLiveRows.reduce((sum, r) => sum + r.exportValue, 0);
       const received = accountRow ? accountRow.paymentReceived : 0;
       const balance = accountRow ? accountRow.balancePayment : 0;
@@ -3879,12 +4039,18 @@ const App = () => {
                     >
                       {Icons.table} Table
                   </button>
+                  <button 
+                      className={adminViewMode === 'query' ? 'active' : ''}
+                      onClick={() => setAdminViewMode('query')}
+                      aria-label="Switch to Query View"
+                    >
+                      {Icons.search} Query
+                  </button>
               </div>
           )}
 
           {authenticatedUser === 'admin' && adminViewMode === 'dashboard' ? (
              <div className={`main-content ${drillDownState.level > 1 ? 'table-only-view' : 'dashboard-view'}`}>
-                {/* Conditionally render charts only at Level 1 */}
                 {drillDownState.level === 1 && (
                     <div className="charts-container">
                         <div className={`chart-container ${activeFilters.some(f => f.source === 'countryChart') ? 'active-filter-source' : ''}`}>
@@ -3914,6 +4080,10 @@ const App = () => {
                     baseOrderHasSubOrders={baseOrderHasSubOrders}
                 />
              </div>
+          ) : authenticatedUser === 'admin' && adminViewMode === 'query' ? (
+            <div className="main-content query-view" style={{ gridTemplateColumns: '1fr' }}>
+                <QueryTable data={queryData} lastSyncTime={lastUpdateTime} />
+            </div>
           ) : (
             <div className={`main-content ${currentUser !== 'admin' ? 'client-view' : 'table-only-view'}`}>
                 <DataTable 
