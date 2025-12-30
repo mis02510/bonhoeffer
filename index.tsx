@@ -2803,157 +2803,302 @@ const AccountDashboard = ({ accountData, onClose, currentUser }: { accountData: 
     );
 };
 
-const QueryTable = ({ data, lastSyncTime }: { data: QueryData[], lastSyncTime?: Date | null }) => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const rowsPerPage = 15;
-    const totalPages = Math.ceil(data.length / rowsPerPage);
-    const paginatedData = data.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+// --- QueryTable Component (Integrated from Elite Query Command) ---
+const REQUIRED_FIELDS: (keyof QueryData)[] = [
+  "date",
+  "receivedBy",
+  "clientName",
+  "delegatedTo",
+  "expectedDate",
+  "serialKey",
+  "issue",
+  "user"
+];
 
-    const getStatusStyle = (val: string) => {
-        const v = val.toLowerCase();
-        if (/done|success|completed|paid|actual|yes/.test(v)) return 'st-success';
-        if (/pending|process|planned|review|ongoing/.test(v)) return 'st-warning';
-        if (/urgent|delay|late|failed|danger|cancel|unpaid/.test(v)) return 'st-danger';
-        if (/new|info|select/.test(v)) return 'st-info';
-        return null;
-    };
+const isValidRow = (row: QueryData) =>
+  REQUIRED_FIELDS.every((key) => {
+    const v = row[key];
+    return v && v.toString().trim() !== "";
+  });
 
-    const HeaderStage = ({ title, color, colSpan }: { title: string, color: string, colSpan: number }) => (
-        <th colSpan={colSpan} style={{ backgroundColor: color, color: '#fff', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.2)' }}>
-            {title}
-        </th>
-    );
+const safe = (v?: string) => (v && v.trim() ? v : "-");
 
-    return (
-        <div className="data-table-container query-table-container" style={{ padding: 0 }}>
-            <div className="data-table-header" style={{ padding: '1.5rem', marginBottom: 0, background: 'var(--card-background)', borderBottom: '1px solid var(--card-border)' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flexGrow: 1 }}>
-                    <h3 style={{ textAlign: 'left', margin: 0, fontSize: '1.25rem', fontWeight: 800 }}>Internal Query Tracker</h3>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.75rem', color: 'var(--text-color-muted)' }}>
-                        <div className="live-dot" style={{ width: 8, height: 8 }}></div>
-                        <span>{lastSyncTime ? `LAST SYNC: ${lastSyncTime.toLocaleTimeString()}` : 'SYNCING LIVE SPREADSHEET...'}</span>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                     <div className="stage-legend" style={{ display: 'flex', gap: '0.75rem', fontSize: '0.7rem' }}>
-                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><i style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#673AB7' }}></i> S1</span>
-                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><i style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#3F51B5' }}></i> S2</span>
-                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><i style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#2196F3' }}></i> S3</span>
-                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><i style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#00BCD4' }}></i> S4</span>
-                         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><i style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#009688' }}></i> S5</span>
-                     </div>
-                </div>
-            </div>
-            <div className="table-wrapper" style={{ maxHeight: 'calc(100vh - 350px)' }}>
-                <table className="query-data-table" style={{ borderSpacing: 0 }}>
-                    <thead>
-                        {/* Row 1: Stages */}
-                        <tr>
-                            <th colSpan={8} style={{ backgroundColor: 'transparent' }}></th>
-                            <HeaderStage title="Stage-1: Update sales person" color="#673AB7" colSpan={4} />
-                            <HeaderStage title="Stage-2: Inform to client" color="#3F51B5" colSpan={4} />
-                            <HeaderStage title="Stage-3: Revised-Update sales person" color="#2196F3" colSpan={4} />
-                            <HeaderStage title="Stage-4: Inform to client (Revised Date)" color="#00BCD4" colSpan={4} />
-                            <HeaderStage title="Stage-5: Issue Status" color="#009688" colSpan={5} />
-                        </tr>
-                        {/* Row 2: Field Names */}
-                        <tr style={{ position: 'sticky', top: 38, zIndex: 50, background: 'var(--background-color)' }}>
-                            <th>Date</th>
-                            <th>Received By</th>
-                            <th>Client Name</th>
-                            <th>Issue/Query</th>
-                            <th>Delegated To</th>
-                            <th>Expected Date</th>
-                            <th>Serial Key</th>
-                            <th>User</th>
-                            {/* S1 */}
-                            <th style={{ backgroundColor: 'rgba(103, 58, 183, 0.05)' }}>Planned</th>
-                            <th style={{ backgroundColor: 'rgba(103, 58, 183, 0.05)' }}>Actual</th>
-                            <th style={{ backgroundColor: 'rgba(103, 58, 183, 0.05)' }}>Status</th>
-                            <th style={{ backgroundColor: 'rgba(103, 58, 183, 0.05)' }}>Delay</th>
-                            {/* S2 */}
-                            <th style={{ backgroundColor: 'rgba(63, 81, 181, 0.05)' }}>Planned</th>
-                            <th style={{ backgroundColor: 'rgba(63, 81, 181, 0.05)' }}>Actual</th>
-                            <th style={{ backgroundColor: 'rgba(63, 81, 181, 0.05)' }}>Status</th>
-                            <th style={{ backgroundColor: 'rgba(63, 81, 181, 0.05)' }}>Delay</th>
-                            {/* S3 */}
-                            <th style={{ backgroundColor: 'rgba(33, 150, 243, 0.05)' }}>Planned</th>
-                            <th style={{ backgroundColor: 'rgba(33, 150, 243, 0.05)' }}>Actual</th>
-                            <th style={{ backgroundColor: 'rgba(33, 150, 243, 0.05)' }}>Status</th>
-                            <th style={{ backgroundColor: 'rgba(33, 150, 243, 0.05)' }}>Delay</th>
-                            {/* S4 */}
-                            <th style={{ backgroundColor: 'rgba(0, 188, 212, 0.05)' }}>Planned</th>
-                            <th style={{ backgroundColor: 'rgba(0, 188, 212, 0.05)' }}>Actual</th>
-                            <th style={{ backgroundColor: 'rgba(0, 188, 212, 0.05)' }}>Status</th>
-                            <th style={{ backgroundColor: 'rgba(0, 188, 212, 0.05)' }}>Delay</th>
-                            {/* S5 */}
-                            <th style={{ backgroundColor: 'rgba(0, 150, 136, 0.05)' }}>Planned</th>
-                            <th style={{ backgroundColor: 'rgba(0, 150, 136, 0.05)' }}>Actual</th>
-                            <th style={{ backgroundColor: 'rgba(0, 150, 136, 0.05)' }}>Status</th>
-                            <th style={{ backgroundColor: 'rgba(0, 150, 136, 0.05)' }}>Delay</th>
-                            <th style={{ backgroundColor: 'rgba(0, 150, 136, 0.05)' }}>Requested By</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paginatedData.length > 0 ? (
-                            paginatedData.map((row, idx) => (
-                                <tr key={idx}>
-                                    <td className="timestamp">{formatDateDDMMMYY(row.date)}</td>
-                                    <td>{formatNa(row.receivedBy)}</td>
-                                    <td style={{ fontWeight: 600 }}>{formatNa(row.clientName)}</td>
-                                    <td style={{ maxWidth: 300, whiteSpace: 'normal', fontSize: '0.8rem', textAlign: 'left' }}>{formatNa(row.issue)}</td>
-                                    <td>{formatNa(row.delegatedTo)}</td>
-                                    <td className="timestamp">{formatDateDDMMMYY(row.expectedDate)}</td>
-                                    <td className="serial-key">{formatNa(row.serialKey)}</td>
-                                    <td>{formatNa(row.user)}</td>
-                                    {/* S1 */}
-                                    <td style={{ opacity: 0.8 }}>{row.s1Planned}</td>
-                                    <td style={{ opacity: 0.8 }}>{row.s1Actual}</td>
-                                    <td><span className={`pill ${getStatusStyle(row.s1Status) || ''}`}>{row.s1Status}</span></td>
-                                    <td style={{ color: row.s1Delay !== '0' ? 'var(--error-color)' : 'inherit' }}>{row.s1Delay}</td>
-                                    {/* S2 */}
-                                    <td style={{ opacity: 0.8 }}>{row.s2Planned}</td>
-                                    <td style={{ opacity: 0.8 }}>{row.s2Actual}</td>
-                                    <td><span className={`pill ${getStatusStyle(row.s2Status) || ''}`}>{row.s2Status}</span></td>
-                                    <td style={{ color: row.s2Delay !== '0' ? 'var(--error-color)' : 'inherit' }}>{row.s2Delay}</td>
-                                    {/* S3 */}
-                                    <td style={{ opacity: 0.8 }}>{row.s3Planned}</td>
-                                    <td style={{ opacity: 0.8 }}>{row.s3Actual}</td>
-                                    <td><span className={`pill ${getStatusStyle(row.s3Status) || ''}`}>{row.s3Status}</span></td>
-                                    <td style={{ color: row.s3Delay !== '0' ? 'var(--error-color)' : 'inherit' }}>{row.s3Delay}</td>
-                                    {/* S4 */}
-                                    <td style={{ opacity: 0.8 }}>{row.s4Planned}</td>
-                                    <td style={{ opacity: 0.8 }}>{row.s4Actual}</td>
-                                    <td><span className={`pill ${getStatusStyle(row.s4Status) || ''}`}>{row.s4Status}</span></td>
-                                    <td style={{ color: row.s4Delay !== '0' ? 'var(--error-color)' : 'inherit' }}>{row.s4Delay}</td>
-                                    {/* S5 */}
-                                    <td style={{ opacity: 0.8 }}>{row.s5Planned}</td>
-                                    <td style={{ opacity: 0.8 }}>{row.s5Actual}</td>
-                                    <td><span className={`pill ${getStatusStyle(row.s5Status) || ''}`}>{row.s5Status}</span></td>
-                                    <td style={{ color: row.s5Delay !== '0' ? 'var(--error-color)' : 'inherit' }}>{row.s5Delay}</td>
-                                    <td>{formatNa(row.s5Planned)}</td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan={29} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-color-muted)' }}>
-                                    No active internal queries found.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-            <div className="pagination" style={{ padding: '1.5rem', background: '#F8FAFC', borderTop: '1px solid var(--card-border)' }}>
-                <span className="pagination-info">Page {currentPage} of {totalPages || 1} (Total {data.length} entries)</span>
-                <div className="pagination-controls">
-                    <button className="btn-nav" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>{Icons.prevArrow} Previous</button>
-                    <button className="btn-nav" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages || totalPages === 0}>Next {Icons.nextArrow}</button>
-                </div>
-            </div>
-        </div>
-    );
+const formatDateTime = (value?: string) => {
+  if (!value) return "-";
+
+  try {
+    // Case 1: Date(2025,11,17,37,53)
+    if (value.startsWith("Date(")) {
+      const nums = value
+        .replace("Date(", "")
+        .replace(")", "")
+        .split(",")
+        .map(Number);
+
+      const d = new Date(
+        nums[0],
+        nums[1] - 1,
+        nums[2],
+        nums[3] || 0,
+        nums[4] || 0,
+        nums[5] || 0
+      );
+
+      return d.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      });
+    }
+
+    // Case 2: ISO / normal date string
+    const d = new Date(value);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      });
+    }
+
+    return value;
+  } catch {
+    return "-";
+  }
 };
+
+
+const QueryTable = ({
+  data,
+  onRefresh,
+  loading
+}: {
+  data: QueryData[];
+  onRefresh: () => void;
+  loading: boolean;
+}) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [drawerData, setDrawerData] = useState<QueryData | null>(null);
+
+  const rowsPerPage = 12;
+
+  /* 🔥 FILTER BAD ROWS FIRST */
+  const cleanedData = useMemo(() => data.filter(isValidRow), [data]);
+
+  const totalPages = Math.ceil(cleanedData.length / rowsPerPage);
+  const paginatedData = cleanedData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const getSteps = (row: QueryData) => [
+    { name: "1. Update Sales Person", plan: row.s1Planned, act: row.s1Actual, status: row.s1Status, delay: row.s1Delay },
+    { name: "2. Inform To Client", plan: row.s2Planned, act: row.s2Actual, status: row.s2Status, delay: row.s2Delay },
+    { name: "3. Revised Update", plan: row.s3Planned, act: row.s3Actual, status: row.s3Status, delay: row.s3Delay },
+    { name: "4. Inform Client (Revised)", plan: row.s4Planned, act: row.s4Actual, status: row.s4Status, delay: row.s4Delay },
+    { name: "5. Final Issue Status", plan: row.s5Planned, act: row.s5Actual, status: row.s5Status, delay: row.s5Delay }
+  ];
+
+  const getCurrentStepInfo = (row: QueryData) => {
+    const steps = getSteps(row);
+    let activeIdx = -1;
+
+    steps.forEach((s, i) => {
+      const status = (s.status || "").toLowerCase();
+      const actual = (s.act || "").trim();
+      if (status.includes("done") || status.includes("completed") || (actual && actual !== "-")) {
+        activeIdx = i;
+      }
+    });
+
+    return {
+      name: activeIdx >= 0 ? steps[activeIdx].name : "QUEUED",
+      index: activeIdx,
+      steps
+    };
+  };
+
+  const currentStepInfo = useMemo(
+    () => (drawerData ? getCurrentStepInfo(drawerData) : null),
+    [drawerData]
+  );
+
+  if (loading)
+    return (
+      <div className="h-64 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+
+  return (
+    <div className="query-command-card animate-fadeIn">
+     <div className="query-command-header">
+        <div className="query-command-row">
+            <div className="command-left">
+            <h2>
+                Query <span>Command</span>
+            </h2>
+            <p>LIVE OPERATIONAL SYNC</p>
+            </div>
+
+            <button className="refresh-btn" onClick={onRefresh}>
+            REFRESH SYNC
+            </button>
+        </div>
+      </div>
+
+      <div className="query-table-wrapper">
+        <table className="query-command-table">
+          <thead>
+            <tr>
+              <th>RECEIVED</th>
+              <th>EXECUTIVE</th>
+              <th>STATUS</th>
+              <th>ASSIGNED</th>
+              <th>DEADLINE</th>
+              <th>ENQ NO</th>
+              <th>ISSUE</th>
+              <th>DOER</th>
+              <th>CURRENT STATUS</th>
+              <th>TRACK</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {paginatedData.map((row, idx) => {
+              const info = getCurrentStepInfo(row);
+              return (
+                <tr key={idx}>
+                  <td>{formatDateTime(row.date)}</td>
+                  <td className="bold">{safe(row.receivedBy)}</td>
+                  <td>
+                    <span className="status-pill">{safe(row.clientName)}</span>
+                  </td>
+                  <td>{safe(row.delegatedTo)}</td>
+                  <td className="deadline">{safe(row.expectedDate)}</td>
+                  <td className="enq">{safe(row.serialKey)}</td>
+                  <td className="issue" title={row.issue}>
+                    {safe(row.issue)}
+                  </td>
+                  <td>{safe(row.user)}</td>
+                  <td>
+                    <div className="current-milestone">
+                      <strong>{info.name}</strong>
+                    </div>
+                  </td>
+                  <td>
+                    <button className="track-btn" onClick={() => setDrawerData(row)}>
+                      TRACKING
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="query-footer">
+        <button disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)}>
+          PREVIOUS
+        </button>
+        <span>
+          PAGE {currentPage} OF {totalPages || 1} // TOTAL: {cleanedData.length}
+        </span>
+        <button disabled={currentPage === totalPages} onClick={() => setCurrentPage((p) => p + 1)}>
+          NEXT
+        </button>
+      </div>
+
+      {/* DRAWER */}
+      <div className={`query-drawer ${drawerData ? "open" : ""}`}>
+        {drawerData && (
+          <div className="query-drawer-inner">
+                <header className="query-drawer-header">
+                    <div className="drawer-header-row">
+                    
+                    {/* LEFT */}
+                    <div className="drawer-left">
+                        <h3 className="drawer-enq">{safe(drawerData.serialKey)}</h3>
+                        <p className="drawer-issue">{safe(drawerData.issue)}</p>
+                    </div>
+
+                    {/* RIGHT */}
+                    <div className="drawer-right">
+                        <button
+                        className="drawer-close"
+                        onClick={() => setDrawerData(null)}
+                        aria-label="Close"
+                        >
+                        &times;
+                        </button>
+                    </div>
+
+                    </div>
+                </header>
+            
+
+            <div className="query-drawer-body">
+              <div className="current-milestone">
+                <span>Current Milestone</span>
+                <strong>{currentStepInfo?.name}</strong>
+              </div>
+
+              <div className="drawer-timeline">
+                {currentStepInfo?.steps.map((s, i) => {
+                  const statusLower = (s.status || "").toLowerCase();
+                  const isDone = statusLower.includes("done") || statusLower.includes("completed");
+                  const isCurrent = i === currentStepInfo.index;
+                  const hasDelay = s.delay && !["0", "-", ""].includes(s.delay);
+
+                  return (
+                    <div key={i} className="timeline-row">
+                      <div className={`timeline-dot ${isDone ? "done" : isCurrent ? "current" : ""}`} />
+                      <div className="timeline-card">
+                        <div className="timeline-header">
+                          <span>{s.name}</span>
+                          <span className={`timeline-status ${isDone ? "done" : ""}`}>
+                            {safe(s.status)}
+                          </span>
+                        </div>
+                        <div className="timeline-grid">
+                          <div>
+                            <label>Planned</label>
+                            <span>{formatDateTime(s.plan)}</span>
+                          </div>
+                          <div>
+                            <label>Actual</label>
+                            <span>{formatDateTime(s.act)}</span>
+                          </div>
+                        </div>
+                        <div className="timeline-footer">
+                          {hasDelay ? (
+                            <span className="delay">⚠ DELAY: {s.delay}</span>
+                          ) : (
+                            <span className="ontrack">ON TRACK</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 
 const App = () => {
   const [data, setData] = useState<OrderData[]>([]);
