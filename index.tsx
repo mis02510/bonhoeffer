@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -147,27 +148,6 @@ interface StepData {
   qualityCheck4Url: string;
 }
 
-interface QueryData {
-  date: string;
-  receivedBy: string;
-  clientName: string;
-  issue: string;
-  delegatedTo: string;
-  expectedDate: string;
-  serialKey: string;
-  user: string;
-  // Stage 1
-  s1Planned: string; s1Actual: string; s1Status: string; s1Delay: string;
-  // Stage 2
-  s2Planned: string; s2Actual: string; s2Status: string; s2Delay: string;
-  // Stage 3
-  s3Planned: string; s3Actual: string; s3Status: string; s3Delay: string;
-  // Stage 4
-  s4Planned: string; s4Actual: string; s4Status: string; s4Delay: string;
-  // Stage 5
-  s5Planned: string; s5Actual: string; s5Status: string; s5Delay: string;
-}
-
 interface Filter {
     type: 'status' | 'country' | 'month';
     value: string;
@@ -276,8 +256,6 @@ const getBaseOrderNo = (orderNo: string): string => {
     return upperOrderNo;
 };
 
-// ... [Previous CalendarViewDashboard Components remain unchanged] ...
-
 // ### calendar view
 const CalendarKpiCard = ({ title, value, icon, variant, onClick, isDimmed }: any) => (
     <div 
@@ -298,18 +276,15 @@ const CalendarKpiCard = ({ title, value, icon, variant, onClick, isDimmed }: any
     </div>
 );
 
-// FIX: Added types for props to make them optional and fix call site errors.
 const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selectedYear, activeMetric }: { data: any[], xAxisDataKey?: string, selectedMonth?: number | null, selectedYear?: string, activeMetric?: string | null }) => {
     const barLabelFormatter = (value: number) => (value > 0 ? value : '');
 
-    // FIX: Use any[] for payload to avoid 'property does not exist on unknown' errors. Recharts payloads can be tricky.
     const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: any; }) => {
         if (active && payload && payload.length) {
             let displayLabel = label;
             const isDailyView = xAxisDataKey === 'day';
     
             if (isDailyView && selectedMonth !== null && selectedYear) {
-                // Ensure the year is handled correctly based on input format
                 const year = selectedYear && selectedYear.length === 4 ? parseInt(selectedYear, 10) : new Date().getFullYear();
                 const date = new Date(year, selectedMonth, label);
                 displayLabel = formatDateDDMMMYY(date.toISOString());
@@ -318,25 +293,21 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
             const dataPoint = payload[0].payload;
             const hasMetrics = payload.some((p: any) => p.value > 0);
             
-            // Determine active states
             const showReceived = activeMetric === 'received' || activeMetric === null;
             const showPlanned = activeMetric === 'planned' || activeMetric === null;
             const showShipped = activeMetric === 'shipped' || activeMetric === null;
 
-            // Check if we have values to show based on selection
             const hasReceivedTotals = showReceived && (dataPoint.totalValue > 0 || dataPoint.totalQty > 0);
             const hasPlannedTotals = showPlanned && (dataPoint.plannedValue > 0 || dataPoint.plannedQty > 0);
             const hasShippedTotals = showShipped && (dataPoint.shippedValue > 0 || dataPoint.shippedQty > 0);
             
             const hasAnyTotals = hasReceivedTotals || hasPlannedTotals || hasShippedTotals;
 
-            // If there's nothing to show at all, render nothing.
             if (!hasMetrics && !(isDailyView && hasAnyTotals)) return null;
 
             return (
                 <div className="recharts-default-tooltip" style={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)', borderRadius: '8px', padding: '0.5rem 1rem', maxWidth: '350px' }}>
                     <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>{displayLabel}</p>
-                    {/* Metrics Section */}
                     {payload.map((p: any) => {
                        if (p.value > 0) {
                            if (p.dataKey === 'received') {
@@ -355,11 +326,10 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                                                 {remaining > 0 && <span>{`, +${remaining} etc`}</span>}
                                             </p>
                                         )}
-                                        {/* For Monthly view, show total values here if filtered */}
                                         {!isDailyView && (
                                             <>
                                                 <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.totalValue)}`}</p>
-                                                <p style={{ margin: '0 0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.totalQty)}`}</p>
+                                                <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.totalQty)}`}</p>
                                             </>
                                         )}
                                     </div>
@@ -379,7 +349,6 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                                else if (p.dataKey === 'shipped') orderNumbers = dataPoint.shippedOrderNumbers || [];
                            }
 
-                           // Limit display to avoid huge tooltips
                            const maxOrdersToShow = 15;
                            const displayOrders = orderNumbers.slice(0, maxOrdersToShow);
                            const remaining = orderNumbers.length - maxOrdersToShow;
@@ -393,17 +362,16 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                                            {remaining > 0 && <span>{`, +${remaining} more`}</span>}
                                        </p>
                                    )}
-                                   {/* For Monthly view, show specific metric values here */}
                                    {!isDailyView && p.dataKey === 'planned' && (
                                        <>
                                            <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.plannedValue)}`}</p>
-                                           <p style={{ margin: '0 0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.plannedQty)}`}</p>
+                                           <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.plannedQty)}`}</p>
                                        </>
                                    )}
                                    {!isDailyView && p.dataKey === 'shipped' && (
                                        <>
                                            <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.shippedValue)}`}</p>
-                                           <p style={{ margin: '0 0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.shippedQty)}`}</p>
+                                           <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.shippedQty)}`}</p>
                                        </>
                                    )}
                                </div>
@@ -412,7 +380,6 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                        return null;
                     })}
     
-                    {/* This part is ONLY for the daily view totals */}
                     {isDailyView && hasAnyTotals && (
                       <div style={{marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--grid-stroke)'}}>
                         {hasReceivedTotals && (
@@ -445,7 +412,7 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
         <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-stroke)" />
-                <XAxis dataKey={xAxisDataKey} stroke={'var(--text-color-muted)'} interval={xAxisDataKey === 'day' ? 4 : 'preserveStartEnd'} />
+                <XAxis dataKey="name" stroke={'var(--text-color-muted)'} interval={xAxisDataKey === 'day' ? 4 : 'preserveStartEnd'} />
                 <YAxis stroke={'var(--text-color-muted)'} allowDecimals={false} />
                 <Tooltip 
                     content={<CustomTooltip />} 
@@ -507,11 +474,10 @@ const TopClientsList = ({ data }) => (
 );
 
 
-// FIX: Added prop types to the CalendarViewDashboard component to fix type errors where array elements were being inferred as `unknown` during `map` operations.
 interface CalendarViewDashboardProps {
     allOrderData: OrderData[];
     masterProductList: MasterProductData[];
-    stepData: StepData[]; // Added stepData
+    stepData: StepData[]; 
     clientList: string[];
     onClose: () => void;
     authenticatedUser: string | null;
@@ -521,7 +487,6 @@ interface CalendarViewDashboardProps {
 }
 
 const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clientList, onClose, authenticatedUser, initialClientName, initialYear, onYearChange }: CalendarViewDashboardProps) => {
-    // ... [Same implementation as before] ...
     const monthNames = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], []);
     
     const years = useMemo(() => {
@@ -566,7 +531,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     }, [endDate]);
 
     const isDateInRange = useCallback((checkDate: Date | null) => {
-        if (!sDate && !eDate) return true; // No date filter applied
+        if (!sDate && !eDate) return true; 
         if (!checkDate) return false;
         const isAfterStart = sDate ? checkDate >= sDate : true;
         const isBeforeEnd = eDate ? checkDate <= eDate : true;
@@ -574,12 +539,11 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     }, [sDate, eDate]);
 
 
-    // Effect to sync with parent's year selection if it changes
     useEffect(() => {
         const effectiveYear = getEffectiveYear(initialYear);
         if (selectedYear !== effectiveYear) {
             setSelectedYear(effectiveYear);
-            setSelectedMonth(null); // Reset month view when year changes from parent
+            setSelectedMonth(null); 
         }
     }, [initialYear, years]);
     
@@ -755,7 +719,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
              const isPlan = status === 'PLAN';
              const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
              
-             // Received (Total) & Planned aggregation based on Order Date
              const orderDate = parseDate(d.orderDate);
              if ((isPlan || isShipped) && orderDate && isDateInRange(orderDate)) {
                  const orderYY = getYY(orderDate);
@@ -771,7 +734,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                  }
              }
 
-             // Shipped aggregation based on Stuffing Date
              const stuffingDate = parseDate(d.stuffingMonth);
              if (isShipped && stuffingDate && isDateInRange(stuffingDate)) {
                  const stuffingYY = getYY(stuffingDate);
@@ -822,7 +784,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             const isPlan = status === 'PLAN';
             const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
 
-            // Shipped Logic
             const stuffingDate = parseDate(d.stuffingMonth);
             if (isShipped && stuffingDate && stuffingDate.getMonth() === selectedMonth && isDateInRange(stuffingDate)) {
                  const stuffingYY = getYY(stuffingDate);
@@ -836,7 +797,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                  }
             }
             
-            // Received & Planned Logic
             const orderDate = parseDate(d.orderDate);
             if ((isPlan || isShipped) && orderDate && orderDate.getMonth() === selectedMonth && isDateInRange(orderDate)) {
                 const orderYY = getYY(orderDate);
@@ -1042,7 +1002,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                                     >
                                         <h3>{month}</h3>
                                         <div className="month-bars-container">
-                                            <div className="month-bar wrapper">
+                                            <div className="month-bar-wrapper">
                                                 <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
                                                     {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
                                                 </div>
@@ -1318,7 +1278,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                     level: 1,
                     baseOrderNo: baseOrderNo,
                     status: finalStatus,
-                    originalStatus: finalStatus, // For styling
+                    originalStatus: finalStatus, 
                     stuffingMonth: latestShippedDate ? latestShippedDate.toISOString() : firstProduct.stuffingMonth,
                     customerName: firstProduct.customerName,
                     country: firstProduct.country,
@@ -1345,9 +1305,8 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
         if (drillDownState.level === 2) {
             const relevantRows = data.filter(row => getBaseOrderNo(row.orderNo) === drillDownState.baseOrder);
             const subGroups: { [key: string]: OrderData[] } = relevantRows.reduce((acc, row) => {
-                // FIX: Normalize key to ensure proper grouping
                 const key = row.orderNo ? row.orderNo.trim().toUpperCase() : ''; 
-                if (!key) return acc; // Skip invalid
+                if (!key) return acc; 
                 if (!acc[key]) {
                     acc[key] = [];
                 }
@@ -1371,7 +1330,6 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                 });
 
                 const firstProduct = products[0];
-                // Use the original orderNo from the first product to maintain display casing if needed
                 const orderNo = firstProduct.orderNo;
                 const totalQty = products.reduce((sum, p) => sum + p.qty, 0);
                 const totalExportValue = products.reduce((sum, p) => sum + p.exportValue, 0);
@@ -1470,11 +1428,16 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
         <div className="data-table-container">
             <div className="data-table-header">
                 <h3>{tableTitle}</h3>
-                {drillDownState.level > 1 && (
-                    <button className="back-button" onClick={onDrillUp}>
-                        {Icons.prevArrow} {backButtonText}
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                    <button className="calendar-view-button" onClick={() => window.open('https://query-bon.vercel.app/', '_blank')}>
+                        {Icons.search} Query
                     </button>
-                )}
+                    {drillDownState.level > 1 && (
+                        <button className="back-button" onClick={onDrillUp}>
+                            {Icons.prevArrow} {backButtonText}
+                        </button>
+                    )}
+                </div>
             </div>
             {drillDownState.level === 1 && (
                  <div className="instruction-container">
@@ -1524,7 +1487,6 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                 onDoubleClick={() => onRowDoubleClick(row)}
                                 style={{ animationDelay: `${index * 0.05}s` }}
                             >
-                                {/* Common Cells */}
                                 <td className="text-center">
                                     <div className="status-cell">
                                         <span className={`status-dot ${getStatusKeyword(row.originalStatus || row.status)}`}></span>
@@ -1533,7 +1495,6 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                 </td>
                                 <td>{formatDateDDMMMYY(row.stuffingMonth)}</td>
                                 
-                                {/* Level 1 Order No */}
                                 {drillDownState.level === 1 && (
                                     row.hasSubOrders ? (
                                         <td className="order-no-cell" title="Double click to view sub-orders">{formatNa(row.baseOrderNo)}</td>
@@ -1552,7 +1513,6 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                     )
                                 )}
 
-                                {/* Level 2 & 3 Order No */}
                                 {drillDownState.level > 1 && (
                                      <td className={`order-no-cell ${row.hasTracking ? 'clickable' : ''}`}
                                          onClick={(e) => {
@@ -1566,14 +1526,12 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                      </td>
                                 )}
 
-                                {/* Level 2 & 3 Image */}
                                 {drillDownState.level > 1 && (
                                      <td className="product-image-cell">
                                         {row.imageLink && row.imageLink.toLowerCase() !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                                     </td>
                                 )}
 
-                                {/* Level 3 Product Details */}
                                 {drillDownState.level === 3 && (
                                     <>
                                         <td>{formatNa(row.productCode)}</td>
@@ -1582,14 +1540,11 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                     </>
                                 )}
 
-                                {/* Admin Columns */}
                                 {currentUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
                                 {currentUser === 'admin' && <td>{formatNa(row.country)}</td>}
                                 
-                                {/* Qty */}
                                 <td className="text-right">{formatNumber(row.totalQty ?? row.qty)}</td>
                                 
-                                {/* Shipped Qty */}
                                 <td className="text-right">
                                     {drillDownState.level === 3 
                                         ? ((row.originalStatus === 'SHIPPED' || row.originalStatus === 'COMPLETE') ? formatNumber(row.qty) : '0')
@@ -1599,7 +1554,6 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                 
                                 {(drillDownState.level === 1 || drillDownState.level === 2) && <td className="text-right">{formatNumber(row.balanceQty)}</td>}
 
-                                {/* Values */}
                                 {drillDownState.level === 3 ? (
                                     <>
                                         <td className="value-text text-right">{row.unitPrice > 0 ? formatCurrency(row.unitPrice) : '-'}</td>
@@ -1687,18 +1641,14 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
   );
 };
 
-// ... (ChatAssistant and other helpers remain same) ...
-
 const SimpleMarkdown = ({ text }: { text: string }) => {
-    // This is a very basic markdown renderer.
-    // It handles: **bold**, and lists starting with "- ".
     const html = text
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/^- (.*$)/gm, '<li>$1</li>')
-        .replace(/((<li>.*<\/li>\s*)+)/g, '<ul>$1</ul>') // Wrap consecutive LIs in a UL
+        .replace(/((<li>.*<\/li>\s*)+)/g, '<ul>$1</ul>') 
         .replace(/\n/g, '<br />')
-        .replace(/<br \/><ul>/g, '<ul>') // Cleanup
-        .replace(/<\/ul><br \/>/g, '</ul>'); // Cleanup
+        .replace(/<br \/><ul>/g, '<ul>') 
+        .replace(/<\/ul><br \/>/g, '</ul>'); 
 
     return <div dangerouslySetInnerHTML={{ __html: html }} />;
 };
@@ -1707,7 +1657,7 @@ const SimpleMarkdown = ({ text }: { text: string }) => {
 const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, countryChartData, monthlyChartData }: { 
     orderData: OrderData[], 
     catalogData: any[], 
-    stepData: StepData[], // Added stepData
+    stepData: StepData[], 
     clientName: string, 
     kpis: any, 
     countryChartData: {name: string, value: number, qty: number}[], 
@@ -1762,7 +1712,6 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
         setIsLoading(true);
 
         try {
-            // Merge step data into orders for context
             const stepMap = new Map(stepData.map(s => [s.orderNo, s]));
             
             const simplifyOrders = (rows: OrderData[]) => rows.map(r => {
@@ -1780,12 +1729,11 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
                     Qty: r.qty,
                     Value: r.exportValue,
                     UnitPrice: r.unitPrice,
-                    OrderDate: r.orderDate, // ORDER FORWARDING DATE
+                    OrderDate: r.orderDate, 
                     StuffingMonth: r.stuffingMonth,
                     StuffingDate: r.stuffingDate,
                     ETD: r.etd,
                     ETA: r.eta,
-                    // Merged Step Data
                     ProductionDate: step?.productionDate,
                     ProductionStatus: step?.productionStatus,
                     SOBDate: step?.sobDate,
@@ -1797,7 +1745,6 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
                 };
             });
 
-            // Select minimal fields for Catalog
             const simplifyCatalog = (rows: any[]) => rows.map(r => ({
                 Code: r.productCode,
                 Category: r.category,
@@ -1816,7 +1763,6 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
                     ...arr.map(row => headers.map(h => {
                         const val = row[h];
                         const str = val === null || val === undefined ? '' : String(val);
-                        // Simple CSV escaping
                         if (str.includes(',') || str.includes('"') || str.includes('\n')) {
                             return `"${str.replace(/"/g, '""')}"`;
                         }
@@ -1825,7 +1771,6 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
                 ].join('\n');
             };
 
-            // PREPARE CONTEXT: Prioritize rows based on query content to avoid truncation of key info
             const orderNoRegex = /\b[A-Za-z0-9]+-[0-9]+(?:-[A-Za-z0-9]+)?\b/gi;
             const mentionedIds = (userMessage.text.match(orderNoRegex) || []).map(s => s.toUpperCase());
 
@@ -1891,7 +1836,7 @@ You are integrated into a specific dashboard with the following components. Use 
 
 **Rules:**
 1. **Privacy:** ${roleInstructions}
-2. **Accuracy:** Give answers related ONLY to user questions based on the structure above. Do NOT reveal other clients' info.
+2. **Accuracy:** Give answers related ONLY to user questions based on the structure above. Do not provide unrelated data.
 3. **Context:** You know about all tables, graphs, and KPI cards listed above.
 
 **Current Dashboard Context:**
@@ -1912,7 +1857,6 @@ ${catalogCSV}
 
 User Question: "${userMessage.text}"`;
 
-            // FIX: Use gemini-3-flash-preview as recommended for basic text/data analyst tasks.
             const responseStream = await ai.models.generateContentStream({
                 model: 'gemini-3-flash-preview',
                 contents: [{ role: 'user', parts: [{ text: prompt }] }],
@@ -1987,9 +1931,165 @@ User Question: "${userMessage.text}"`;
     );
 };
 
-// --- END: AI Chat Assistant & Helpers ---
 
-// ... (ChatAssistant and other helpers remain same) ...
+// --- New Account Dashboard Component ---
+const AccountDashboard = ({ accountData, onClose, currentUser }: { accountData: AccountData[], onClose: () => void, currentUser: string }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCountry, setSelectedCountry] = useState('All');
+    const [selectedClient, setSelectedClient] = useState('All');
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 10;
+
+    const baseData = useMemo(() => {
+        if (currentUser === 'admin') return accountData;
+        return accountData.filter(item => item.company.toLowerCase() === currentUser.toLowerCase());
+    }, [accountData, currentUser]);
+
+    const countries = useMemo(() => {
+        const uniqueCountries = new Set(baseData.map(item => item.country).filter(Boolean));
+        return ['All', ...Array.from(uniqueCountries).sort()];
+    }, [baseData]);
+
+    const clients = useMemo(() => {
+        let filtered = baseData;
+        if (selectedCountry !== 'All') {
+            filtered = filtered.filter(item => item.country === selectedCountry);
+        }
+        const uniqueClients = new Set(filtered.map(item => item.company).filter(Boolean));
+        return ['All', ...Array.from(uniqueClients).sort()];
+    }, [baseData, selectedCountry]);
+
+    const filteredData = useMemo(() => {
+        let data = baseData;
+
+        if (selectedCountry !== 'All') {
+            data = data.filter(item => item.country === selectedCountry);
+        }
+
+        if (selectedClient !== 'All') {
+            data = data.filter(item => item.company === selectedClient);
+        }
+
+        const lowerSearch = searchTerm.toLowerCase();
+        if (lowerSearch) {
+            data = data.filter(item => 
+                (item.orderNo && item.orderNo.toLowerCase().includes(lowerSearch)) ||
+                (item.company && item.company.toLowerCase().includes(lowerSearch)) ||
+                (item.country && item.country.toLowerCase().includes(lowerSearch))
+            );
+        }
+        return data;
+    }, [baseData, selectedCountry, selectedClient, searchTerm]);
+
+    const kpis = useMemo(() => {
+        return filteredData.reduce((acc, curr) => ({
+            totalValue: acc.totalValue + curr.totalOrderValue,
+            totalReceived: acc.totalReceived + curr.paymentReceived,
+            totalBalance: acc.totalBalance + curr.balancePayment
+        }), { totalValue: 0, totalReceived: 0, totalBalance: 0 });
+    }, [filteredData]);
+
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+    const paginatedData = filteredData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [selectedCountry, selectedClient, searchTerm]);
+
+    return (
+        <div className="dashboard-container account-dashboard">
+            <header>
+                <div className="header-title">
+                    <h1>Shipment & Account Status</h1>
+                </div>
+                <div className="filters">
+                    <div className="select-container">
+                        <select value={selectedCountry} onChange={(e) => { setSelectedCountry(e.target.value); setSelectedClient('All'); }}>
+                            {countries.map(c => <option key={c} value={c}>{c === 'All' ? 'All Countries' : c}</option>)}
+                        </select>
+                    </div>
+                    <div className="select-container">
+                        <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)} disabled={currentUser !== 'admin'}>
+                            {clients.map(c => <option key={c} value={c}>{c === 'All' ? 'All Clients' : c}</option>)}
+                        </select>
+                    </div>
+                    <div className="search-bar-container">
+                        {Icons.search}
+                        <input 
+                            type="text" 
+                            placeholder="Search Order No..." 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                    <button className="back-button" onClick={onClose}>
+                        {Icons.prevArrow} Back to Dashboard
+                    </button>
+                </div>
+            </header>
+            <main>
+                <div className="kpi-container">
+                    <div className="account-kpi-card">
+                        <h3>Total Order Value</h3>
+                        <p>{formatCurrencyNoDecimals(kpis.totalValue)}</p>
+                    </div>
+                    <div className="account-kpi-card positive">
+                        <h3>Total Received</h3>
+                        <p>{formatCurrencyNoDecimals(kpis.totalReceived)}</p>
+                    </div>
+                    <div className="account-kpi-card negative">
+                        <h3>Total Balance</h3>
+                        <p>{formatCurrencyNoDecimals(kpis.totalBalance)}</p>
+                    </div>
+                </div>
+                <div className="data-table-container">
+                    <div className="table-wrapper">
+                        <table className="account-table">
+                            <thead>
+                                <tr>
+                                    <th>Order No</th>
+                                    <th>Date</th>
+                                    <th>Customer</th>
+                                    <th>Country</th>
+                                    <th className="text-right">Total Value</th>
+                                    <th className="text-right">Received</th>
+                                    <th className="text-right">Balance</th>
+                                    <th>Status</th>
+                                    <th>Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {paginatedData.map((row, index) => (
+                                    <tr key={`${row.orderNo}-${index}`}>
+                                        <td className="font-medium">{row.orderNo}</td>
+                                        <td>{row.orderDate ? formatDateDDMMMYY(row.orderDate) : '-'}</td>
+                                        <td>{row.company}</td>
+                                        <td>{row.country}</td>
+                                        <td className="text-right font-medium">{formatCurrency(row.totalOrderValue)}</td>
+                                        <td className="text-right text-positive">{formatCurrency(row.paymentReceived)}</td>
+                                        <td className="text-right text-negative">{formatCurrency(row.balancePayment)}</td>
+                                        <td>
+                                            <span className={`status-badge ${row.status.toLowerCase().replace(/\s+/g, '-')}`}>
+                                                {row.status || 'Pending'}
+                                            </span>
+                                        </td>
+                                        <td>{row.paymentDueDate ? formatDateDDMMMYY(row.paymentDueDate) : '-'}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="pagination">
+                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>{Icons.prevArrow} Previous</button>
+                        <span>Page {currentPage} of {totalPages || 1}</span>
+                        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages || totalPages === 0}>Next {Icons.nextArrow}</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    );
+};
+
 
 const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initialClientName, clientList, onClose, authenticatedUser }: { allOrderData: OrderData[], masterProductList: MasterProductData[], stepData: StepData[], initialClientName: string, clientList: string[], onClose: () => void, authenticatedUser: string }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -2001,7 +2101,7 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initi
         : masterProductList.filter(p => p.customerName === selectedUser);
   }, [masterProductList, selectedUser]);
   
-  const filteredCatalogData = useMemo(() => { // This is MasterProductData[]
+  const filteredCatalogData = useMemo(() => { 
     if (!searchQuery.trim()) return catalogForUser;
     const lowercasedQuery = searchQuery.toLowerCase().trim();
     return catalogForUser.filter(p =>
@@ -2014,7 +2114,6 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initi
     );
   }, [catalogForUser, searchQuery]);
 
-  // Data formatted for the NeverBoughtDataTable component
   const tableData = useMemo(() => {
     return filteredCatalogData.map(p => ({
         status: 'CATALOG', orderDate: '', stuffingMonth: '', orderNo: 'N/A',
@@ -2093,7 +2192,7 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
         };
     }, [onClose]);
 
-    const getStepState = (status: string, date: string): 'completed' | 'pending' | 'upcoming' | 'unknown' => {
+    const getStepState = (status: string, date: string): 'completed' | 'pending' | 'upcoming' => {
         const s = status.toLowerCase();
         if (s === 'yes' || s === 'done') {
             return 'completed';
@@ -2104,10 +2203,11 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
         return 'upcoming';
     };
 
-    const getIconForState = (state: string) => {
+    const getIconForState = (state: 'completed' | 'pending' | 'upcoming') => {
         switch (state) {
             case 'completed': return Icons.checkCircleFilled;
             case 'pending': return Icons.clock;
+            case 'upcoming': return Icons.circle;
             default: return Icons.circle;
         }
     };
@@ -2164,7 +2264,6 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
                         </div>
                     )}
                     <ul className="tracking-timeline">
-                        {/* Order Received Step */}
                         {orderDate && (
                             <li className="tracking-step completed">
                                 <div className="step-icon">{getIconForState('completed')}</div>
@@ -2175,7 +2274,6 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
                                 </div>
                             </li>
                         )}
-                        {/* Production Step */}
                         <li className={`tracking-step ${productionState}`}>
                             <div className="step-icon">{getIconForState(productionState)}</div>
                             <div className="step-content">
@@ -2185,7 +2283,6 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
                             </div>
                         </li>
 
-                        {/* Quality Check Step */}
                         <li className={`tracking-step ${qcState}`}>
                              <div className="step-icon">{getIconForState(qcState)}</div>
                              <div className="step-content">
@@ -2204,7 +2301,6 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
                             </div>
                         </li>
                         
-                        {/* Final SOB Step */}
                         <li className={`tracking-step ${sobState}`}>
                             <div className="step-icon">{getIconForState(sobState)}</div>
                             <div className="step-content">
@@ -2214,13 +2310,12 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
                             </div>
                         </li>
 
-                        {/* Payment Step */}
                         <li className={`tracking-step ${paymentState}`}>
                             <div className="step-icon">{getIconForState(paymentState)}</div>
                             <div className="step-content">
                                 <h4 className="step-title">Payment</h4>
                                 <p className="step-details">Planned:- {formatDateDDMMMYY(stepData.paymentPlannedDate)}</p>
-                                <p style={{ margin: 0 }}>Status:- {formatNa(stepData.paymentStatus) === '~' ? 'Pending' : formatNa(stepData.paymentStatus)}</p>
+                                <p className="step-details">Status:- {formatNa(stepData.paymentStatus) === '~' ? 'Pending' : formatNa(stepData.paymentStatus)}</p>
                             </div>
                         </li>
                     </ul>
@@ -2233,12 +2328,10 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
 
 const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null }) => {
     const chartData = useMemo(() => {
-        // FIX: Group country data case-insensitively for accurate aggregation.
         const countryData = data.reduce<Record<string, { name: string; value: number; qty: number }>>((acc, curr) => {
             if (curr.country) {
               const key = curr.country.trim().toLowerCase();
               if (!acc[key]) {
-                  // Store the first-seen casing for display purposes.
                   acc[key] = { name: curr.country.trim(), value: 0, qty: 0 };
               }
               acc[key].value += curr.exportValue;
@@ -2385,7 +2478,7 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { 
         <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 30, right: 20, left: -10, bottom: 5 }}>
                  <defs>
-                    <linearGradient id="colorValue" x1="0" x2="0" y2="1">
+                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="var(--secondary-accent)" stopOpacity={0.5}/>
                         <stop offset="95%" stopColor="var(--secondary-accent)" stopOpacity={0}/>
                     </linearGradient>
@@ -2632,7 +2725,7 @@ const AnnouncementsPanel = ({ announcements, onClose, buttonRef }) => {
                 <h3>What's New</h3>
             </div>
             <div className="announcements-body">
-                {announcements.slice().reverse().map(ann => ( // Show newest first
+                {announcements.slice().reverse().map(ann => ( 
                     <div key={ann.id} className="announcement-item">
                         <h4>{ann.title}</h4>
                         <span>{ann.date}</span>
@@ -2644,470 +2737,12 @@ const AnnouncementsPanel = ({ announcements, onClose, buttonRef }) => {
     );
 };
 
-// --- New Account Dashboard Component ---
-const AccountDashboard = ({ accountData, onClose, currentUser }: { accountData: AccountData[], onClose: () => void, currentUser: string }) => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCountry, setSelectedCountry] = useState('All');
-    const [selectedClient, setSelectedClient] = useState('All');
-    const [currentPage, setCurrentPage] = useState(1);
-    const rowsPerPage = 10;
-
-    const baseData = useMemo(() => {
-        if (currentUser === 'admin') return accountData;
-        return accountData.filter(item => item.company.toLowerCase() === currentUser.toLowerCase());
-    }, [accountData, currentUser]);
-
-    const countries = useMemo(() => {
-        const uniqueCountries = new Set(baseData.map(item => item.country).filter(Boolean));
-        return ['All', ...Array.from(uniqueCountries).sort()];
-    }, [baseData]);
-
-    const clients = useMemo(() => {
-        let filtered = baseData;
-        if (selectedCountry !== 'All') {
-            filtered = filtered.filter(item => item.country === selectedCountry);
-        }
-        const uniqueClients = new Set(filtered.map(item => item.company).filter(Boolean));
-        return ['All', ...Array.from(uniqueClients).sort()];
-    }, [baseData, selectedCountry]);
-
-    const filteredData = useMemo(() => {
-        let data = baseData;
-
-        if (selectedCountry !== 'All') {
-            data = data.filter(item => item.country === selectedCountry);
-        }
-
-        if (selectedClient !== 'All') {
-            data = data.filter(item => item.company === selectedClient);
-        }
-
-        const lowerSearch = searchTerm.toLowerCase();
-        if (lowerSearch) {
-            data = data.filter(item => 
-                (item.orderNo && item.orderNo.toLowerCase().includes(lowerSearch)) ||
-                (item.company && item.company.toLowerCase().includes(lowerSearch)) ||
-                (item.country && item.country.toLowerCase().includes(lowerSearch))
-            );
-        }
-        return data;
-    }, [baseData, selectedCountry, selectedClient, searchTerm]);
-
-    const kpis = useMemo(() => {
-        return filteredData.reduce((acc, curr) => ({
-            totalValue: acc.totalValue + curr.totalOrderValue,
-            totalReceived: acc.totalReceived + curr.paymentReceived,
-            totalBalance: acc.totalBalance + curr.balancePayment
-        }), { totalValue: 0, totalReceived: 0, totalBalance: 0 });
-    }, [filteredData]);
-
-    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-    const paginatedData = filteredData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
-
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [selectedCountry, selectedClient, searchTerm]);
-
-    return (
-        <div className="dashboard-container account-dashboard">
-            <header>
-                <div className="header-title">
-                    <h1>Shipment & Account Status</h1>
-                </div>
-                <div className="filters">
-                    <div className="select-container">
-                        <select value={selectedCountry} onChange={(e) => { setSelectedCountry(e.target.value); setSelectedClient('All'); }}>
-                            {countries.map(c => <option key={c} value={c}>{c === 'All' ? 'All Countries' : c}</option>)}
-                        </select>
-                    </div>
-                    <div className="select-container">
-                        <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)} disabled={currentUser !== 'admin'}>
-                            {clients.map(c => <option key={c} value={c}>{c === 'All' ? 'All Clients' : c}</option>)}
-                        </select>
-                    </div>
-                    <div className="search-bar-container">
-                        {Icons.search}
-                        <input 
-                            type="text" 
-                            placeholder="Search Order No..." 
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
-                    <button className="back-button" onClick={onClose}>
-                        {Icons.prevArrow} Back to Dashboard
-                    </button>
-                </div>
-            </header>
-            <main>
-                <div className="kpi-container">
-                    <div className="account-kpi-card">
-                        <h3>Total Order Value</h3>
-                        <p>{formatCurrencyNoDecimals(kpis.totalValue)}</p>
-                    </div>
-                    <div className="account-kpi-card positive">
-                        <h3>Total Received</h3>
-                        <p>{formatCurrencyNoDecimals(kpis.totalReceived)}</p>
-                    </div>
-                    <div className="account-kpi-card negative">
-                        <h3>Total Balance</h3>
-                        <p>{formatCurrencyNoDecimals(kpis.totalBalance)}</p>
-                    </div>
-                </div>
-                <div className="data-table-container">
-                    <div className="table-wrapper">
-                        <table className="account-table">
-                            <thead>
-                                <tr>
-                                    <th>Order No</th>
-                                    <th>Date</th>
-                                    <th>Customer</th>
-                                    <th>Country</th>
-                                    <th className="text-right">Total Value</th>
-                                    <th className="text-right">Received</th>
-                                    <th className="text-right">Balance</th>
-                                    <th>Status</th>
-                                    <th>Due Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {paginatedData.map((row, index) => (
-                                    <tr key={`${row.orderNo}-${index}`}>
-                                        <td className="font-medium">{row.orderNo}</td>
-                                        <td>{row.orderDate ? formatDateDDMMMYY(row.orderDate) : '-'}</td>
-                                        <td>{row.company}</td>
-                                        <td>{row.country}</td>
-                                        <td className="text-right font-medium">{formatCurrency(row.totalOrderValue)}</td>
-                                        <td className="text-right text-positive">{formatCurrency(row.paymentReceived)}</td>
-                                        <td className="text-right text-negative">{formatCurrency(row.balancePayment)}</td>
-                                        <td>
-                                            <span className={`status-badge ${row.status.toLowerCase().replace(/\s+/g, '-')}`}>
-                                                {row.status || 'Pending'}
-                                            </span>
-                                        </td>
-                                        <td>{row.paymentDueDate ? formatDateDDMMMYY(row.paymentDueDate) : '-'}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div className="pagination">
-                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>{Icons.prevArrow} Previous</button>
-                        <span>Page {currentPage} of {totalPages || 1}</span>
-                        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages || totalPages === 0}>Next {Icons.nextArrow}</button>
-                    </div>
-                </div>
-            </main>
-        </div>
-    );
-};
-
-// --- QueryTable Component (Integrated from Elite Query Command) ---
-const REQUIRED_FIELDS: (keyof QueryData)[] = [
-  "date",
-  "receivedBy",
-  "clientName",
-  "delegatedTo",
-  "expectedDate",
-  "serialKey",
-  "issue",
-  "user"
-];
-
-const isValidRow = (row: QueryData) =>
-  REQUIRED_FIELDS.every((key) => {
-    const v = row[key];
-    return v && v.toString().trim() !== "";
-  });
-
-const safe = (v?: string) => (v && v.trim() ? v : "-");
-
-const formatDateTime = (value?: string) => {
-  if (!value) return "-";
-
-  try {
-    // Case 1: Date(2025,11,17,37,53)
-    if (value.startsWith("Date(")) {
-      const nums = value
-        .replace("Date(", "")
-        .replace(")", "")
-        .split(",")
-        .map(Number);
-
-      const d = new Date(
-        nums[0],
-        nums[1] - 1,
-        nums[2],
-        nums[3] || 0,
-        nums[4] || 0,
-        nums[5] || 0
-      );
-
-      return d.toLocaleString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-      });
-    }
-
-    // Case 2: ISO / normal date string
-    const d = new Date(value);
-    if (!isNaN(d.getTime())) {
-      return d.toLocaleString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-      });
-    }
-
-    return value;
-  } catch {
-    return "-";
-  }
-};
-
-
-// Fix: Updated QueryTable props to include lastSyncTime
-const QueryTable = ({
-  data,
-  onRefresh,
-  loading,
-  lastSyncTime
-}: {
-  data: QueryData[];
-  onRefresh: () => void;
-  loading: boolean;
-  lastSyncTime: Date | null;
-}) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [drawerData, setDrawerData] = useState<QueryData | null>(null);
-
-  const rowsPerPage = 12;
-
-  /* 🔥 FILTER BAD ROWS FIRST */
-  const cleanedData = useMemo(() => data.filter(isValidRow), [data]);
-
-  const totalPages = Math.ceil(cleanedData.length / rowsPerPage);
-  const paginatedData = cleanedData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
-
-  const getSteps = (row: QueryData) => [
-    { name: "1. Update Sales Person", plan: row.s1Planned, act: row.s1Actual, status: row.s1Status, delay: row.s1Delay },
-    { name: "2. Inform To Client", plan: row.s2Planned, act: row.s2Actual, status: row.s2Status, delay: row.s2Delay },
-    { name: "3. Revised Update", plan: row.s3Planned, act: row.s3Actual, status: row.s3Status, delay: row.s3Delay },
-    { name: "4. Inform Client (Revised)", plan: row.s4Planned, act: row.s4Actual, status: row.s4Status, delay: row.s4Delay },
-    { name: "5. Final Issue Status", plan: row.s5Planned, act: row.s5Actual, status: row.s5Status, delay: row.s5Delay }
-  ];
-
-  const getCurrentStepInfo = (row: QueryData) => {
-    const steps = getSteps(row);
-    let activeIdx = -1;
-
-    steps.forEach((s, i) => {
-      const status = (s.status || "").toLowerCase();
-      const actual = (s.act || "").trim();
-      if (status.includes("done") || status.includes("completed") || (actual && actual !== "-")) {
-        activeIdx = i;
-      }
-    });
-
-    return {
-      name: activeIdx >= 0 ? steps[activeIdx].name : "QUEUED",
-      index: activeIdx,
-      steps
-    };
-  };
-
-  const currentStepInfo = useMemo(
-    () => (drawerData ? getCurrentStepInfo(drawerData) : null),
-    [drawerData]
-  );
-
-  if (loading)
-    return (
-      <div className="h-64 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
-
-  return (
-    <div className="query-command-card animate-fadeIn">
-     <div className="query-command-header">
-        <div className="query-command-row">
-            <div className="command-left">
-            <h2>
-                Query <span>Command</span>
-            </h2>
-            <p>LIVE OPERATIONAL SYNC {lastSyncTime && `(${lastSyncTime.toLocaleTimeString()})`}</p>
-            </div>
-
-            <button className="refresh-btn" onClick={onRefresh}>
-            REFRESH SYNC
-            </button>
-        </div>
-      </div>
-
-      <div className="query-table-wrapper">
-        <table className="query-command-table">
-          <thead>
-            <tr>
-              <th>RECEIVED</th>
-              <th>EXECUTIVE</th>
-              <th>STATUS</th>
-              <th>ASSIGNED</th>
-              <th>DEADLINE</th>
-              <th>ENQ NO</th>
-              <th>ISSUE</th>
-              <th>DOER</th>
-              <th>CURRENT STATUS</th>
-              <th>TRACK</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {paginatedData.map((row, idx) => {
-              const info = getCurrentStepInfo(row);
-              return (
-                <tr key={idx}>
-                  <td>{formatDateTime(row.date)}</td>
-                  <td className="bold">{safe(row.receivedBy)}</td>
-                  <td>
-                    <span className="status-pill">{safe(row.clientName)}</span>
-                  </td>
-                  <td>{safe(row.delegatedTo)}</td>
-                  <td className="deadline">{safe(row.expectedDate)}</td>
-                  <td className="enq">{safe(row.serialKey)}</td>
-                  <td className="issue" title={row.issue}>
-                    {safe(row.issue)}
-                  </td>
-                  <td>{safe(row.user)}</td>
-                  <td>
-                    <div className="current-milestone">
-                      <strong>{info.name}</strong>
-                    </div>
-                  </td>
-                  <td>
-                    <button className="track-btn" onClick={() => setDrawerData(row)}>
-                      TRACKING
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="query-footer">
-        <button disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)}>
-          PREVIOUS
-        </button>
-        <span>
-          PAGE {currentPage} OF {totalPages || 1} // TOTAL: {cleanedData.length}
-        </span>
-        <button disabled={currentPage === totalPages} onClick={() => setCurrentPage((p) => p + 1)}>
-          NEXT
-        </button>
-      </div>
-
-      {/* DRAWER */}
-      <div className={`query-drawer ${drawerData ? "open" : ""}`}>
-        {drawerData && (
-          <div className="query-drawer-inner">
-                <header className="query-drawer-header">
-                    <div className="drawer-header-row">
-                    
-                    {/* LEFT */}
-                    <div className="drawer-left">
-                        <h3 className="drawer-enq">{safe(drawerData.serialKey)}</h3>
-                        <p className="drawer-issue">{safe(drawerData.issue)}</p>
-                    </div>
-
-                    {/* RIGHT */}
-                    <div className="drawer-right">
-                        <button
-                        className="drawer-close"
-                        onClick={() => setDrawerData(null)}
-                        aria-label="Close"
-                        >
-                        &times;
-                        </button>
-                    </div>
-
-                    </div>
-                </header>
-            
-
-            <div className="query-drawer-body">
-              <div className="current-milestone">
-                <span>Current Milestone</span>
-                <strong>{currentStepInfo?.name}</strong>
-              </div>
-
-              <div className="drawer-timeline">
-                {currentStepInfo?.steps.map((s, i) => {
-                  const statusLower = (s.status || "").toLowerCase();
-                  const isDone = statusLower.includes("done") || statusLower.includes("completed");
-                  const isCurrent = i === currentStepInfo.index;
-                  const hasDelay = s.delay && !["0", "-", ""].includes(s.delay);
-
-                  return (
-                    <div key={i} className="timeline-row">
-                      <div className={`timeline-dot ${isDone ? "done" : isCurrent ? "current" : ""}`} />
-                      <div className="timeline-card">
-                        <div className="timeline-header">
-                          <span>{s.name}</span>
-                          <span className={`timeline-status ${isDone ? "done" : ""}`}>
-                            {safe(s.status)}
-                          </span>
-                        </div>
-                        <div className="timeline-grid">
-                          <div>
-                            <label>Planned</label>
-                            <span>{formatDateTime(s.plan)}</span>
-                          </div>
-                          <div>
-                            <label>Actual</label>
-                            <span>{formatDateTime(s.act)}</span>
-                          </div>
-                        </div>
-                        <div className="timeline-footer">
-                          {hasDelay ? (
-                            <span className="delay">⚠ DELAY: {s.delay}</span>
-                          ) : (
-                            <span className="ontrack">ON TRACK</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
 
 const App = () => {
   const [data, setData] = useState<OrderData[]>([]);
   const [masterProductList, setMasterProductList] = useState<MasterProductData[]>([]);
   const [stepData, setStepData] = useState<StepData[]>([]);
-  const [accountData, setAccountData] = useState<AccountData[]>([]); // New Account Data
-  const [queryData, setQueryData] = useState<QueryData[]>([]); // New Query Data
+  const [accountData, setAccountData] = useState<AccountData[]>([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [authenticatedUser, setAuthenticatedUser] = useState<string | null>(null);
@@ -3123,12 +2758,12 @@ const App = () => {
   const [selectedOrderForTracking, setSelectedOrderForTracking] = useState<string | null>(null);
   const [showNeverBought, setShowNeverBought] = useState(false);
   const [showUserManagement, setShowUserManagement] = useState(false);
-  const [showAccountDashboard, setShowAccountDashboard] = useState(false); // Toggle for Account Dashboard
+  const [showAccountDashboard, setShowAccountDashboard] = useState(false); 
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [selectedYear, setSelectedYear] = useState('All');
-  const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table' | 'query'>('dashboard');
+  const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table'>('dashboard');
   const [mainViewMode, setMainViewMode] = useState<'dashboard' | 'calendar'>('dashboard');
   const [theme, setTheme] = useState('light');
   const [isEyeProtection, setIsEyeProtection] = useState(false);
@@ -3300,18 +2935,13 @@ const App = () => {
       const accountSheetGid = '596654536';
       const accountSheetUrl = `https://docs.google.com/spreadsheets/d/${accountSheetId}/gviz/tq?gid=${accountSheetGid}`;
 
-      // Query Sheet info
-      const querySheetGid = '1662570079';
-      const querySheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${querySheetGid}&range=A1:AC`;
-
       try {
-        const [liveResponse, masterResponse, apiKeyResponse, stepResponse, accountResponse, queryResponse] = await Promise.all([
+        const [liveResponse, masterResponse, apiKeyResponse, stepResponse, accountResponse] = await Promise.all([
           fetch(liveSheetUrl),
           fetch(masterSheetUrl),
           fetch(apiKeySheetUrl).catch(e => { console.warn("API Key sheet fetch failed, proceeding without it."); return null; }),
           fetch(stepSheetUrl).catch(e => { console.warn("Step sheet fetch failed, proceeding without it."); return null; }),
           fetch(accountSheetUrl).catch(e => { console.warn("Account sheet fetch failed, proceeding without it."); return null; }),
-          fetch(querySheetUrl).catch(e => { console.warn("Query sheet fetch failed, proceeding without it."); return null; }),
         ]);
 
         if (!liveResponse.ok) throw new Error(`HTTP error! status: ${liveResponse.status} on Live sheet`);
@@ -3405,43 +3035,6 @@ const App = () => {
             }
         }
 
-        // Parse Query Data
-        let parsedQueryData: QueryData[] = [];
-        if (queryResponse && queryResponse.ok) {
-            const queryText = await queryResponse.text();
-            const match = queryText.match(/{.*}/s);
-            if (match) {
-                const json: any = JSON.parse(match[0]);
-                if (json.status === 'ok') {
-                    // Raw parsing for query sheet since headers are structured by stage
-                    parsedQueryData = json.table.rows.slice(1).map((r: any) => { // Skip Row 1 (Stages)
-                        const cells = r.c || [];
-                        const getVal = (idx: number) => String(cells[idx]?.v || '').trim();
-                        return {
-                            date: getVal(0),
-                            receivedBy: getVal(1),
-                            clientName: getVal(2),
-                            issue: getVal(3),
-                            delegatedTo: getVal(4),
-                            expectedDate: getVal(5),
-                            serialKey: getVal(6),
-                            user: getVal(7),
-                            // S1
-                            s1Planned: getVal(8), s1Actual: getVal(9), s1Status: getVal(10), s1Delay: getVal(11),
-                            // S2
-                            s2Planned: getVal(12), s2Actual: getVal(13), s2Status: getVal(14), s2Delay: getVal(15),
-                            // S3
-                            s3Planned: getVal(16), s3Actual: getVal(17), s3Status: getVal(18), s3Delay: getVal(19),
-                            // S4
-                            s4Planned: getVal(20), s4Actual: getVal(21), s4Status: getVal(22), s4Delay: getVal(23),
-                            // S5
-                            s5Planned: getVal(24), s5Actual: getVal(25), s5Status: getVal(26), s5Delay: getVal(27)
-                        } as QueryData;
-                    }).filter((row: QueryData) => row.date || row.clientName);
-                }
-            }
-        }
-
         const stepDataMap = new Map<string, StepData>(parsedStepData.map(d => [d.orderNo, d]));
 
         const processedLiveData = parsedLiveData.map(order => {
@@ -3474,8 +3067,7 @@ const App = () => {
         setMasterProductList(parsedMasterData);
         setStepData(parsedStepData);
         setAccountData(parsedAccountData);
-        setQueryData(parsedQueryData);
-        setLastUpdateTime(new Date());
+        setLastUpdateTime(new Date()); 
 
         const fetchedCredentials: Record<string, string> = {};
         if (apiKeyResponse && apiKeyResponse.ok) {
@@ -3640,7 +3232,7 @@ const App = () => {
                 countryMatch ||
                 productMatch || codeMatch || categoryMatch
             );
-        } else {
+        } else { 
             return (
                 statusMatch ||
                 shippedDate.includes(lowercasedQuery) ||
@@ -3946,7 +3538,6 @@ const App = () => {
       const accountRow = accountData.find(acc => acc.orderNo.includes(orderNo));
       const relatedLiveRows = data.filter(d => d.orderNo === orderNo);
       const orderQty = relatedLiveRows.reduce((sum, r) => sum + r.qty, 0);
-
       const orderValue = accountRow ? accountRow.totalOrderValue : relatedLiveRows.reduce((sum, r) => sum + r.exportValue, 0);
       const received = accountRow ? accountRow.paymentReceived : 0;
       const balance = accountRow ? accountRow.balancePayment : 0;
@@ -4186,13 +3777,6 @@ const App = () => {
                     >
                       {Icons.table} Table
                   </button>
-                  <button 
-                      className={adminViewMode === 'query' ? 'active' : ''}
-                      onClick={() => setAdminViewMode('query')}
-                      aria-label="Switch to Query View"
-                    >
-                      {Icons.search} Query
-                  </button>
               </div>
           )}
 
@@ -4227,11 +3811,6 @@ const App = () => {
                     baseOrderHasSubOrders={baseOrderHasSubOrders}
                 />
              </div>
-          ) : authenticatedUser === 'admin' && adminViewMode === 'query' ? (
-            <div className="main-content query-view" style={{ gridTemplateColumns: '1fr' }}>
-                {/* Fix: Added missing onRefresh and loading props, and updated QueryTable to accept lastSyncTime */}
-                <QueryTable data={queryData} onRefresh={() => window.location.reload()} loading={loading} lastSyncTime={lastUpdateTime} />
-            </div>
           ) : (
             <div className={`main-content ${currentUser !== 'admin' ? 'client-view' : 'table-only-view'}`}>
                 <DataTable 
