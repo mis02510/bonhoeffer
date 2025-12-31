@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -1892,7 +1891,7 @@ You are integrated into a specific dashboard with the following components. Use 
 
 **Rules:**
 1. **Privacy:** ${roleInstructions}
-2. **Accuracy:** Give answers related ONLY to user questions based on the structure above. Do not provide unrelated data.
+2. **Accuracy:** Give answers related ONLY to user questions based on the structure above. Do NOT reveal other clients' info.
 3. **Context:** You know about all tables, graphs, and KPI cards listed above.
 
 **Current Dashboard Context:**
@@ -1990,7 +1989,7 @@ User Question: "${userMessage.text}"`;
 
 // --- END: AI Chat Assistant & Helpers ---
 
-// ... (NeverBoughtDashboard, OrderTrackingModal, SalesByCountryChart, OrdersOverTimeChart, SkeletonLoader, UserManagement, ThemeToggles, AnnouncementsPanel) ...
+// ... (ChatAssistant and other helpers remain same) ...
 
 const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initialClientName, clientList, onClose, authenticatedUser }: { allOrderData: OrderData[], masterProductList: MasterProductData[], stepData: StepData[], initialClientName: string, clientList: string[], onClose: () => void, authenticatedUser: string }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -2386,7 +2385,7 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { 
         <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 30, right: 20, left: -10, bottom: 5 }}>
                  <defs>
-                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="colorValue" x1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="var(--secondary-accent)" stopOpacity={0.5}/>
                         <stop offset="95%" stopColor="var(--secondary-accent)" stopOpacity={0}/>
                     </linearGradient>
@@ -2876,14 +2875,17 @@ const formatDateTime = (value?: string) => {
 };
 
 
+// Fix: Updated QueryTable props to include lastSyncTime
 const QueryTable = ({
   data,
   onRefresh,
-  loading
+  loading,
+  lastSyncTime
 }: {
   data: QueryData[];
   onRefresh: () => void;
   loading: boolean;
+  lastSyncTime: Date | null;
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [drawerData, setDrawerData] = useState<QueryData | null>(null);
@@ -2946,7 +2948,7 @@ const QueryTable = ({
             <h2>
                 Query <span>Command</span>
             </h2>
-            <p>LIVE OPERATIONAL SYNC</p>
+            <p>LIVE OPERATIONAL SYNC {lastSyncTime && `(${lastSyncTime.toLocaleTimeString()})`}</p>
             </div>
 
             <button className="refresh-btn" onClick={onRefresh}>
@@ -4227,7 +4229,8 @@ const App = () => {
              </div>
           ) : authenticatedUser === 'admin' && adminViewMode === 'query' ? (
             <div className="main-content query-view" style={{ gridTemplateColumns: '1fr' }}>
-                <QueryTable data={queryData} lastSyncTime={lastUpdateTime} />
+                {/* Fix: Added missing onRefresh and loading props, and updated QueryTable to accept lastSyncTime */}
+                <QueryTable data={queryData} onRefresh={() => window.location.reload()} loading={loading} lastSyncTime={lastUpdateTime} />
             </div>
           ) : (
             <div className={`main-content ${currentUser !== 'admin' ? 'client-view' : 'table-only-view'}`}>
