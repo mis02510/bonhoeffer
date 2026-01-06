@@ -3560,7 +3560,7 @@ const App = () => {
             </div>
             <div className="login-video-container">
                 <video autoPlay muted loop playsInline id="background-video">
-                  <source src="https://bonhoeffermachines.com/public/images/Brand_Video.mp4" type="video/mp4"/>
+                  <source src="https://bonhoeffermachines.com/en/public/images/brand-video-updated.mp4" type="video/mp4"/>
                   Your browser does not support the video tag.
                 </video>
             </div>
