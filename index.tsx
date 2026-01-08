@@ -38,7 +38,7 @@ const ANNOUNCEMENTS = [
 const Icons = {
   revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   orders: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25l3.807-3.262a4.502 4.502 0 0 1 6.384 0L20.25 18" /></svg>,
-  clients: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 0L5 11.529m10.232 2.234a3.75 3.75 0 0 0-4.493 0L10.5 11.529m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 16.25m10.232-2.234a3.75 3.75 0 0 1-4.493 0L7.5 13.763m7.5-4.515a3.753 3.753 0 0 0-4.493 0L10.5 6.5m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 11.25m10.232-2.234a3.75 3.75 0 0 0-4.493 0L7.5 8.763m7.5 4.515a3.75 3.75 0 0 1-4.493 0L10.5 13.75m5.007-4.515a3.75 3.75 0 0 0-4.493 0L13.5 8.763" /></svg>,
+  clients: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 0L5 11.529m10.232 2.234a3.75 3.75 0 0 0-4.493 0L10.5 11.529m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 16.25m10.232-2.234a3.75 3.75 0 0 1-4.493 0L7.5 13.763m7.5-4.515a3.753 3.753 0 0 0-4.493 0L10.5 6.5m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 11.25m10.232-2.234a3.75 3.75 0 0 0-4.493 0L7.5 8.763m7.5 4.515a3.75 3.75 0 1 1-4.493 0L10.5 13.75m5.007-4.515a3.75 3.75 0 0 0-4.493 0L13.5 8.763" /></svg>,
   countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1 .421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
   placeholder: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125 1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>,
   prevArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>,
@@ -414,7 +414,7 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
         <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-stroke)" />
-                <XAxis dataKey={xAxisDataKey} stroke={'var(--text-color-muted)'} interval={xAxisDataKey === 'day' ? 4 : 'preserveStartEnd'} />
+                <XAxis dataKey="name" stroke={'var(--text-color-muted)'} interval={xAxisDataKey === 'day' ? 4 : 'preserveStartEnd'} />
                 <YAxis stroke={'var(--text-color-muted)'} allowDecimals={false} />
                 <Tooltip 
                     content={<CustomTooltip />} 
@@ -2413,6 +2413,15 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
             .slice(0, 10);
     }, [data]);
 
+    const activeStatus = useMemo(() => {
+        const statusFilter = activeFilters?.find(f => f.type === 'status');
+        if (!statusFilter) return 'Total Received';
+        const val = statusFilter.value.toUpperCase();
+        if (val === 'SHIPPED') return 'Shipment';
+        if (val === 'PLAN') return 'In Process';
+        return 'Filtered Received';
+    }, [activeFilters]);
+
     const handleClick = (payload: any) => {
         if (!payload || !payload.name) return;
         const countryName = payload.name;
@@ -2429,7 +2438,7 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
           return (
             <div className="recharts-default-tooltip" style={{padding: '0.5rem 1rem', backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)'}}>
               <p style={{margin: '0 0 0.5rem 0', fontWeight: 'bold', color: 'var(--text-color)'}}>{label}</p>
-              <p style={{margin: 0, color: 'var(--text-color)'}}>{`Value: ${formatCurrency(payload[0].value)}`}</p>
+              <p style={{margin: 0, color: 'var(--text-color)'}}>{`${activeStatus} Value: ${formatCurrency(payload[0].value)}`}</p>
               <p style={{margin: 0, color: 'var(--text-color-muted)'}}>{`Total Qty: ${formatNumber(payload[0].payload.qty)}`}</p>
             </div>
           );
@@ -3260,39 +3269,10 @@ const App = () => {
         filtered = filtered.filter(d => d.fy === selectedYear);
     }
 
-    if (selectedMonth !== 'All') {
-        filtered = filtered.filter(d => {
-            const date = parseDate(d.orderDate);
-            return date && date.toLocaleString('en-US', { month: 'short' }) === selectedMonth;
-        });
-    }
-
-    const sDate = startDate ? parseDate(startDate) : null;
-    if (sDate) sDate.setHours(0, 0, 0, 0);
-
-    const eDate = endDate ? parseDate(endDate) : null;
-    if (eDate) eDate.setHours(23, 59, 59, 999);
-
-    if (sDate || eDate) {
-        filtered = filtered.filter(d => {
-            const status = d.originalStatus?.toUpperCase();
-            
-            const relevantDateSource = (status === 'SHIPPED' || status === 'COMPLETE')
-                ? d.stuffingMonth
-                : d.orderDate;
-
-            const relevantDate = parseDate(relevantDateSource);
-            if (!relevantDate) return false;
-            
-            const isAfterStart = sDate ? relevantDate >= sDate : true;
-            const isBeforeEnd = eDate ? relevantDate <= eDate : true;
-            
-            return isAfterStart && isBeforeEnd;
-        });
-    }
-
+    // BASE filtered data should ideally be everything for the year,
+    // so KPIs can pull from either forwarding or stuffing dates properly.
     return filtered;
-  }, [data, currentUser, startDate, endDate, selectedYear, selectedMonth]);
+  }, [data, currentUser, selectedYear]);
   
   const searchedData = useMemo(() => {
     if (!searchQuery.trim()) return clientFilteredData;
@@ -3330,49 +3310,155 @@ const App = () => {
     });
   }, [clientFilteredData, searchQuery, currentUser]);
 
-    const finalFilteredData = useMemo(() => {
-        if (activeFilters.length === 0) return searchedData;
+  // Derived KPI Data with helper function for breakdowns
+  const getOrderContextForKPI = useCallback((type: 'received' | 'shipped') => {
+    let baseData = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
 
-        const filtersByType = activeFilters.reduce<Record<string, Filter[]>>((acc, f) => {
-            if (!acc[f.type]) acc[f.type] = [];
-            acc[f.type].push(f);
-            return acc;
-        }, {});
+    // Apply active country filters to KPI counts to ensure consistency
+    const countryFilter = activeFilters.find(f => f.type === 'country');
+    if (countryFilter) {
+        baseData = baseData.filter(d => d.country?.trim().toLowerCase() === countryFilter.value.trim().toLowerCase());
+    }
 
-        const filterKeys = Object.keys(filtersByType);
-
-        return searchedData.filter(item => {
-            for (const type of filterKeys) {
-                const filtersForType = filtersByType[type];
-
-                const match = filtersForType.some(filter => {
-                    const { value } = filter;
-                    switch (type) {
-                        case 'status':
-                            if (filter.source === 'kpi' && (value === 'PLAN' || value === 'SHIPPED')) {
-                                return item.originalStatus?.toUpperCase() === value;
-                            }
-                            return item.status.toUpperCase().startsWith(value);
-                        case 'country':
-                            return item.country.trim().toLowerCase() === value.trim().toLowerCase();
-                        case 'month':
-                            const date = parseDate(item.orderDate);
-                            if (!date) return false;
-                            const itemMonth = date.toLocaleString('default', { month: 'short' });
-                            return itemMonth === value;
-                        default:
-                            return true;
-                    }
-                });
-
-                if (!match) {
-                    return false;
-                }
+    // CRITICAL: Apply active status filter to the context so other cards update
+    const statusFilter = activeFilters.find(f => f.type === 'status');
+    if (statusFilter) {
+        const val = statusFilter.value.toUpperCase();
+        baseData = baseData.filter(item => {
+            // Check both original and computed status to be safe
+            if (statusFilter.source === 'kpi') {
+                return item.originalStatus?.toUpperCase() === val;
             }
-            
-            return true;
+            return item.status.toUpperCase().startsWith(val);
         });
-    }, [searchedData, activeFilters]);
+    }
+
+    const sDate = startDate ? parseDate(startDate) : null;
+    const eDate = endDate ? parseDate(endDate) : null;
+    const hasDateRange = !!(sDate || eDate);
+    if (sDate) sDate.setHours(0, 0, 0, 0);
+    if (eDate) eDate.setHours(23, 59, 59, 999);
+
+    const isinRange = (dateStr: string) => {
+         const d = parseDate(dateStr);
+         if (!d) return false;
+         return (!sDate || d >= sDate) && (!eDate || d <= eDate);
+    };
+
+    const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
+
+    return baseData.filter(row => {
+        const status = (row.originalStatus || '').toUpperCase();
+        const isPlan = status === 'PLAN';
+        const isActuallyShipped = status === 'SHIPPED' || status === 'COMPLETE';
+
+        const orderDateObj = parseDate(row.orderDate);
+        const stuffingDateObj = parseDate(row.stuffingMonth);
+        
+        if (type === 'received') {
+            // Forwarding context logic
+            if (!orderDateObj) return false;
+            const orderYY = getYY(orderDateObj);
+            const matchesFY = !targetYY || orderYY === targetYY;
+            const matchesMonth = selectedMonth === 'All' || (orderDateObj.toLocaleString('en-US', { month: 'short' }) === selectedMonth);
+            
+            if (hasDateRange) {
+                return isinRange(row.orderDate) && (isPlan || isActuallyShipped);
+            } else {
+                return matchesFY && matchesMonth && (isPlan || isActuallyShipped);
+            }
+        } else {
+            // Shipped context logic
+            if (!stuffingDateObj) return false;
+            const stuffingYY = getYY(stuffingDateObj);
+            const matchesFY = !targetYY || stuffingYY === targetYY;
+            const matchesMonth = selectedMonth === 'All' || (stuffingDateObj.toLocaleString('en-US', { month: 'short' }) === selectedMonth);
+
+            if (hasDateRange) {
+                return isinRange(row.stuffingMonth) && isActuallyShipped;
+            } else {
+                return matchesFY && matchesMonth && isActuallyShipped;
+            }
+        }
+    });
+  }, [data, currentUser, selectedYear, selectedMonth, startDate, endDate, activeFilters]);
+
+  // CONSISTENT DATA for charts and the table
+  // This logic must exactly match what the selected KPI is showing temporally
+  const kpiConsistentData = useMemo(() => {
+    let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
+
+    const statusFilter = activeFilters.find(f => f.type === 'status');
+    const isShippedFiltered = statusFilter && statusFilter.value.toUpperCase() === 'SHIPPED';
+    
+    const sDate = startDate ? parseDate(startDate) : null;
+    const eDate = endDate ? parseDate(endDate) : null;
+    const hasDateRange = !!(sDate || eDate);
+    if (sDate) sDate.setHours(0, 0, 0, 0);
+    if (eDate) eDate.setHours(23, 59, 59, 999);
+
+    const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
+
+    filtered = filtered.filter(d => {
+        const status = (d.originalStatus || d.status || '').toUpperCase();
+        const isPlan = status === 'PLAN';
+        const isActuallyShipped = status === 'SHIPPED' || status === 'COMPLETE';
+
+        // SYNC LOGIC: If looking at shipped view, use stuffingMonth. Otherwise use orderDate.
+        const dateToValidate = isShippedFiltered ? d.stuffingMonth : d.orderDate;
+        const dateObj = parseDate(dateToValidate);
+        if (!dateObj) return false;
+
+        const itemYY = getYY(dateObj);
+        const itemMonth = dateObj.toLocaleString('en-US', { month: 'short' });
+
+        const matchesYear = !targetYY || itemYY === targetYY;
+        const matchesMonth = selectedMonth === 'All' || itemMonth === selectedMonth;
+
+        const inDateRange = !hasDateRange || ( (!sDate || dateObj >= sDate) && (!eDate || dateObj <= eDate) );
+
+        // If status is filtered, we only care about that status.
+        // If no status is filtered (Dashboard Overview), we default to Forwarding context 
+        // to show "All Received Orders" for the selected period.
+        if (statusFilter) {
+            const val = statusFilter.value.toUpperCase();
+            const matchesStatus = statusFilter.source === 'kpi' 
+                ? d.originalStatus?.toUpperCase() === val 
+                : d.status.toUpperCase().startsWith(val);
+            
+            return matchesStatus && matchesYear && matchesMonth && inDateRange;
+        }
+
+        // Default Dashboard View: Show everything received in forwarding month
+        return (isPlan || isActuallyShipped) && matchesYear && matchesMonth && inDateRange;
+    });
+
+    const countryFilter = activeFilters.find(f => f.type === 'country');
+    if (countryFilter) {
+        filtered = filtered.filter(d => d.country?.trim().toLowerCase() === countryFilter.value.trim().toLowerCase());
+    }
+    
+    return filtered;
+  }, [data, currentUser, activeFilters, startDate, endDate, selectedYear, selectedMonth]);
+
+    const finalFilteredData = useMemo(() => {
+        // finalFilteredData should use kpiConsistentData as base but respect user search query
+        const lowerSearch = searchQuery.toLowerCase().trim();
+        return kpiConsistentData.filter(d => {
+            if (!lowerSearch) return true;
+            
+            const shippedDate = formatDateDDMMMYY(d.stuffingMonth).toLowerCase();
+            const statusMatch = (d.status && d.status.toLowerCase().includes(lowerSearch)) || (d.originalStatus && d.originalStatus.toLowerCase().includes(lowerSearch));
+            const orderMatch = d.orderNo && d.orderNo.toLowerCase().includes(lowerSearch);
+            const clientMatch = d.customerName && d.customerName.toLowerCase().includes(lowerSearch);
+            const countryMatch = d.country && d.country.toLowerCase().includes(lowerSearch);
+            const productMatch = (d.product && d.product.toLowerCase().includes(lowerSearch));
+            const codeMatch = (d.productCode && d.productCode.toLowerCase().includes(lowerSearch));
+            const categoryMatch = (d.category && d.category.toLowerCase().includes(lowerSearch));
+
+            return statusMatch || shippedDate.includes(lowerSearch) || orderMatch || clientMatch || countryMatch || productMatch || codeMatch || categoryMatch;
+        });
+    }, [kpiConsistentData, searchQuery]);
   
   const neverBoughtForClientData = useMemo(() => {
     if (masterProductList.length === 0) return [];
@@ -3401,75 +3487,28 @@ const App = () => {
     return availableCatalog.filter(p => !boughtCodes.has(p.productCode));
   }, [masterProductList, currentUser, clientFilteredData]);
 
-  // Derived KPI Data with helper function for breakdowns
-  const getOrderContextForKPI = useCallback((type: 'received' | 'shipped') => {
-    let baseData = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
-
-    const sDate = startDate ? parseDate(startDate) : null;
-    if (sDate) sDate.setHours(0, 0, 0, 0);
-    const eDate = endDate ? parseDate(endDate) : null;
-    if (eDate) eDate.setHours(23, 59, 59, 999);
-    const hasDateRange = !!(sDate || eDate);
-
-    const isinRange = (dateStr: string) => {
-         const d = parseDate(dateStr);
-         if (!d) return false;
-         return (!sDate || d >= sDate) && (!eDate || d <= eDate);
-    };
-
-    const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
-
-    return baseData.filter(row => {
-        const status = (row.originalStatus || '').toUpperCase();
-        const orderNo = row.orderNo.toUpperCase();
-        const isPlan = status === 'PLAN';
-        const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
-
-        const orderDateObj = parseDate(row.orderDate);
-        const stuffingDateObj = parseDate(row.stuffingMonth);
-        const orderYY = getYY(orderDateObj);
-        const stuffingYY = getYY(stuffingDateObj);
-
-        if (type === 'received') {
-            let matchesForwardingFY = !targetYY || orderYY === targetYY;
-            let matchesForwardingMonth = selectedMonth === 'All' || (orderDateObj?.toLocaleString('en-US', { month: 'short' }) === selectedMonth);
-            
-            if (hasDateRange) {
-                return isinRange(row.orderDate) && (isPlan || isShipped);
-            } else {
-                return matchesForwardingFY && matchesForwardingMonth && (isPlan || isShipped);
-            }
-        } else {
-            let matchesShippedFY = !targetYY || stuffingYY === targetYY;
-            let matchesShippedMonth = selectedMonth === 'All' || (stuffingDateObj?.toLocaleString('en-US', { month: 'short' }) === selectedMonth);
-
-            if (hasDateRange) {
-                return isinRange(row.stuffingMonth) && isShipped;
-            } else {
-                return matchesShippedFY && matchesShippedMonth && isShipped;
-            }
-        }
-    });
-  }, [data, currentUser, selectedYear, selectedMonth, startDate, endDate]);
 
   const kpis = useMemo(() => {
     const forwardingOrdersData = getOrderContextForKPI('received');
     const shippedOrdersData = getOrderContextForKPI('shipped');
 
-    const receivedOrders = new Set(forwardingOrdersData.map(d => d.orderNo.toUpperCase()));
-    const inProcessOrders = new Set(forwardingOrdersData.filter(d => (d.originalStatus || '').toUpperCase() === 'PLAN').map(d => d.orderNo.toUpperCase()));
+    // Count unique orders in the currently filtered contexts
+    const receivedOrdersSet = new Set(forwardingOrdersData.map(d => d.orderNo.toUpperCase()));
+    const inProcessOrdersSet = new Set(forwardingOrdersData.filter(d => (d.originalStatus || '').toUpperCase() === 'PLAN').map(d => d.orderNo.toUpperCase()));
     const shippedOrdersSet = new Set(shippedOrdersData.map(d => d.orderNo.toUpperCase()));
     
-    let totalOrderValue = forwardingOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
-    let totalShipmentValue = shippedOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
+    // Values strictly follow the filtered data from getOrderContextForKPI
+    const totalOrderValue = forwardingOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
+    const totalShipmentValue = shippedOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
     
+    // Summary metrics
     const boughtProductsSet = new Set(forwardingOrdersData.map(d => d.productCode));
 
     return {
       totalValue: formatCurrencyNoDecimals(totalOrderValue),
       totalShipmentValue: formatCurrencyNoDecimals(totalShipmentValue),
-      totalOrders: receivedOrders.size,
-      totalInProcess: inProcessOrders.size,
+      totalOrders: receivedOrdersSet.size,
+      totalInProcess: inProcessOrdersSet.size,
       totalShipped: shippedOrdersSet.size,
       boughtProducts: boughtProductsSet.size,
       activeClients: new Set(forwardingOrdersData.map(item => item.customerName)).size,
@@ -3513,70 +3552,6 @@ const App = () => {
       handleFilter({ type: 'status', value: status, source: 'kpi' });
   };
 
-  const kpiConsistentData = useMemo(() => {
-    let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
-    
-    const sDate = startDate ? parseDate(startDate) : null;
-    const eDate = endDate ? parseDate(endDate) : null;
-    const hasDateRange = !!(sDate || eDate);
-
-    const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
-
-    if (hasDateRange) {
-        if (sDate) sDate.setHours(0, 0, 0, 0);
-        if (eDate) eDate.setHours(23, 59, 59, 999);
-        
-        filtered = filtered.filter(d => {
-            const status = (d.originalStatus || d.status || '').toUpperCase();
-            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
-            
-            // Check both potential relevant dates for the range
-            const oDate = parseDate(d.orderDate);
-            const sMonthDate = parseDate(d.stuffingMonth);
-            
-            const oInRange = oDate && (!sDate || oDate >= sDate) && (!eDate || oDate <= eDate);
-            const sInRange = isShipped && sMonthDate && (!sDate || sMonthDate >= sDate) && (!eDate || sMonthDate <= eDate);
-            
-            return oInRange || sInRange;
-        });
-    } else {
-        filtered = filtered.filter(d => {
-            const status = (d.originalStatus || d.status || '').toUpperCase();
-            const isPlan = status === 'PLAN';
-            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
-
-            const orderDateObj = parseDate(d.orderDate);
-            const stuffingDateObj = parseDate(d.stuffingMonth);
-            const orderYY = getYY(orderDateObj);
-            const stuffingYY = getYY(stuffingDateObj);
-
-            const matchesOrderYear = !targetYY || orderYY === targetYY;
-            const matchesStuffingYear = !targetYY || stuffingYY === targetYY;
-            
-            const itemOrderMonth = orderDateObj?.toLocaleString('en-US', { month: 'short' });
-            const itemStuffingMonth = stuffingDateObj?.toLocaleString('en-US', { month: 'short' });
-            
-            const matchesOrderMonth = selectedMonth === 'All' || (itemOrderMonth === selectedMonth);
-            const matchesStuffingMonth = selectedMonth === 'All' || (itemStuffingMonth === selectedMonth);
-
-            // Updated Logic: 
-            // 1. If we are looking for Forwarded (PLAN or SHIPPED), it must match the Year/Month of the Order Date.
-            // 2. If we are looking for Shipped, it must match the Year/Month of the Stuffing Month.
-            const matchesForwarding = (isPlan || isShipped) && matchesOrderYear && matchesOrderMonth;
-            const matchesShippedOnly = isShipped && matchesStuffingYear && matchesStuffingMonth;
-
-            return matchesForwarding || matchesShippedOnly;
-        });
-    }
-
-    const countryFilter = activeFilters.find(f => f.type === 'country');
-    if (countryFilter) {
-        filtered = filtered.filter(d => d.country?.trim().toLowerCase() === countryFilter.value.trim().toLowerCase());
-    }
-    
-    return filtered;
-  }, [data, currentUser, activeFilters, startDate, endDate, selectedYear, selectedMonth]);
-  
   const relevantCatalogData = useMemo(() => {
     if (currentUser === 'admin') {
         return masterProductList;
@@ -3603,26 +3578,24 @@ const App = () => {
   const monthlyChartData = useMemo(() => {
         const monthData = Array.from({ length: 12 }, () => ({ orders: new Set<string>(), value: 0, qty: 0 }));
 
-        const targetMonth = selectedMonth !== 'All' ? selectedMonth : null;
+        const statusFilter = activeFilters.find(f => f.type === 'status');
+        const isShippedFiltered = statusFilter && statusFilter.value.toUpperCase() === 'SHIPPED';
 
         for (const item of kpiConsistentData) {
              const status = (item.originalStatus || item.status || '').toUpperCase();
              const isPlan = status === 'PLAN';
-             const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+             const isActuallyShipped = status === 'SHIPPED' || status === 'COMPLETE';
              
-             if (!isPlan && !isShipped) continue;
+             if (!isPlan && !isActuallyShipped) continue;
 
-             if (item.orderDate) {
-                 const date = parseDate(item.orderDate);
-                 if (date) {
-                     const itemMonth = date.toLocaleString('en-US', { month: 'short' });
-                     if (targetMonth && itemMonth !== targetMonth) continue;
-
-                     const monthIndex = date.getMonth();
-                     monthData[monthIndex].value += (item.exportValue || 0);
-                     monthData[monthIndex].qty += (item.qty || 0);
-                     if (item.orderNo) monthData[monthIndex].orders.add(item.orderNo);
-                 }
+             // SYNC LOGIC: If looking at shipped view, use stuffingMonth. Otherwise use orderDate.
+             const dateToValidate = isShippedFiltered ? item.stuffingMonth : item.orderDate;
+             const date = parseDate(dateToValidate);
+             if (date) {
+                 const monthIndex = date.getMonth();
+                 monthData[monthIndex].value += (item.exportValue || 0);
+                 monthData[monthIndex].qty += (item.qty || 0);
+                 if (item.orderNo) monthData[monthIndex].orders.add(item.orderNo);
              }
         }
 
@@ -3633,7 +3606,7 @@ const App = () => {
             value: monthData[index].value,
             qty: monthData[index].qty
         }));
-  }, [kpiConsistentData, selectedMonth]);
+  }, [kpiConsistentData, activeFilters]);
 
     const financialYearDisplay = selectedYear === 'All' ? 'FY:- 18-19 to 25-26' : `FY:- ${selectedYear}`;
 
@@ -3648,6 +3621,11 @@ const App = () => {
                     f => !(f.type === filter.type && f.value === filter.value)
                 );
             } else {
+                // If it's a status filter from KPI, clear existing status filters
+                if (filter.source === 'kpi') {
+                    const cleaned = prevFilters.filter(f => f.type !== 'status');
+                    return [...cleaned, filter];
+                }
                 // If it's a source filter like country chart, clear other country filters first to avoid confusion
                 if (filter.source === 'countryChart') {
                     const cleaned = prevFilters.filter(f => f.type !== 'country');
