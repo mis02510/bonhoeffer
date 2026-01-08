@@ -66,7 +66,7 @@ const Icons = {
   bell: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>,
   calendar: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0h18M-4.5 12h28.5" /></svg>,
   box: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>,
-  truck: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>,
+  truck: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>,
   bank: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" /></svg>
 };
 
@@ -256,6 +256,8 @@ const getBaseOrderNo = (orderNo: string): string => {
     return upperOrderNo;
 };
 
+const getYY = (date: Date | null) => date ? String(date.getFullYear()).slice(-2) : null;
+
 // ### calendar view
 const CalendarKpiCard = ({ title, value, icon, variant, onClick, isDimmed }: any) => (
     <div 
@@ -412,7 +414,7 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
         <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-stroke)" />
-                <XAxis dataKey="name" stroke={'var(--text-color-muted)'} interval={xAxisDataKey === 'day' ? 4 : 'preserveStartEnd'} />
+                <XAxis dataKey={xAxisDataKey} stroke={'var(--text-color-muted)'} interval={xAxisDataKey === 'day' ? 4 : 'preserveStartEnd'} />
                 <YAxis stroke={'var(--text-color-muted)'} allowDecimals={false} />
                 <Tooltip 
                     content={<CustomTooltip />} 
@@ -484,9 +486,11 @@ interface CalendarViewDashboardProps {
     initialClientName: string;
     initialYear: string;
     onYearChange: (year: string) => void;
+    selectedMonth: string;
+    onMonthChange: (month: string) => void;
 }
 
-const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clientList, onClose, authenticatedUser, initialClientName, initialYear, onYearChange }: CalendarViewDashboardProps) => {
+const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clientList, onClose, authenticatedUser, initialClientName, initialYear, onYearChange, selectedMonth, onMonthChange }: CalendarViewDashboardProps) => {
     const monthNames = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], []);
     
     const years = useMemo(() => {
@@ -504,10 +508,14 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     const [selectedYear, setSelectedYear] = useState<string>(() => getEffectiveYear(initialYear));
     const [selectedCountry, setSelectedCountry] = useState('All');
     const [selectedClient, setSelectedClient] = useState(initialClientName === 'admin' ? 'All' : initialClientName);
-    const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [activeMetric, setActiveMetric] = useState<'received' | 'planned' | 'shipped' | null>(null);
+
+    const numericSelectedMonthIndex = useMemo(() => {
+        if (selectedMonth === 'All') return null;
+        return monthNames.indexOf(selectedMonth);
+    }, [selectedMonth, monthNames]);
 
     const clientLogos = useMemo(() => allOrderData.reduce<Record<string, string>>((acc, row) => {
         if (row.customerName && row.logoUrl && !acc[row.customerName]) {
@@ -543,7 +551,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         const effectiveYear = getEffectiveYear(initialYear);
         if (selectedYear !== effectiveYear) {
             setSelectedYear(effectiveYear);
-            setSelectedMonth(null); 
         }
     }, [initialYear, years]);
     
@@ -551,7 +558,11 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         const newYear = e.target.value;
         setSelectedYear(newYear);
         onYearChange(newYear);
-        setSelectedMonth(null);
+        onMonthChange('All');
+    };
+
+    const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        onMonthChange(e.target.value);
     };
 
     const handleKpiClick = (metric: 'received' | 'planned' | 'shipped') => {
@@ -589,8 +600,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         }
         return masterProductList.filter(p => p.customerName === selectedClient);
     }, [masterProductList, selectedClient]);
-
-    const getYY = (date: Date | null) => date ? String(date.getFullYear()).slice(-2) : null;
 
     const dataForYear = useMemo(() => {
         return baseFilteredData.filter(d => {
@@ -653,6 +662,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         });
 
         return monthNames.map((_, index) => ({
+            name: monthNames[index],
             received: receivedOrdersByMonth[index].size,
             planned: plannedOrdersByMonth[index].size,
             shipped: shippedOrdersByMonth[index].size,
@@ -697,11 +707,11 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     }, [dataForYear, isDateInRange, targetYY]);
 
     const monthlyKpis = useMemo(() => {
-        if (selectedMonth === null) {
+        if (numericSelectedMonthIndex === null) {
             return null;
         }
-        return calendarData[selectedMonth];
-    }, [calendarData, selectedMonth]);
+        return calendarData[numericSelectedMonthIndex];
+    }, [calendarData, numericSelectedMonthIndex]);
 
     const kpis = monthlyKpis || yearlyKpis;
     
@@ -754,21 +764,21 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     }));
     
     const monthOrders = useMemo(() => {
-        if (selectedMonth === null) return [];
+        if (numericSelectedMonthIndex === null) return [];
         return dataForYear.filter(d => {
             const orderDate = parseDate(d.orderDate);
-            if (orderDate && orderDate.getMonth() === selectedMonth && isDateInRange(orderDate)) {
+            if (orderDate && orderDate.getMonth() === numericSelectedMonthIndex && isDateInRange(orderDate)) {
                 const orderYY = getYY(orderDate);
                 return (!targetYY || orderYY === targetYY);
             }
             return false;
         });
-    }, [dataForYear, selectedMonth, isDateInRange, targetYY]);
+    }, [dataForYear, numericSelectedMonthIndex, isDateInRange, targetYY]);
 
     const dailyChartData = useMemo(() => {
-        if (selectedMonth === null) return [];
+        if (numericSelectedMonthIndex === null) return [];
     
-        const daysInMonth = new Date(fullYearForDate, selectedMonth + 1, 0).getDate();
+        const daysInMonth = new Date(fullYearForDate, numericSelectedMonthIndex + 1, 0).getDate();
         const dailyData = Array.from({ length: daysInMonth }, (_, i) => ({
             day: i + 1,
             totalValue: 0, totalQty: 0,
@@ -785,7 +795,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
 
             const stuffingDate = parseDate(d.stuffingMonth);
-            if (isShipped && stuffingDate && stuffingDate.getMonth() === selectedMonth && isDateInRange(stuffingDate)) {
+            if (isShipped && stuffingDate && stuffingDate.getMonth() === numericSelectedMonthIndex && isDateInRange(stuffingDate)) {
                  const stuffingYY = getYY(stuffingDate);
                  if (!targetYY || stuffingYY === targetYY) {
                      const dayIndex = stuffingDate.getDate() - 1;
@@ -798,7 +808,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             }
             
             const orderDate = parseDate(d.orderDate);
-            if ((isPlan || isShipped) && orderDate && orderDate.getMonth() === selectedMonth && isDateInRange(orderDate)) {
+            if ((isPlan || isShipped) && orderDate && orderDate.getMonth() === numericSelectedMonthIndex && isDateInRange(orderDate)) {
                 const orderYY = getYY(orderDate);
                 if (!targetYY || orderYY === targetYY) {
                     const dayIndex = orderDate.getDate() - 1;
@@ -832,10 +842,10 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             receivedOrderNumbers: Array.from(data.receivedOrders),
             plannedOrderNumbers: Array.from(data.plannedOrders),
         }));
-    }, [dataForYear, selectedMonth, fullYearForDate, isDateInRange, targetYY]);
+    }, [dataForYear, numericSelectedMonthIndex, fullYearForDate, isDateInRange, targetYY]);
 
     const topClients = useMemo(() => {
-        const dataToProcess = selectedMonth !== null ? monthOrders : dataForYear;
+        const dataToProcess = numericSelectedMonthIndex !== null ? monthOrders : dataForYear;
 
         const clientData: Record<string, {
             name: string;
@@ -847,7 +857,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         dataToProcess.forEach(d => {
             if (!d.customerName) return;
             const orderDate = parseDate(d.orderDate);
-            if (selectedMonth === null) {
+            if (numericSelectedMonthIndex === null) {
                 if (!orderDate || !isDateInRange(orderDate)) return;
                 const orderYY = getYY(orderDate);
                 if (targetYY && orderYY !== targetYY) return;
@@ -855,7 +865,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
 
             if (!clientData[d.customerName]) {
                 clientData[d.customerName] = {
-                    name: d.customerName,
+                    name: clientData[d.customerName]?.name || d.customerName,
                     value: 0,
                     qty: 0,
                     orders: new Set(),
@@ -875,7 +885,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             }))
             .sort((a, b) => b.value - a.value)
             .slice(0, 5);
-    }, [dataForYear, monthOrders, selectedMonth, isDateInRange, targetYY]);
+    }, [dataForYear, monthOrders, numericSelectedMonthIndex, isDateInRange, targetYY]);
 
     const countryChartDataForChat = useMemo(() => {
         const countryData = baseFilteredData.reduce<Record<string, { name: string; value: number, qty: number }>>((acc, curr) => {
@@ -947,6 +957,11 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                             </select>
                         </div>
                         <div className="select-container">
+                            <select value={selectedMonth} onChange={handleMonthChange}>
+                                {['All', ...monthNames].map(m => <option key={m} value={m}>{m}</option>)}
+                            </select>
+                        </div>
+                        <div className="select-container">
                             <select value={selectedCountry} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedCountry(e.target.value)}>
                                 {countries.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
@@ -991,31 +1006,25 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                             isDimmed={activeMetric !== null && activeMetric !== 'shipped'}
                         />
                     </div>
-                    {selectedMonth === null && (
+                    {numericSelectedMonthIndex === null && (
                         <div className="calendar-grid-container">
                             <div className="calendar-grid">
                                 {monthNames.map((month, index) => (
                                     <div 
                                         key={month} 
-                                        className={`calendar-month-cell ${selectedMonth === index ? 'active' : ''}`}
-                                        onClick={() => setSelectedMonth(index)}
+                                        className={`calendar-month-cell ${numericSelectedMonthIndex === index ? 'active' : ''}`}
+                                        onClick={() => onMonthChange(month)}
                                     >
                                         <h3>{month}</h3>
                                         <div className="month-bars-container">
-                                            <div className="month-bar-wrapper">
-                                                <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
-                                                    {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
-                                                </div>
+                                            <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
+                                                {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
                                             </div>
-                                            <div className="month-bar-wrapper">
-                                                <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / maxMonthlyValue) * 100}%` }}>
-                                                    {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
-                                                </div>
+                                            <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / maxMonthlyValue) * 100}%` }}>
+                                                {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
                                             </div>
-                                            <div className="month-bar-wrapper">
-                                                <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / maxMonthlyValue) * 100}%` }}>
-                                                    {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
-                                                </div>
+                                            <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / maxMonthlyValue) * 100}%` }}>
+                                                {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
                                             </div>
                                         </div>
                                         <div className="calendar-month-tooltip">
@@ -1031,7 +1040,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                     )}
 
                     <div className={`calendar-charts-section ${authenticatedUser !== 'admin' ? 'single-column' : ''}`}>
-                        {selectedMonth === null ? (
+                        {numericSelectedMonthIndex === null ? (
                             <div className="chart-container">
                                 <h3>Monthly Order Volume</h3>
                                 <MonthlyTrendChart data={monthlyTrendChartData} selectedYear={fullYearForDate.toString()} activeMetric={activeMetric}/>
@@ -1039,12 +1048,12 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                         ) : (
                             <div className="chart-container daily-view">
                                 <div className="daily-chart-header">
-                                    <h3>Daily Order Volume for {monthNames[selectedMonth]}</h3>
-                                    <button className="back-to-monthly-button" onClick={() => setSelectedMonth(null)}>
+                                    <h3>Daily Order Volume for {monthNames[numericSelectedMonthIndex]}</h3>
+                                    <button className="back-to-monthly-button" onClick={() => onMonthChange('All')}>
                                         {Icons.prevArrow} Monthly View
                                     </button>
                                 </div>
-                                <MonthlyTrendChart data={dailyChartData} xAxisDataKey="day" selectedMonth={selectedMonth} selectedYear={fullYearForDate.toString()} activeMetric={activeMetric} />
+                                <MonthlyTrendChart data={dailyChartData} xAxisDataKey="day" selectedMonth={numericSelectedMonthIndex} selectedYear={fullYearForDate.toString()} activeMetric={activeMetric} />
                             </div>
                         )}
                         {authenticatedUser === 'admin' && <TopClientsList data={topClients} />}
@@ -1172,8 +1181,8 @@ const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, ke
     );
 };
 
-const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filterValue = null, activeFilters, onClick = null, className = '' }) => {
-    const isFilterable = !!filterType || !!onClick;
+const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filterValue = null, activeFilters, onClick = null, onDoubleClick = null, className = '' }) => {
+    const isFilterable = !!filterType || !!onClick || !!onDoubleClick;
     const isActive = activeFilters && activeFilters.some(f => f.type === filterType && f.value === filterValue);
     
     const handleClick = () => {
@@ -1184,10 +1193,19 @@ const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filte
         }
     };
 
+    const handleDoubleClick = (e: React.MouseEvent) => {
+        if (onDoubleClick) {
+            e.stopPropagation();
+            onDoubleClick();
+        }
+    };
+
     return (
         <div 
           className={`kpi-card ${isFilterable ? 'filterable' : ''} ${isActive ? 'active' : ''} ${className || ''}`}
           onClick={handleClick}
+          onDoubleClick={handleDoubleClick}
+          title={onDoubleClick ? "Double click for detailed summary" : ""}
         >
             <div className="icon">{Icons[icon]}</div>
             <div className="kpi-card-content">
@@ -1810,7 +1828,8 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
 You are integrated into a specific dashboard with the following components. Use this structure to navigate user questions:
 
 1. **KPI Cards:**
-   - **Total Order Value**
+   - **Order Forwarding Value**
+   - **Shipment Order Value**
    - **Total Orders Received**
    - **In Process**
    - **Shipped Orders**
@@ -1836,7 +1855,7 @@ You are integrated into a specific dashboard with the following components. Use 
 
 **Rules:**
 1. **Privacy:** ${roleInstructions}
-2. **Accuracy:** Give answers related ONLY to user questions based on the structure above. Do not provide unrelated data.
+2. **Accuracy:** Give answers related ONLY to user questions based on the structure above. Do NOT provide unrelated data.
 3. **Context:** You know about all tables, graphs, and KPI cards listed above.
 
 **Current Dashboard Context:**
@@ -2325,6 +2344,55 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
     );
 };
 
+const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: { orderNo: string, date: string, value: number, customer: string }[], onClose: () => void }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const filtered = data.filter(d => d.orderNo.toLowerCase().includes(searchTerm.toLowerCase()) || d.customer.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    return (
+        <div className="modal-backdrop" onClick={onClose}>
+            <div className="modal-content value-breakdown-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h2>{title} Breakdown</h2>
+                    <button className="modal-close-button" onClick={onClose}>&times;</button>
+                </div>
+                <div className="modal-body">
+                    <div className="search-bar-container" style={{ marginBottom: '1rem' }}>
+                        {Icons.search}
+                        <input 
+                            type="text" 
+                            placeholder="Search Order or Customer..." 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                    <div className="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order No</th>
+                                    <th>Date</th>
+                                    <th>Customer</th>
+                                    <th className="text-right">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filtered.map((row, idx) => (
+                                    <tr key={idx}>
+                                        <td className="font-medium">{row.orderNo}</td>
+                                        <td>{formatDateDDMMMYY(row.date)}</td>
+                                        <td>{row.customer}</td>
+                                        <td className="text-right font-medium">{formatCurrency(row.value)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 
 const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null }) => {
     const chartData = useMemo(() => {
@@ -2348,6 +2416,7 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
     const handleClick = (payload: any) => {
         if (!payload || !payload.name) return;
         const countryName = payload.name;
+        // Trigger table update by updating filter
         onFilter({ type: 'country', value: countryName, source: 'countryChart' });
     };
 
@@ -2393,11 +2462,12 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
     )
 };
 
-const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null, selectedYear: string }) => {
+const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear, selectedMonth }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null, selectedYear: string, selectedMonth?: string }) => {
     const chartData = useMemo(() => {
         const monthData = Array.from({ length: 12 }, () => ({ value: 0, orders: new Set<string>() }));
         
         const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
+        const targetMM = (selectedMonth && selectedMonth !== 'All') ? selectedMonth : null;
 
         for (const item of data) {
             const status = (item.originalStatus || item.status || '').toUpperCase();
@@ -2414,6 +2484,10 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { 
                         if (itemYY !== targetYY) continue;
                     }
 
+                    const itemMM = date.toLocaleString('en-US', { month: 'short' });
+                    // CRITICAL FIX: If a global month filter is active, only include the month that matches the filter.
+                    if (targetMM && itemMM !== targetMM) continue;
+
                     const monthIndex = date.getMonth();
                     monthData[monthIndex].value += item.exportValue > 0 ? item.exportValue : 0;
                     if (item.orderNo) {
@@ -2429,7 +2503,7 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { 
             value: monthData[index].value,
             orderCount: monthData[index].orders.size,
         }));
-    }, [data, selectedYear]);
+    }, [data, selectedYear, selectedMonth]);
 
     const handleDotClickAction = (payload: any) => {
         if (!payload || !payload.name || payload.value === 0) return;
@@ -2478,7 +2552,7 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear }: { 
         <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 30, right: 20, left: -10, bottom: 5 }}>
                  <defs>
-                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="colorValue" x1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="var(--secondary-accent)" stopOpacity={0.5}/>
                         <stop offset="95%" stopColor="var(--secondary-accent)" stopOpacity={0}/>
                     </linearGradient>
@@ -2762,7 +2836,8 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [selectedYear, setSelectedYear] = useState('All');
+  const [selectedYear, setSelectedYear] = useState(getCurrentFiscalYear());
+  const [selectedMonth, setSelectedMonth] = useState('All');
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table'>('dashboard');
   const [mainViewMode, setMainViewMode] = useState<'dashboard' | 'calendar'>('dashboard');
   const [theme, setTheme] = useState('light');
@@ -2771,6 +2846,9 @@ const App = () => {
   const [hasUnreadAnnouncements, setHasUnreadAnnouncements] = useState(false);
   const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
   const announcementsButtonRef = useRef<HTMLButtonElement>(null);
+  
+  // Drill-down specific state
+  const [valueBreakdown, setValueBreakdown] = useState<{ title: string, data: any[] } | null>(null);
 
   const checkHasSubOrders = useCallback((baseOrderNo: string) => {
       if (!baseOrderNo) return false;
@@ -3176,8 +3254,17 @@ const App = () => {
   const clientFilteredData = useMemo(() => {
     let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
 
+    const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
+
     if (selectedYear !== 'All') {
         filtered = filtered.filter(d => d.fy === selectedYear);
+    }
+
+    if (selectedMonth !== 'All') {
+        filtered = filtered.filter(d => {
+            const date = parseDate(d.orderDate);
+            return date && date.toLocaleString('en-US', { month: 'short' }) === selectedMonth;
+        });
     }
 
     const sDate = startDate ? parseDate(startDate) : null;
@@ -3205,7 +3292,7 @@ const App = () => {
     }
 
     return filtered;
-  }, [data, currentUser, startDate, endDate, selectedYear]);
+  }, [data, currentUser, startDate, endDate, selectedYear, selectedMonth]);
   
   const searchedData = useMemo(() => {
     if (!searchQuery.trim()) return clientFilteredData;
@@ -3314,13 +3401,9 @@ const App = () => {
     return availableCatalog.filter(p => !boughtCodes.has(p.productCode));
   }, [masterProductList, currentUser, clientFilteredData]);
 
-  const kpis = useMemo(() => {
+  // Derived KPI Data with helper function for breakdowns
+  const getOrderContextForKPI = useCallback((type: 'received' | 'shipped') => {
     let baseData = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
-
-    const countryFilter = activeFilters.find(f => f.type === 'country');
-    if (countryFilter) {
-        baseData = baseData.filter(d => d.country?.trim().toLowerCase() === countryFilter.value.trim().toLowerCase());
-    }
 
     const sDate = startDate ? parseDate(startDate) : null;
     if (sDate) sDate.setHours(0, 0, 0, 0);
@@ -3329,97 +3412,106 @@ const App = () => {
     const hasDateRange = !!(sDate || eDate);
 
     const isinRange = (dateStr: string) => {
-         if (!hasDateRange) return true;
          const d = parseDate(dateStr);
          if (!d) return false;
          return (!sDate || d >= sDate) && (!eDate || d <= eDate);
     };
 
-    let targetYY = null;
-    let targetFY = null;
-    
-    if (!hasDateRange && selectedYear !== 'All') {
-        targetYY = selectedYear.substring(0, 2);
-        targetFY = selectedYear;
-    }
+    const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
 
-    const getYY = (dateStr: string): string | null => {
-        const d = parseDate(dateStr);
-        if (!d) return null;
-        return String(d.getFullYear()).slice(-2);
-    };
-
-    const receivedOrders = new Set<string>();
-    const inProcessOrders = new Set<string>();
-    const shippedOrders = new Set<string>();
-    let totalOrderValue = 0;
-    const boughtProductsSet = new Set<string>();
-
-    baseData.forEach(row => {
+    return baseData.filter(row => {
         const status = (row.originalStatus || '').toUpperCase();
-        const orderNo = row.orderNo;
-        
+        const orderNo = row.orderNo.toUpperCase();
         const isPlan = status === 'PLAN';
         const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
 
-        const orderDateYY = getYY(row.orderDate);
-        const stuffingMonthYY = getYY(row.stuffingMonth);
+        const orderDateObj = parseDate(row.orderDate);
+        const stuffingDateObj = parseDate(row.stuffingMonth);
+        const orderYY = getYY(orderDateObj);
+        const stuffingYY = getYY(stuffingDateObj);
 
-        if (isPlan || isShipped) {
-            let include = false;
-            if (hasDateRange) {
-                 if (isinRange(row.orderDate)) include = true;
-            } else {
-                 if (targetYY === null || orderDateYY === targetYY) include = true;
-            }
+        if (type === 'received') {
+            let matchesForwardingFY = !targetYY || orderYY === targetYY;
+            let matchesForwardingMonth = selectedMonth === 'All' || (orderDateObj?.toLocaleString('en-US', { month: 'short' }) === selectedMonth);
             
-            if (include) receivedOrders.add(orderNo);
-
-            let includeValue = false;
             if (hasDateRange) {
-                if (isinRange(row.orderDate)) includeValue = true;
+                return isinRange(row.orderDate) && (isPlan || isShipped);
             } else {
-                if (targetFY === null || row.fy === targetFY) includeValue = true;
+                return matchesForwardingFY && matchesForwardingMonth && (isPlan || isShipped);
             }
+        } else {
+            let matchesShippedFY = !targetYY || stuffingYY === targetYY;
+            let matchesShippedMonth = selectedMonth === 'All' || (stuffingDateObj?.toLocaleString('en-US', { month: 'short' }) === selectedMonth);
 
-            if (includeValue) {
-                totalOrderValue += (row.exportValue || 0);
-                boughtProductsSet.add(row.productCode);
-            }
-        }
-
-        if (isPlan) {
-            let include = false;
             if (hasDateRange) {
-                if (isinRange(row.orderDate)) include = true;
+                return isinRange(row.stuffingMonth) && isShipped;
             } else {
-                if (targetYY === null || orderDateYY === targetYY) include = true;
+                return matchesShippedFY && matchesShippedMonth && isShipped;
             }
-            if (include) inProcessOrders.add(orderNo);
-        }
-
-        if (isShipped) {
-            let include = false;
-            if (hasDateRange) {
-                if (isinRange(row.stuffingMonth)) include = true;
-            } else {
-                if (targetYY === null || stuffingMonthYY === targetYY) include = true;
-            }
-            if (include) shippedOrders.add(orderNo);
         }
     });
+  }, [data, currentUser, selectedYear, selectedMonth, startDate, endDate]);
+
+  const kpis = useMemo(() => {
+    const forwardingOrdersData = getOrderContextForKPI('received');
+    const shippedOrdersData = getOrderContextForKPI('shipped');
+
+    const receivedOrders = new Set(forwardingOrdersData.map(d => d.orderNo.toUpperCase()));
+    const inProcessOrders = new Set(forwardingOrdersData.filter(d => (d.originalStatus || '').toUpperCase() === 'PLAN').map(d => d.orderNo.toUpperCase()));
+    const shippedOrdersSet = new Set(shippedOrdersData.map(d => d.orderNo.toUpperCase()));
+    
+    let totalOrderValue = forwardingOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
+    let totalShipmentValue = shippedOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
+    
+    const boughtProductsSet = new Set(forwardingOrdersData.map(d => d.productCode));
 
     return {
       totalValue: formatCurrencyNoDecimals(totalOrderValue),
+      totalShipmentValue: formatCurrencyNoDecimals(totalShipmentValue),
       totalOrders: receivedOrders.size,
       totalInProcess: inProcessOrders.size,
-      totalShipped: shippedOrders.size,
+      totalShipped: shippedOrdersSet.size,
       boughtProducts: boughtProductsSet.size,
-      activeClients: new Set(baseData.map(item => item.customerName)).size,
-      countries: new Set(baseData.filter(item => item.country).map(item => item.country.trim().toLowerCase())).size,
+      activeClients: new Set(forwardingOrdersData.map(item => item.customerName)).size,
       neverBoughtCount: neverBoughtForClientData.length,
+      // Internal raw data for breakdowns
+      rawForwarding: forwardingOrdersData,
+      rawShipped: shippedOrdersData
     };
-  }, [data, currentUser, activeFilters, selectedYear, neverBoughtForClientData, startDate, endDate]);
+  }, [getOrderContextForKPI, neverBoughtForClientData]);
+
+  const handleKpiBreakdown = (type: 'forwarding' | 'shipment') => {
+      const sourceData = type === 'forwarding' ? kpis.rawForwarding : kpis.rawShipped;
+      const breakdown = sourceData.reduce((acc: any[], curr) => {
+          const existing = acc.find(a => a.orderNo === curr.orderNo);
+          const dateSource = type === 'forwarding' ? curr.orderDate : curr.stuffingMonth;
+          if (existing) {
+              existing.value += curr.exportValue;
+          } else {
+              acc.push({
+                  orderNo: curr.orderNo,
+                  date: dateSource,
+                  customer: curr.customerName,
+                  value: curr.exportValue
+              });
+          }
+          return acc;
+      }, []);
+      
+      setValueBreakdown({
+          title: type === 'forwarding' ? 'Order Forwarding Value' : 'Shipment Order Value',
+          data: breakdown.sort((a, b) => b.value - a.value)
+      });
+  };
+
+  const handleKpiStatusFilter = (status: 'PLAN' | 'SHIPPED' | 'RECEIVED') => {
+      if (status === 'RECEIVED') {
+          // Effectively clears status filter but keeps others
+          setActiveFilters(prev => prev.filter(f => f.type !== 'status'));
+          return;
+      }
+      handleFilter({ type: 'status', value: status, source: 'kpi' });
+  };
 
   const kpiConsistentData = useMemo(() => {
     let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
@@ -3428,8 +3520,53 @@ const App = () => {
     const eDate = endDate ? parseDate(endDate) : null;
     const hasDateRange = !!(sDate || eDate);
 
-    if (!hasDateRange && selectedYear !== 'All') {
-        filtered = filtered.filter(d => d.fy === selectedYear);
+    const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
+
+    if (hasDateRange) {
+        if (sDate) sDate.setHours(0, 0, 0, 0);
+        if (eDate) eDate.setHours(23, 59, 59, 999);
+        
+        filtered = filtered.filter(d => {
+            const status = (d.originalStatus || d.status || '').toUpperCase();
+            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+            
+            // Check both potential relevant dates for the range
+            const oDate = parseDate(d.orderDate);
+            const sMonthDate = parseDate(d.stuffingMonth);
+            
+            const oInRange = oDate && (!sDate || oDate >= sDate) && (!eDate || oDate <= eDate);
+            const sInRange = isShipped && sMonthDate && (!sDate || sMonthDate >= sDate) && (!eDate || sMonthDate <= eDate);
+            
+            return oInRange || sInRange;
+        });
+    } else {
+        filtered = filtered.filter(d => {
+            const status = (d.originalStatus || d.status || '').toUpperCase();
+            const isPlan = status === 'PLAN';
+            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+
+            const orderDateObj = parseDate(d.orderDate);
+            const stuffingDateObj = parseDate(d.stuffingMonth);
+            const orderYY = getYY(orderDateObj);
+            const stuffingYY = getYY(stuffingDateObj);
+
+            const matchesOrderYear = !targetYY || orderYY === targetYY;
+            const matchesStuffingYear = !targetYY || stuffingYY === targetYY;
+            
+            const itemOrderMonth = orderDateObj?.toLocaleString('en-US', { month: 'short' });
+            const itemStuffingMonth = stuffingDateObj?.toLocaleString('en-US', { month: 'short' });
+            
+            const matchesOrderMonth = selectedMonth === 'All' || (itemOrderMonth === selectedMonth);
+            const matchesStuffingMonth = selectedMonth === 'All' || (itemStuffingMonth === selectedMonth);
+
+            // Updated Logic: 
+            // 1. If we are looking for Forwarded (PLAN or SHIPPED), it must match the Year/Month of the Order Date.
+            // 2. If we are looking for Shipped, it must match the Year/Month of the Stuffing Month.
+            const matchesForwarding = (isPlan || isShipped) && matchesOrderYear && matchesOrderMonth;
+            const matchesShippedOnly = isShipped && matchesStuffingYear && matchesStuffingMonth;
+
+            return matchesForwarding || matchesShippedOnly;
+        });
     }
 
     const countryFilter = activeFilters.find(f => f.type === 'country');
@@ -3437,19 +3574,8 @@ const App = () => {
         filtered = filtered.filter(d => d.country?.trim().toLowerCase() === countryFilter.value.trim().toLowerCase());
     }
     
-    if (hasDateRange) {
-        if (sDate) sDate.setHours(0, 0, 0, 0);
-        if (eDate) eDate.setHours(23, 59, 59, 999);
-        
-        filtered = filtered.filter(d => {
-            const dDate = parseDate(d.orderDate);
-            if (!dDate) return false;
-            return (!sDate || dDate >= sDate) && (!eDate || dDate <= eDate);
-        });
-    }
-
     return filtered;
-  }, [data, currentUser, activeFilters, startDate, endDate, selectedYear]);
+  }, [data, currentUser, activeFilters, startDate, endDate, selectedYear, selectedMonth]);
   
   const relevantCatalogData = useMemo(() => {
     if (currentUser === 'admin') {
@@ -3477,6 +3603,8 @@ const App = () => {
   const monthlyChartData = useMemo(() => {
         const monthData = Array.from({ length: 12 }, () => ({ orders: new Set<string>(), value: 0, qty: 0 }));
 
+        const targetMonth = selectedMonth !== 'All' ? selectedMonth : null;
+
         for (const item of kpiConsistentData) {
              const status = (item.originalStatus || item.status || '').toUpperCase();
              const isPlan = status === 'PLAN';
@@ -3487,6 +3615,9 @@ const App = () => {
              if (item.orderDate) {
                  const date = parseDate(item.orderDate);
                  if (date) {
+                     const itemMonth = date.toLocaleString('en-US', { month: 'short' });
+                     if (targetMonth && itemMonth !== targetMonth) continue;
+
                      const monthIndex = date.getMonth();
                      monthData[monthIndex].value += (item.exportValue || 0);
                      monthData[monthIndex].qty += (item.qty || 0);
@@ -3502,7 +3633,7 @@ const App = () => {
             value: monthData[index].value,
             qty: monthData[index].qty
         }));
-  }, [kpiConsistentData]);
+  }, [kpiConsistentData, selectedMonth]);
 
     const financialYearDisplay = selectedYear === 'All' ? 'FY:- 18-19 to 25-26' : `FY:- ${selectedYear}`;
 
@@ -3517,6 +3648,11 @@ const App = () => {
                     f => !(f.type === filter.type && f.value === filter.value)
                 );
             } else {
+                // If it's a source filter like country chart, clear other country filters first to avoid confusion
+                if (filter.source === 'countryChart') {
+                    const cleaned = prevFilters.filter(f => f.type !== 'country');
+                    return [...cleaned, filter];
+                }
                 return [...prevFilters, filter];
             }
         });
@@ -3579,6 +3715,8 @@ const App = () => {
         initialClientName={currentUser}
         initialYear={selectedYear}
         onYearChange={setSelectedYear}
+        selectedMonth={selectedMonth}
+        onMonthChange={setSelectedMonth}
       />
   }
 
@@ -3715,7 +3853,7 @@ const App = () => {
               </div>
               <label className="view-switcher-label" htmlFor="view-switcher">Current View:</label>
                <div className="select-container">
-                  <select id="view-switcher" value={currentUser} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setCurrentUser(e.target.value); setActiveFilters([]); setDrillDownState({level: 1, baseOrder: null, subOrder: null, hasSubOrders: false}); setSearchQuery(''); setStartDate(''); setEndDate(''); setAdminViewMode('dashboard'); setSelectedYear('All');}} disabled={authenticatedUser !== 'admin'}>
+                  <select id="view-switcher" value={currentUser} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setCurrentUser(e.target.value); setActiveFilters([]); setDrillDownState({level: 1, baseOrder: null, subOrder: null, hasSubOrders: false}); setSearchQuery(''); setStartDate(''); setEndDate(''); setAdminViewMode('dashboard'); setSelectedYear(getCurrentFiscalYear()); setSelectedMonth('All');}} disabled={authenticatedUser !== 'admin'}>
                     {authenticatedUser === 'admin' ?
                       clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)
                       : <option value={authenticatedUser}>{authenticatedUser}</option>
@@ -3726,6 +3864,12 @@ const App = () => {
                 <div className="select-container">
                   <select id="year-switcher" value={selectedYear} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedYear(e.target.value)}>
                     {yearList.map(year => <option key={year} value={year}>{year === 'All' ? 'All Years' : year}</option>)}
+                  </select>
+                </div>
+                <label className="view-switcher-label" htmlFor="month-switcher">Month:</label>
+                <div className="select-container">
+                  <select id="month-switcher" value={selectedMonth} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedMonth(e.target.value)}>
+                    {['All', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => <option key={m} value={m}>{m}</option>)}
                   </select>
                 </div>
                 <button className="calendar-view-button" onClick={() => setMainViewMode('calendar')}>
@@ -3741,10 +3885,47 @@ const App = () => {
         </header>
         <main>
           <div className="kpi-container">
-              <KpiCard title="Total Order Value" value={kpis.totalValue} icon="revenue" activeFilters={activeFilters} />
-              <KpiCard title={authenticatedUser === 'admin' ? "Total Orders Received" : "Total Orders Placed"} value={formatCompactNumber(kpis.totalOrders)} icon="orders" activeFilters={activeFilters} />
-              <KpiCard title="In Process" value={formatCompactNumber(kpis.totalInProcess)} icon="plan" onFilter={handleFilter} filterType="status" filterValue="PLAN" activeFilters={activeFilters}/>
-              <KpiCard title="Shipped Orders" value={formatCompactNumber(kpis.totalShipped)} icon="shipped" onFilter={handleFilter} filterType="status" filterValue="SHIPPED" activeFilters={activeFilters}/>
+              <KpiCard 
+                title="Order Forwarding Value" 
+                value={kpis.totalValue} 
+                icon="revenue" 
+                activeFilters={activeFilters} 
+                onDoubleClick={() => handleKpiBreakdown('forwarding')}
+              />
+              <KpiCard 
+                title="Shipment Order Value" 
+                value={kpis.totalShipmentValue} 
+                icon="revenue" 
+                activeFilters={activeFilters} 
+                onDoubleClick={() => handleKpiBreakdown('shipment')}
+              />
+              <KpiCard 
+                title={authenticatedUser === 'admin' ? "Total Orders Received" : "Total Orders Placed"} 
+                value={formatCompactNumber(kpis.totalOrders)} 
+                icon="orders" 
+                activeFilters={activeFilters}
+                onDoubleClick={() => handleKpiStatusFilter('RECEIVED')}
+              />
+              <KpiCard 
+                title="In Process" 
+                value={formatCompactNumber(kpis.totalInProcess)} 
+                icon="plan" 
+                onFilter={handleFilter} 
+                filterType="status" 
+                filterValue="PLAN" 
+                activeFilters={activeFilters}
+                onDoubleClick={() => handleKpiStatusFilter('PLAN')}
+              />
+              <KpiCard 
+                title="Shipped Orders" 
+                value={formatCompactNumber(kpis.totalShipped)} 
+                icon="shipped" 
+                onFilter={handleFilter} 
+                filterType="status" 
+                filterValue="SHIPPED" 
+                activeFilters={activeFilters}
+                onDoubleClick={() => handleKpiStatusFilter('SHIPPED')}
+              />
               <KpiCard 
                 title="Total No of Units" 
                 value={formatCompactNumber(kpis.boughtProducts)} 
@@ -3795,6 +3976,7 @@ const App = () => {
                                 onFilter={handleFilter} 
                                 activeFilters={activeFilters} 
                                 selectedYear={startDate || endDate ? 'All' : selectedYear} 
+                                selectedMonth={selectedMonth}
                             />
                         </div>
                     </div>
@@ -3844,6 +4026,13 @@ const App = () => {
             orderDate={data.find(d => d.orderNo === selectedOrderForTracking)?.orderDate}
             onClose={() => setSelectedOrderForTracking(null)}
             financialSummary={getFinancialSummaryForTracking(selectedOrderForTracking)}
+        />
+      }
+      {valueBreakdown && 
+        <ValueBreakdownModal 
+            title={valueBreakdown.title} 
+            data={valueBreakdown.data} 
+            onClose={() => setValueBreakdown(null)}
         />
       }
     </>
