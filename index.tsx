@@ -38,19 +38,19 @@ const Icons = {
   revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   orders: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25l3.807-3.262a4.502 4.502 0 0 1 6.384 0L20.25 18" /></svg>,
   clients: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 0L5 11.529m10.232 2.234a3.75 3.75 0 0 0-4.493 0L10.5 11.529m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 16.25m10.232-2.234a3.75 3.75 0 0 1-4.493 0L7.5 13.763m7.5-4.515a3.753 3.753 0 0 0-4.493 0L10.5 6.5m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 11.25m10.232-2.234a3.75 3.75 0 0 0-4.493 0L7.5 8.763m7.5 4.515a3.75 3.75 0 1 1-4.493 0L10.5 13.75m5.007-4.515a3.75 3.75 0 0 0-4.493 0L13.5 8.763" /></svg>,
-  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1 .421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1 .421-.585l1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
+  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1 .421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1-.421-.585l-1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
   placeholder: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125 1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>,
   prevArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>,
   nextArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>,
   chevron: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>,
   chat: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.76 9.76 0 0 1-2.53-.388A5.864 5.864 0 0 1 5.4 12.006c.482.55.994.995 1.524 1.372a11.942 11.942 0 0 0 7.26-1.742 1.25 1.25 0 0 0 .332-.307 12.448 12.448 0 0 0-1.618-1.579 11.912 11.912 0 0 0-6.064-1.785 1.25 1.25 0 0 0-.97.242 12.45 12.45 0 0 0-1.328 1.28c-.318.332-.637.672-.94 1.018a5.864 5.864 0 0 1-.42-2.32C3 7.444 7.03 3.75 12 3.75s9 3.694 9 8.25z" /></svg>,
   robot: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H13.5" /><path strokeLinecap="round" strokeLinejoin="round" d="M5.25 4.5h13.5A2.25 2.25 0 0 1 21 6.75v10.5A2.25 2.25 0 0 1 18.75 19.5H5.25A2.25 2.25 0 0 1 3 17.25V6.75A2.25 2.25 0 0 1 5.25 4.5z" /><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 12h7.5" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 16.5h6" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 9.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 9.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0z" /></svg>,
-  plan: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" /></svg>,
+  plan: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" /></svg>,
   shipped: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>,
   shoppingCart: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c.51 0 .962-.343 1.087-.835l1.823-6.836a.75.75 0 0 0-.44-.898l-7.458-2.61a.75.75 0 0 0-.915.658l-1.006 5.031c-.12.603-.635 1.036-1.254 1.036H3.75" /></svg>,
   search: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>,
   dashboard: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" /></svg>,
-  table: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504-1.125-1.125-1.125m-17.25 0h.008v.015h-.008v-.015Zm0 0v-2.25m17.25-10.5h-17.25a1.125 1.125 0 0 0-1.125 1.125v1.5c0 .621.504 1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v-1.5c0-.621-.504-1.125-1.125-1.125m-17.25 0v2.25m17.25 0h.008v.015h-.008v-.015Zm-17.25 0v-2.25m0 5.25h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504-1.125-1.125-1.125m-17.25 0h.008v.015h-.008v-.015Z" /></svg>,
+  table: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h.008v.015h-.008v-.015Zm0 0v-2.25m17.25-10.5h-17.25a1.125 1.125 0 0 0-1.125 1.125v1.5c0 .621.504 1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v-1.5c0-.621-.504-1.125-1.125-1.125m-17.25 0v2.25m17.25 0h.008v.015h-.008v-.015Zm-17.25 0v-2.25m0 5.25h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504-1.125-1.125-1.125m-17.25 0h.008v.015h-.008v-.015Z" /></svg>,
   user: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>,
   key: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" /></svg>,
   copy: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H9.75" /></svg>,
@@ -151,6 +151,15 @@ interface Filter {
     type: 'status' | 'country' | 'month';
     value: string;
     source?: string;
+}
+
+interface BreakdownItem {
+    orderNo: string;
+    date: string;
+    value: number;
+    qty: number;
+    customer: string;
+    country: string;
 }
 
 // --- Helper Functions ---
@@ -258,16 +267,18 @@ const getBaseOrderNo = (orderNo: string): string => {
 const getYY = (date: Date | null) => date ? String(date.getFullYear()).slice(-2) : null;
 
 // ### calendar view
-const CalendarKpiCard = ({ title, value, icon, variant, onClick, isDimmed }: any) => (
+const CalendarKpiCard = ({ title, value, icon, variant, onClick, onDoubleClick, isDimmed }: any) => (
     <div 
         className={`calendar-kpi-card variant-${variant}`} 
         onClick={onClick}
+        onDoubleClick={onDoubleClick}
         style={{ 
             cursor: 'pointer', 
             opacity: isDimmed ? 0.4 : 1,
             transition: 'all 0.3s ease',
             transform: isDimmed ? 'scale(0.98)' : 'scale(1)'
         }}
+        title="Double-click for details"
     >
         <div className="calendar-kpi-icon">{icon}</div>
         <div className="calendar-kpi-content">
@@ -510,6 +521,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [activeMetric, setActiveMetric] = useState<'received' | 'planned' | 'shipped' | null>(null);
+    const [valueBreakdown, setValueBreakdown] = useState<{ title: string, data: BreakdownItem[] } | null>(null);
 
     const numericSelectedMonthIndex = useMemo(() => {
         if (selectedMonth === 'All') return null;
@@ -584,21 +596,6 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             return countryMatch && clientMatch;
         });
     }, [allOrderData, selectedCountry, selectedClient]);
-    
-    const aiData = useMemo(() => {
-        if (authenticatedUser === 'admin') {
-            if (selectedClient === 'All') return allOrderData;
-            return allOrderData.filter(d => d.customerName === selectedClient);
-        }
-        return allOrderData.filter(d => d.customerName === authenticatedUser);
-    }, [allOrderData, selectedClient, authenticatedUser]);
-
-    const catalogDataForChat = useMemo(() => {
-        if (selectedClient === 'All' || selectedClient === 'admin') {
-            return masterProductList;
-        }
-        return masterProductList.filter(p => p.customerName === selectedClient);
-    }, [masterProductList, selectedClient]);
 
     const dataForYear = useMemo(() => {
         return baseFilteredData.filter(d => {
@@ -613,12 +610,98 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             const orderYY = getYY(orderDate);
             const stuffingYY = getYY(stuffingDate);
             
-            const matchesOrder = (isPlan || isShipped) && orderYY === targetYY;
-            const matchesStuffing = isShipped && stuffingYY === targetYY;
+            const matchesOrder = (isPlan || isShipped) && orderDate && (!targetYY || orderYY === targetYY);
+            const matchesStuffing = isShipped && stuffingDate && (!targetYY || stuffingYY === targetYY);
             
             return matchesOrder || matchesStuffing;
         });
     }, [baseFilteredData, targetYY]);
+
+    const getBreakdownData = useCallback((metric: 'received' | 'planned' | 'shipped' | 'all', monthIdx: number | null = null): BreakdownItem[] => {
+        const resultsMap = new Map<string, BreakdownItem>();
+        const metricsToProcess: ('received' | 'planned' | 'shipped')[] = 
+            metric === 'all' ? ['received', 'shipped'] : [metric];
+
+        metricsToProcess.forEach(m => {
+            dataForYear.forEach(d => {
+                const status = (d.originalStatus || d.status || '').toUpperCase();
+                const isPlan = status === 'PLAN';
+                const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+
+                const orderDate = parseDate(d.orderDate);
+                const stuffingDate = parseDate(d.stuffingMonth);
+                const orderYY = getYY(orderDate);
+                const stuffingYY = getYY(stuffingDate);
+
+                let match = false;
+                let dateToUse = '';
+
+                if (m === 'received') {
+                    if ((isPlan || isShipped) && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
+                        if (monthIdx === null || orderDate.getMonth() === monthIdx) {
+                            match = true;
+                            dateToUse = d.orderDate;
+                        }
+                    }
+                } else if (m === 'planned') {
+                    if (isPlan && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
+                        if (monthIdx === null || orderDate.getMonth() === monthIdx) {
+                            match = true;
+                            dateToUse = d.orderDate;
+                        }
+                    }
+                } else if (m === 'shipped') {
+                    if (isShipped && stuffingDate && (!targetYY || stuffingYY === targetYY) && isDateInRange(stuffingDate)) {
+                        if (monthIdx === null || stuffingDate.getMonth() === monthIdx) {
+                            match = true;
+                            dateToUse = d.stuffingMonth;
+                        }
+                    }
+                }
+
+                if (match) {
+                    const uniqueKey = d.orderNo.toUpperCase();
+                    if (!resultsMap.has(uniqueKey)) {
+                        resultsMap.set(uniqueKey, {
+                            orderNo: d.orderNo,
+                            date: dateToUse,
+                            value: 0,
+                            qty: 0,
+                            customer: d.customerName,
+                            country: d.country
+                        });
+                    }
+                    const item = resultsMap.get(uniqueKey)!;
+                    item.value += d.exportValue;
+                    item.qty += d.qty;
+                }
+            });
+        });
+
+        return Array.from(resultsMap.values()).sort((a, b) => b.value - a.value);
+    }, [dataForYear, targetYY, isDateInRange]);
+
+    const handleKpiDoubleClick = (metric: 'received' | 'planned' | 'shipped') => {
+        const titleMap = {
+            'received': 'Total Orders Received',
+            'planned': 'Orders In Process',
+            'shipped': 'Orders Shipped'
+        };
+        const breakdown = getBreakdownData(metric, numericSelectedMonthIndex);
+        setValueBreakdown({
+            title: titleMap[metric],
+            data: breakdown
+        });
+    };
+
+    const handleMonthDoubleClick = (monthIdx: number) => {
+        const monthName = monthNames[monthIdx];
+        const breakdown = getBreakdownData(activeMetric || 'all', monthIdx);
+        setValueBreakdown({
+            title: `Orders for ${monthName} ${selectedYear} (${activeMetric || 'Combined'})`,
+            data: breakdown
+        });
+    };
     
     const countries = useMemo(() => {
         let dataForCountryList = allOrderData;
@@ -910,6 +993,22 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         }));
     }, [monthlyTrendChartData]);
 
+    const aiData = useMemo(() => {
+        if (authenticatedUser === 'admin') {
+            if (selectedClient === 'All') return allOrderData;
+            return allOrderData.filter(d => d.customerName === selectedClient);
+        }
+        return allOrderData.filter(d => d.customerName === authenticatedUser);
+    }, [allOrderData, selectedClient, authenticatedUser]);
+
+    const catalogDataForChat = useMemo(() => {
+        if (selectedClient === 'All' || selectedClient === 'admin') {
+            return masterProductList;
+        }
+        return masterProductList.filter(p => p.customerName === selectedClient);
+    }, [masterProductList, selectedClient]);
+
+
     return (
         <>
             <div className="dashboard-container calendar-view-dashboard">
@@ -978,7 +1077,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                         </button>
                     </div>
                 </header>
-                <main className="calendar-view-main">
+                <div className="calendar-view-main">
                     <div className="kpi-container">
                         <CalendarKpiCard 
                             title={authenticatedUser === 'admin' ? "Total Orders Received" : "Total Orders Placed"} 
@@ -986,6 +1085,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                             icon={"📦"} 
                             variant="received" 
                             onClick={() => handleKpiClick('received')}
+                            onDoubleClick={() => handleKpiDoubleClick('received')}
                             isDimmed={activeMetric !== null && activeMetric !== 'received'}
                         />
                         <CalendarKpiCard 
@@ -994,6 +1094,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                             icon={"🗓️"} 
                             variant="planned" 
                             onClick={() => handleKpiClick('planned')}
+                            onDoubleClick={() => handleKpiDoubleClick('planned')}
                             isDimmed={activeMetric !== null && activeMetric !== 'planned'}
                         />
                         <CalendarKpiCard 
@@ -1002,6 +1103,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                             icon={"🚚"} 
                             variant="shipped" 
                             onClick={() => handleKpiClick('shipped')}
+                            onDoubleClick={() => handleKpiDoubleClick('shipped')}
                             isDimmed={activeMetric !== null && activeMetric !== 'shipped'}
                         />
                     </div>
@@ -1013,18 +1115,29 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                                         key={month} 
                                         className={`calendar-month-cell ${numericSelectedMonthIndex === index ? 'active' : ''}`}
                                         onClick={() => onMonthChange(month)}
+                                        onDoubleClick={(e) => {
+                                            e.stopPropagation();
+                                            handleMonthDoubleClick(index);
+                                        }}
+                                        title="Single-click to view daily chart, Double-click for breakdown"
                                     >
                                         <h3>{month}</h3>
                                         <div className="month-bars-container">
-                                            <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
-                                                {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
-                                            </div>
-                                            <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / maxMonthlyValue) * 100}%` }}>
-                                                {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
-                                            </div>
-                                            <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / maxMonthlyValue) * 100}%` }}>
-                                                {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
-                                            </div>
+                                            {(activeMetric === null || activeMetric === 'received') && (
+                                                <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
+                                                    {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
+                                                </div>
+                                            )}
+                                            {(activeMetric === null || activeMetric === 'planned') && (
+                                                <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / maxMonthlyValue) * 100}%` }}>
+                                                    {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
+                                                </div>
+                                            )}
+                                            {(activeMetric === null || activeMetric === 'shipped') && (
+                                                <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / maxMonthlyValue) * 100}%` }}>
+                                                    {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="calendar-month-tooltip">
                                             <strong>{month} {selectedYear}</strong>
@@ -1057,7 +1170,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                         )}
                         {authenticatedUser === 'admin' && <TopClientsList data={topClients} />}
                     </div>
-                </main>
+                </div>
             </div>
             <ChatAssistant
                 orderData={aiData}
@@ -1068,6 +1181,13 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                 countryChartData={countryChartDataForChat}
                 monthlyChartData={monthlyChartDataForChat}
             />
+            {valueBreakdown && 
+                <ValueBreakdownModal 
+                    title={valueBreakdown.title} 
+                    data={valueBreakdown.data} 
+                    onClose={() => setValueBreakdown(null)}
+                />
+            }
         </>
     );
 };
@@ -1180,9 +1300,9 @@ const LoginScreen = ({ onLogin, onClearSavedUser }: { onLogin: (name: string, ke
     );
 };
 
-const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filterValue = null, activeFilters, onClick = null, onDoubleClick = null, className = '' }) => {
+const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filterValue = null, activeFilters, onClick = null, onDoubleClick = null, className = '' }: any) => {
     const isFilterable = !!filterType || !!onClick || !!onDoubleClick;
-    const isActive = activeFilters && activeFilters.some(f => f.type === filterType && f.value === filterValue);
+    const isActive = activeFilters && activeFilters.some((f: any) => f.type === filterType && f.value === filterValue);
     
     const handleClick = () => {
         if (onClick) {
@@ -1206,7 +1326,7 @@ const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filte
           onDoubleClick={handleDoubleClick}
           title={onDoubleClick ? "Double click for detailed summary" : ""}
         >
-            <div className="icon">{Icons[icon]}</div>
+            <div className="icon">{(Icons as any)[icon]}</div>
             <div className="kpi-card-content">
                 <h3>{title}</h3>
                 <p>{value}</p>
@@ -2159,6 +2279,7 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initi
             <div className="filters">
                 <div className="search-bar-container">
                     {Icons.search}
+                    {/* Fixed type for onChange handler: replaced ChangeEvent<HTMLSelectElement> with ChangeEvent<HTMLInputElement> */}
                     <input
                         type="text"
                         placeholder="Search by Product, Customer, Country..."
@@ -2180,9 +2301,9 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initi
                 </button>
             </div>
           </header>
-          <main>
+          <div className="never-bought-main">
              <NeverBoughtDataTable data={tableData} currentUser={selectedUser} authenticatedUser={authenticatedUser}/>
-          </main>
+          </div>
         </div>
         <ChatAssistant 
           orderData={relevantOrderData} 
@@ -2343,17 +2464,29 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
     );
 };
 
-const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: { orderNo: string, date: string, value: number, customer: string }[], onClose: () => void }) => {
+const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: BreakdownItem[], onClose: () => void }) => {
     const [searchTerm, setSearchTerm] = useState('');
     
     const filtered = useMemo(() => 
         data.filter(d => 
             d.orderNo.toLowerCase().includes(searchTerm.toLowerCase()) || 
-            d.customer.toLowerCase().includes(searchTerm.toLowerCase())
+            d.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            d.country.toLowerCase().includes(searchTerm.toLowerCase())
         ), [data, searchTerm]);
 
     const totalFilteredValue = useMemo(() => 
         filtered.reduce((sum, item) => sum + item.value, 0), [filtered]);
+
+    const totalFilteredCount = filtered.length;
+
+    // Use specific date headers as requested
+    const dateHeader = useMemo(() => {
+        const lowerTitle = title.toLowerCase();
+        if (lowerTitle.includes('shipped') || lowerTitle.includes('shipment')) {
+            return 'SHIPPED DATE';
+        }
+        return 'ORDER FORWARDING DATE';
+    }, [title]);
     
     return (
         <div className="modal-backdrop" onClick={onClose}>
@@ -2362,7 +2495,7 @@ const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: { 
                     <div className="breakdown-title-group">
                         <h2>{title} <span className="text-focus-in">Breakdown</span></h2>
                         <div className="breakdown-total-badge">
-                            Total: {formatCurrencyNoDecimals(totalFilteredValue)}
+                            Total: {formatCurrencyNoDecimals(totalFilteredValue)} ({totalFilteredCount} Unique Orders)
                         </div>
                     </div>
                     <button className="modal-close-button" onClick={onClose}>&times;</button>
@@ -2373,7 +2506,7 @@ const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: { 
                             {Icons.search}
                             <input 
                                 type="text" 
-                                placeholder="Filter by Order No or Customer..." 
+                                placeholder="Filter by Order No, Customer, or Country..." 
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 autoFocus
@@ -2384,21 +2517,27 @@ const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: { 
                         <table className="breakdown-table">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Order No</th>
-                                    <th>Event Date</th>
-                                    <th>Customer Entity</th>
-                                    <th className="text-right">Monetary Value</th>
+                                    <th>{dateHeader}</th>
+                                    <th>Clients Name</th>
+                                    <th>Country</th>
+                                    <th className="text-right">Qty</th>
+                                    <th className="text-right">Export Value</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filtered.length > 0 ? (
                                     filtered.map((row, idx) => (
                                         <tr key={idx} style={{ animationDelay: `${idx * 0.03}s` }}>
+                                            <td className="text-color-muted" style={{ width: '40px' }}>{idx + 1}</td>
                                             <td>
                                                 <span className="order-pill">{row.orderNo}</span>
                                             </td>
                                             <td className="text-color-muted">{formatDateDDMMMYY(row.date)}</td>
                                             <td className="font-medium">{row.customer}</td>
+                                            <td className="text-color-muted">{row.country}</td>
+                                            <td className="text-right font-medium">{formatNumber(row.qty)}</td>
                                             <td className="text-right font-bold value-highlight">
                                                 {formatCurrency(row.value)}
                                             </td>
@@ -2406,7 +2545,7 @@ const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: { 
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={4} className="text-center no-results">
+                                        <td colSpan={7} className="text-center no-results">
                                             No matching orders found for "{searchTerm}"
                                         </td>
                                     </tr>
@@ -2622,7 +2761,7 @@ const SkeletonLoader = () => (
            <div className="skeleton" style={{ width: '150px', height: '40px' }}></div>
         </div>
       </header>
-      <main>
+      <div className="main">
         <div className="kpi-container">
           {[...Array(6)].map((_, i) => <div key={i} className="skeleton" style={{ height: '110px' }}></div>)}
         </div>
@@ -2633,7 +2772,7 @@ const SkeletonLoader = () => (
           </div>
           <div className="skeleton table-skeleton"></div>
         </div>
-      </main>
+      </div>
     </div>
   );
 
@@ -2730,12 +2869,13 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
                     <h1>User &amp; API Key Management</h1>
                 </div>
                 <div className="user-management-actions">
+                     {/* Fixed: onClose is not a valid button prop, changed to onClick */}
                      <button className="back-button" onClick={onClose} disabled={saveStatus === 'saving'}>
                         {Icons.prevArrow} Back to Dashboard
                     </button>
                 </div>
             </header>
-            <main>
+            <div className="main">
                 <div className="user-management-form-container">
                     <h2>Add/Update User API Key</h2>
                     <p>Select a client to view, generate, or update their API key.</p>
@@ -2774,14 +2914,16 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
                              </button>
                         </div>
                     </div>
-                    <div className="form-actions">
-                        <button
-                            className="save-button"
-                            onClick={handleSave}
-                            disabled={saveStatus === 'saving' || !selectedClient || !apiKey}
-                        >
-                            {saveStatus === 'saving' ? 'Saving...' : 'Save'}
-                        </button>
+                    <div className="form-group">
+                        <div className="form-actions">
+                            <button
+                                className="save-button"
+                                onClick={handleSave}
+                                disabled={saveStatus === 'saving' || !selectedClient || !apiKey}
+                            >
+                                {saveStatus === 'saving' ? 'Saving...' : 'Save'}
+                            </button>
+                        </div>
                     </div>
                     {saveMessage && (
                         <div className={`save-status-container ${saveStatus}`}>
@@ -2789,12 +2931,12 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
                         </div>
                     )}
                 </div>
-            </main>
+            </div>
         </div>
     );
 };
 
-const ThemeToggles = ({ theme, isEyeProtection, onThemeChange, onEyeProtectionChange }) => {
+const ThemeToggles = ({ theme, isEyeProtection, onThemeChange, onEyeProtectionChange }: any) => {
     return (
         <div className="theme-toggles-container">
             <label className="toggle-switch" title="Toggle Eye Protection">
@@ -2811,7 +2953,7 @@ const ThemeToggles = ({ theme, isEyeProtection, onThemeChange, onEyeProtectionCh
     );
 };
 
-const AnnouncementsPanel = ({ announcements, onClose, buttonRef }) => {
+const AnnouncementsPanel = ({ announcements, onClose, buttonRef }: any) => {
     const panelRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -2835,11 +2977,21 @@ const AnnouncementsPanel = ({ announcements, onClose, buttonRef }) => {
                 <h3>What's New</h3>
             </div>
             <div className="announcements-body">
-                {announcements.slice().reverse().map(ann => ( 
+                {announcements.slice().reverse().map((ann: any) => ( 
                     <div key={ann.id} className="announcement-item">
                         <h4>{ann.title}</h4>
                         <span>{ann.date}</span>
-                        <p>{ann.description.split('\n').map((line, i) => <React.Fragment key={i}>{line.trim().startsWith('-') ? <ul><li>{line.substring(1).trim()}</li></ul> : <>{line}<br/></>}</React.Fragment>)}</p>
+                        <div className="announcement-description">
+                            {ann.description.split('\n').map((line: string, i: number) => (
+                                <React.Fragment key={i}>
+                                    {line.trim().startsWith('-') ? (
+                                        <ul><li>{line.substring(1).trim()}</li></ul>
+                                    ) : (
+                                        <>{line}<br/></>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </div>
                     </div>
                 ))}
             </div>
@@ -2884,7 +3036,16 @@ const App = () => {
   const announcementsButtonRef = useRef<HTMLButtonElement>(null);
   
   // Drill-down specific state
-  const [valueBreakdown, setValueBreakdown] = useState<{ title: string, data: any[] } | null>(null);
+  const [valueBreakdown, setValueBreakdown] = useState<{ title: string, data: BreakdownItem[] } | null>(null);
+
+  // Defined aiData for consistency
+  const aiData = useMemo(() => {
+    if (authenticatedUser === 'admin') {
+        if (currentUser === 'admin') return data;
+        return data.filter(d => d.customerName === currentUser);
+    }
+    return data.filter(d => d.customerName === authenticatedUser);
+  }, [data, currentUser, authenticatedUser]);
 
   const checkHasSubOrders = useCallback((baseOrderNo: string) => {
       if (!baseOrderNo) return false;
@@ -3469,21 +3630,20 @@ const App = () => {
   }, [data, currentUser, activeFilters, startDate, endDate, selectedYear, selectedMonth]);
 
     const finalFilteredData = useMemo(() => {
-        // finalFilteredData should use kpiConsistentData as base but respect user search query
-        const lowerSearch = searchQuery.toLowerCase().trim();
+        const lowercasedQuery = searchQuery.toLowerCase().trim();
         return kpiConsistentData.filter(d => {
-            if (!lowerSearch) return true;
+            if (!lowercasedQuery) return true;
             
             const shippedDate = formatDateDDMMMYY(d.stuffingMonth).toLowerCase();
-            const statusMatch = (d.status && d.status.toLowerCase().includes(lowerSearch)) || (d.originalStatus && d.originalStatus.toLowerCase().includes(lowerSearch));
-            const orderMatch = d.orderNo && d.orderNo.toLowerCase().includes(lowerSearch);
-            const clientMatch = d.customerName && d.customerName.toLowerCase().includes(lowerSearch);
-            const countryMatch = d.country && d.country.toLowerCase().includes(lowerSearch);
-            const productMatch = (d.product && d.product.toLowerCase().includes(lowerSearch));
-            const codeMatch = (d.productCode && d.productCode.toLowerCase().includes(lowerSearch));
-            const categoryMatch = (d.category && d.category.toLowerCase().includes(lowerSearch));
+            const statusMatch = (d.status && d.status.toLowerCase().includes(lowercasedQuery)) || (d.originalStatus && d.originalStatus.toLowerCase().includes(lowercasedQuery));
+            const orderMatch = d.orderNo && d.orderNo.toLowerCase().includes(lowercasedQuery);
+            const clientMatch = d.customerName && d.customerName.toLowerCase().includes(lowercasedQuery);
+            const countryMatch = d.country && d.country.toLowerCase().includes(lowercasedQuery);
+            const productMatch = (d.product && d.product.toLowerCase().includes(lowercasedQuery));
+            const codeMatch = (d.productCode && d.productCode.toLowerCase().includes(lowercasedQuery));
+            const categoryMatch = (d.category && d.category.toLowerCase().includes(lowercasedQuery));
 
-            return statusMatch || shippedDate.includes(lowerSearch) || orderMatch || clientMatch || countryMatch || productMatch || codeMatch || categoryMatch;
+            return statusMatch || shippedDate.includes(lowercasedQuery) || orderMatch || clientMatch || countryMatch || productMatch || codeMatch || categoryMatch;
         });
     }, [kpiConsistentData, searchQuery]);
   
@@ -3546,27 +3706,37 @@ const App = () => {
     };
   }, [getOrderContextForKPI, neverBoughtForClientData]);
 
-  const handleKpiBreakdown = (type: 'forwarding' | 'shipment') => {
-      const sourceData = type === 'forwarding' ? kpis.rawForwarding : kpis.rawShipped;
-      const breakdown = sourceData.reduce((acc: any[], curr) => {
-          const existing = acc.find(a => a.orderNo === curr.orderNo);
-          const dateSource = type === 'forwarding' ? curr.orderDate : curr.stuffingMonth;
-          if (existing) {
-              existing.value += curr.exportValue;
-          } else {
-              acc.push({
+  const handleKpiBreakdown = (type: 'forwarding' | 'shipment' | 'received') => {
+      const sourceData = (type === 'forwarding' || type === 'received') ? kpis.rawForwarding : kpis.rawShipped;
+      const resultsMap = new Map<string, BreakdownItem>();
+      
+      sourceData.forEach(curr => {
+          const uniqueKey = curr.orderNo.toUpperCase();
+          const dateSource = (type === 'forwarding' || type === 'received') ? curr.orderDate : curr.stuffingMonth;
+          
+          if (!resultsMap.has(uniqueKey)) {
+              resultsMap.set(uniqueKey, {
                   orderNo: curr.orderNo,
                   date: dateSource,
                   customer: curr.customerName,
-                  value: curr.exportValue
+                  country: curr.country,
+                  value: 0,
+                  qty: 0
               });
           }
-          return acc;
-      }, []);
+          const item = resultsMap.get(uniqueKey)!;
+          item.value += curr.exportValue;
+          item.qty += curr.qty;
+      });
       
+      let modalTitle = 'Breakdown';
+      if (type === 'forwarding') modalTitle = 'Order Forwarding Value';
+      else if (type === 'shipment') modalTitle = 'Shipment Order Value';
+      else if (type === 'received') modalTitle = 'Total Orders Received';
+
       setValueBreakdown({
-          title: type === 'forwarding' ? 'Order Forwarding Value' : 'Shipment Order Value',
-          data: breakdown.sort((a, b) => b.value - a.value)
+          title: modalTitle,
+          data: Array.from(resultsMap.values()).sort((a, b) => b.value - a.value)
       });
   };
 
@@ -3669,11 +3839,6 @@ const App = () => {
 
     const baseOrderHasSubOrders = drillDownState.hasSubOrders ?? false;
   
-  const aiData = useMemo(() => {
-      if (currentUser === 'admin') return data;
-      return data.filter(d => d.customerName === currentUser);
-  }, [data, currentUser]);
-
   const getFinancialSummaryForTracking = (orderNo: string | null) => {
       if (!orderNo) return undefined;
       const accountRow = accountData.find(acc => acc.orderNo.includes(orderNo));
@@ -3888,7 +4053,7 @@ const App = () => {
                </button>
             </div>
         </header>
-        <main>
+        <div className="main">
           <div className="kpi-container">
               <KpiCard 
                 title="Order Forwarding Value" 
@@ -3909,7 +4074,7 @@ const App = () => {
                 value={formatCompactNumber(kpis.totalOrders)} 
                 icon="orders" 
                 activeFilters={activeFilters}
-                onDoubleClick={() => handleKpiStatusFilter('RECEIVED')}
+                onDoubleClick={() => handleKpiBreakdown('received')}
               />
               <KpiCard 
                 title="In Process" 
@@ -4013,7 +4178,7 @@ const App = () => {
                 />
             </div>
           )}
-        </main>
+        </div>
       </div>
       <ChatAssistant 
           orderData={aiData} 
