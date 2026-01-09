@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -2346,44 +2345,72 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
 
 const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: { orderNo: string, date: string, value: number, customer: string }[], onClose: () => void }) => {
     const [searchTerm, setSearchTerm] = useState('');
-    const filtered = data.filter(d => d.orderNo.toLowerCase().includes(searchTerm.toLowerCase()) || d.customer.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const filtered = useMemo(() => 
+        data.filter(d => 
+            d.orderNo.toLowerCase().includes(searchTerm.toLowerCase()) || 
+            d.customer.toLowerCase().includes(searchTerm.toLowerCase())
+        ), [data, searchTerm]);
+
+    const totalFilteredValue = useMemo(() => 
+        filtered.reduce((sum, item) => sum + item.value, 0), [filtered]);
     
     return (
         <div className="modal-backdrop" onClick={onClose}>
             <div className="modal-content value-breakdown-modal" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                    <h2>{title} Breakdown</h2>
+                <div className="modal-header breakdown-header">
+                    <div className="breakdown-title-group">
+                        <h2>{title} <span className="text-focus-in">Breakdown</span></h2>
+                        <div className="breakdown-total-badge">
+                            Total: {formatCurrencyNoDecimals(totalFilteredValue)}
+                        </div>
+                    </div>
                     <button className="modal-close-button" onClick={onClose}>&times;</button>
                 </div>
-                <div className="modal-body">
-                    <div className="search-bar-container" style={{ marginBottom: '1rem' }}>
-                        {Icons.search}
-                        <input 
-                            type="text" 
-                            placeholder="Search Order or Customer..." 
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+                <div className="modal-body breakdown-body">
+                    <div className="breakdown-controls">
+                        <div className="search-bar-container professional-search">
+                            {Icons.search}
+                            <input 
+                                type="text" 
+                                placeholder="Filter by Order No or Customer..." 
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                autoFocus
+                            />
+                        </div>
                     </div>
-                    <div className="table-wrapper">
-                        <table>
+                    <div className="table-wrapper breakdown-table-wrapper">
+                        <table className="breakdown-table">
                             <thead>
                                 <tr>
                                     <th>Order No</th>
-                                    <th>Date</th>
-                                    <th>Customer</th>
-                                    <th className="text-right">Value</th>
+                                    <th>Event Date</th>
+                                    <th>Customer Entity</th>
+                                    <th className="text-right">Monetary Value</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filtered.map((row, idx) => (
-                                    <tr key={idx}>
-                                        <td className="font-medium">{row.orderNo}</td>
-                                        <td>{formatDateDDMMMYY(row.date)}</td>
-                                        <td>{row.customer}</td>
-                                        <td className="text-right font-medium">{formatCurrency(row.value)}</td>
+                                {filtered.length > 0 ? (
+                                    filtered.map((row, idx) => (
+                                        <tr key={idx} style={{ animationDelay: `${idx * 0.03}s` }}>
+                                            <td>
+                                                <span className="order-pill">{row.orderNo}</span>
+                                            </td>
+                                            <td className="text-color-muted">{formatDateDDMMMYY(row.date)}</td>
+                                            <td className="font-medium">{row.customer}</td>
+                                            <td className="text-right font-bold value-highlight">
+                                                {formatCurrency(row.value)}
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={4} className="text-center no-results">
+                                            No matching orders found for "{searchTerm}"
+                                        </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                     </div>
