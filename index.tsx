@@ -1,10 +1,10 @@
+
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Area, ResponsiveContainer, LabelList, Cell, Legend } from 'recharts';
 
 // --- Gemini API Initialization ---
-// IMPORTANT: This assumes process.env.API_KEY is set in the execution environment.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 // --- Announcements Data ---
@@ -52,7 +52,7 @@ const Icons = {
   dashboard: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" /></svg>,
   table: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M2.25 8.25h19.5M2.25 12h19.5m-19.5 3.75h19.5M4.5 4.5h15a2.25 2.25 0 0 1 2.25 2.25v10.5A2.25 2.25 0 0 1 19.5 19.5h-15A2.25 2.25 0 0 1 2.25 17.25V6.75A2.25 2.25 0 0 1 4.5 4.5Z" /></svg>,
   user: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>,
-  key: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" /></svg>,
+  key: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 1 1 21.75 8.25Z" /></svg>,
   copy: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H9.75" /></svg>,
   logout: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3h12" /></svg>,
   checkCircle: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
@@ -91,13 +91,12 @@ interface OrderData {
   fobPrice: number;
   moq: number;
   fy: string;
-  // NEW: Additional fields for AI context from Live Sheet
   stuffingDate?: string;
   etd?: string; // ETD/ SOB
   eta?: string;
+  commercialInvoiceNo?: string; 
 }
-// ... [Remaining Data Types]
-// --- Data Types ---
+
 interface AccountData {
   sNo: string;
   orderDate: string;
@@ -163,6 +162,9 @@ interface BreakdownItem {
     country: string;
 }
 
+// --- Constants ---
+const MONTH_NAMES_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 // --- Helper Functions ---
 const formatCurrency = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
 const formatCurrencyNoDecimals = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
@@ -175,16 +177,14 @@ const parseDate = (dateString: string): Date | null => {
         return null;
     }
 
-    // Try parsing Google's "Date(YYYY,M,D...)" format which is common in gviz responses
     const gvizMatch = dateString.match(/Date\((\d{4}),(\d{1,2}),(\d{1,2}).*?\)/);
     if (gvizMatch) {
         const year = parseInt(gvizMatch[1], 10);
-        const month = parseInt(gvizMatch[2], 10); // gviz month is 0-indexed
+        const month = parseInt(gvizMatch[2], 10);
         const day = parseInt(gvizMatch[3], 10);
         return new Date(year, month, day);
     }
     
-    // Fallback to standard Date constructor for other formats like ISO, "MM/DD/YYYY" etc.
     const date = new Date(dateString);
     if (!isNaN(date.getTime())) {
         return date;
@@ -217,17 +217,11 @@ const summarizeCatalogData = (data: (MasterProductData | OrderData)[]): string =
 
 const getCurrentFiscalYear = (): string => {
     const now = new Date();
-    const currentMonth = now.getMonth(); // 0 = January, 3 = April
+    const currentMonth = now.getMonth(); 
     const currentYear = now.getFullYear();
-    
-    // Fiscal year starts in April.
-    // If current month is April (3) or later, FY starts in current year.
-    // If current month is Jan, Feb, Mar (0, 1, 2), FY started in previous year.
     const startYear = currentMonth >= 3 ? currentYear : currentYear - 1;
-    
     const startYearShort = String(startYear).slice(-2);
     const endYearShort = String(startYear + 1).slice(-2);
-    
     return `${startYearShort}-${endYearShort}`;
 };
 
@@ -235,33 +229,21 @@ const getFiscalYearFromDate = (date: Date | null): string | null => {
     if (!date || isNaN(date.getTime())) {
         return null;
     }
-    
-    const month = date.getMonth(); // 0 = January, 3 = April
+    const month = date.getMonth();
     const year = date.getFullYear();
-    
-    // Fiscal year starts in April.
-    // If current month is April (3) or later, FY starts in current year.
-    // If current month is Jan, Feb, Mar (0, 1, 2), FY started in previous year.
     const startYear = month >= 3 ? year : year - 1;
-    
     const startYearShort = String(startYear).slice(-2);
     const endYearShort = String(startYear + 1).slice(-2);
-    
     return `${startYearShort}-${endYearShort}`;
 };
 
 const getBaseOrderNo = (orderNo: string): string => {
     if (!orderNo) return '';
     const upperOrderNo = orderNo.toUpperCase();
-    
-    // This regex captures the base part of an order number, stripping common suffixes
-    // like -A, (A), or -I, -II etc. It looks for a hyphen or parenthesis at the end.
     const match = upperOrderNo.match(/^(.*?)(\([A-Z]\)|-[A-Z]|-[IVXLCDM]+)$/i);
-
     if (match && match[1]) {
         return match[1];
     }
-    
     return upperOrderNo;
 };
 
@@ -451,7 +433,7 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
         </ResponsiveContainer>
     );
 };
-// ... [Remaining Helper Functions and Components]
+
 const TopClientsList = ({ data }) => (
     <div className="top-clients-container">
         <h3>Top 5 Clients (by Order Value)</h3>
@@ -1062,7 +1044,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                         </div>
                         <div className="select-container">
                             <select value={selectedCountry} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedCountry(e.target.value)}>
-                                {countries.map(c => <option key={c} value={c}>{c}</option>)}
+                                {countries.map(c => <option key={c} value={c}>{c === 'All' ? 'All Countries' : c}</option>)}
                             </select>
                         </div>
                         <div className="select-container">
@@ -1336,7 +1318,7 @@ const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filte
     );
 };
 
-const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepData, drillDownState, onRowDoubleClick, onDrillUp, baseOrderHasSubOrders }: { data: OrderData[], currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void, stepData: StepData[], drillDownState: { level: number, baseOrder: string | null, subOrder: string | null }, onRowDoubleClick: (row: any) => void, onDrillUp: () => void, baseOrderHasSubOrders: boolean }) => {
+const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTracking, stepData, drillDownState, onRowDoubleClick, onDrillUp, baseOrderHasSubOrders, activeFilters }: { data: OrderData[], globalData: OrderData[], currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void, stepData: StepData[], drillDownState: { level: number, baseOrder: string | null, subOrder: string | null }, onRowDoubleClick: (row: any) => void, onDrillUp: () => void, baseOrderHasSubOrders: boolean, activeFilters: Filter[] }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
     const tableWrapperRef = useRef<HTMLDivElement>(null);
@@ -1365,15 +1347,21 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
     const processedData = useMemo(() => {
         if (drillDownState.level === 1) {
             const groups: { [key: string]: OrderData[] } = data.reduce((acc, row) => {
-                const baseOrderNo = getBaseOrderNo(row.orderNo);
-                if (!acc[baseOrderNo]) {
-                    acc[baseOrderNo] = [];
+                const status = row.originalStatus?.toUpperCase();
+                const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+                const invoice = (row.commercialInvoiceNo && row.commercialInvoiceNo !== '#N/A' && row.commercialInvoiceNo !== '') ? row.commercialInvoiceNo : null;
+                
+                // Grouping key: Prefer Commercial Invoice No if shipped, otherwise Base Order No
+                const key = (isShipped && invoice) ? invoice : getBaseOrderNo(row.orderNo);
+                
+                if (!acc[key]) {
+                    acc[key] = [];
                 }
-                acc[baseOrderNo].push(row);
+                acc[key].push(row);
                 return acc;
             }, {} as Record<string, OrderData[]>);
 
-            return Object.entries(groups).map(([baseOrderNo, products]) => {
+            return Object.entries(groups).map(([groupKey, products]) => {
                 let finalStatus = 'PLAN';
                 let latestShippedDate: Date | null = null;
                 
@@ -1389,7 +1377,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                 });
 
                 const uniqueOrderNos = [...new Set(products.map(p => p.orderNo.toUpperCase()))];
-                const hasSubOrders = uniqueOrderNos.length > 1 || (uniqueOrderNos.length === 1 && uniqueOrderNos[0] !== baseOrderNo);
+                const hasSubOrders = uniqueOrderNos.length > 1 || (uniqueOrderNos.length === 1 && uniqueOrderNos[0] !== groupKey);
                 
                 const firstProduct = products[0];
                 const totalExportValue = products.reduce((sum, p) => sum + p.exportValue, 0);
@@ -1414,7 +1402,8 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                 
                 return {
                     level: 1,
-                    baseOrderNo: baseOrderNo,
+                    baseOrderNo: groupKey,
+                    displayOrderNo: groupKey,
                     status: finalStatus,
                     originalStatus: finalStatus, 
                     stuffingMonth: latestShippedDate ? latestShippedDate.toISOString() : firstProduct.stuffingMonth,
@@ -1429,6 +1418,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                     hasSubOrders: hasSubOrders,
                     singleOrderNo: uniqueOrderNos.length === 1 ? products[0].orderNo : null,
                     hasTracking: products.some(p => stepDataOrderNos.has(p.orderNo)),
+                    commercialInvoiceNo: products[0].commercialInvoiceNo
                 };
             }).sort((a, b) => {
                 const dateA = parseDate(a.stuffingMonth);
@@ -1441,8 +1431,23 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
         }
 
         if (drillDownState.level === 2) {
-            const relevantRows = data.filter(row => getBaseOrderNo(row.orderNo) === drillDownState.baseOrder);
-            const subGroups: { [key: string]: OrderData[] } = relevantRows.reduce((acc, row) => {
+            // FIXED: Identify all Order Numbers associated with this Layer 1 Invoice/Parent
+            const parentKey = drillDownState.baseOrder?.toUpperCase();
+            
+            // Look up Order Numbers linked to this key in global client data (to be period/kpi agnostic)
+            const parentItems = globalData.filter(row => {
+                const status = row.originalStatus?.toUpperCase();
+                const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+                const invoice = (row.commercialInvoiceNo && row.commercialInvoiceNo !== '#N/A' && row.commercialInvoiceNo !== '') ? row.commercialInvoiceNo : null;
+                const key = (isShipped && invoice) ? invoice : getBaseOrderNo(row.orderNo);
+                return key.toUpperCase() === parentKey;
+            });
+            const linkedOrderNos = new Set(parentItems.map(r => r.orderNo.toUpperCase()));
+
+            // Now, get EVERY row in global client data matching those Order Numbers to ensure totals like 630 show correctly
+            const orderItems = globalData.filter(row => linkedOrderNos.has(row.orderNo.toUpperCase()));
+
+            const subGroups: { [key: string]: OrderData[] } = orderItems.reduce((acc, row) => {
                 const key = row.orderNo ? row.orderNo.trim().toUpperCase() : ''; 
                 if (!key) return acc; 
                 if (!acc[key]) {
@@ -1491,10 +1496,11 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                 const balanceQty = totalQty - shippedQty;
                 
                 const hasTracking = products.some(p => stepDataOrderNos.has(p.orderNo));
-
+                
                 return {
                     level: 2,
                     orderNo,
+                    displayOrderNo: orderNo,
                     status: finalStatus,
                     originalStatus: finalStatus,
                     stuffingMonth: latestShippedDate ? latestShippedDate.toISOString() : firstProduct.stuffingMonth,
@@ -1520,7 +1526,8 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
         }
 
         if (drillDownState.level === 3) {
-            return data.filter(row => row.orderNo === drillDownState.subOrder).map(row => ({ 
+            // FIXED: Use global context to itemize all associated items
+            return globalData.filter(row => row.orderNo.toUpperCase() === drillDownState.subOrder?.toUpperCase()).map(row => ({ 
                 ...row, 
                 level: 3,
                 hasTracking: stepDataOrderNos.has(row.orderNo)
@@ -1535,7 +1542,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
         }
 
         return [];
-    }, [data, drillDownState, stepDataOrderNos]);
+    }, [data, globalData, drillDownState, stepDataOrderNos]);
 
 
     const totalItems = processedData.length;
@@ -1559,6 +1566,22 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
         if (tableWrapperRef.current) tableWrapperRef.current.scrollTop = 0;
     }, [drillDownState]);
 
+    const orderNoHeader = useMemo(() => {
+        if (drillDownState.level === 1) {
+            const visibleStatuses = new Set(paginatedData.map(d => d.originalStatus?.toUpperCase()));
+            const isShippedFiltered = (visibleStatuses.has('SHIPPED') || visibleStatuses.has('COMPLETE')) && !visibleStatuses.has('PLAN');
+            const isPlanFiltered = visibleStatuses.has('PLAN') && !(visibleStatuses.has('SHIPPED') || visibleStatuses.has('COMPLETE'));
+
+            if (isShippedFiltered) return 'Commercial Invoice No';
+            if (isPlanFiltered) return 'Order No';
+            return 'Order / Invoice No';
+        }
+        if (drillDownState.level === 3) {
+            return 'Commercial Invoice No';
+        }
+        return 'Order No';
+    }, [drillDownState.level, paginatedData]);
+
 
     const getStatusKeyword = (status: string) => (status.split('(')[0] || '').trim().toLowerCase().replace(/\s+/g, '');
 
@@ -1579,7 +1602,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
             </div>
             {drillDownState.level === 1 && (
                  <div className="instruction-container">
-                    <p>Tip: Double-click an order to see sub-orders. Single-click an Order Number to track its progress.</p>
+                    <p>Tip: Double-click an order to see sub-orders. Single-click an Order/Invoice Number to track its progress.</p>
                 </div>
             )}
             {drillDownState.level === 2 && (
@@ -1593,28 +1616,44 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                         <tr>
                             <th className="text-center">Status</th>
                             <th>Shipped Date</th>
-                            <th>Order No</th>
-                            {drillDownState.level > 1 && <th className="text-center">Image</th>}
-                            {drillDownState.level === 3 && <>
-                                <th>Product Code</th>
-                                <th>Category</th>
-                                <th>Product</th>
-                            </>}
-                            {currentUser === 'admin' && <th>Customer</th>}
-                            {currentUser === 'admin' && <th>Country</th>}
-                            <th className="text-right">Qty</th>
+                            <th>{orderNoHeader}</th>
+                            
+                            {/* Layer 2 specifically requests Image after Order No */}
+                            {drillDownState.level === 2 && <th className="text-center">Image</th>}
+
+                            {/* Layer 3 specific headers after Invoice No */}
+                            {drillDownState.level === 3 && (
+                                <>
+                                    <th className="text-center">Image</th>
+                                    <th>Product Code</th>
+                                    <th>Category</th>
+                                    <th>Product</th>
+                                </>
+                            )}
+
+                            <th>Customer</th>
+                            <th>Country</th>
+                            <th className="text-right">{drillDownState.level === 1 ? 'Total Qty' : 'Qty'}</th>
                             <th className="text-right">Shipped Qty</th>
+                            
+                            {/* Balance Qty in Layer 1 & 2 */}
                             {(drillDownState.level === 1 || drillDownState.level === 2) && <th className="text-right">Balance Qty</th>}
-                            {drillDownState.level === 3 ? <>
-                                <th className="text-right">Unit Price</th>
-                                <th className="text-right">Order Value</th>
-                                <th className="text-right">Fob Price</th>
-                                <th className="text-right">MOQ</th>
-                            </> : <>
-                                <th className="text-right">Order Value</th>
-                                <th className="text-right">Shipped Value</th>
-                                <th className="text-right">Balance Value</th>
-                            </>}
+
+                            {/* Value columns based on Layer */}
+                            {drillDownState.level === 3 ? (
+                                <>
+                                    <th className="text-right">Unit Price</th>
+                                    <th className="text-right">Order Value</th>
+                                    <th className="text-right">Fob Price</th>
+                                    <th className="text-right">MOQ</th>
+                                </>
+                            ) : (
+                                <>
+                                    <th className="text-right">Order Value</th>
+                                    <th className="text-right">Shipped Value</th>
+                                    <th className="text-right">Balance Value</th>
+                                </>
+                            )}
                         </tr>
                     </thead>
                     <tbody>
@@ -1635,7 +1674,7 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                 
                                 {drillDownState.level === 1 && (
                                     row.hasSubOrders ? (
-                                        <td className="order-no-cell" title="Double click to view sub-orders">{formatNa(row.baseOrderNo)}</td>
+                                        <td className="order-no-cell" title="Double click to view sub-orders">{formatNa(row.displayOrderNo)}</td>
                                     ) : (
                                         <td className={`order-no-cell ${row.hasTracking ? 'clickable' : ''}`} 
                                             onClick={(e) => { 
@@ -1646,12 +1685,12 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                             }} 
                                             title={row.hasTracking ? `Track Order` : ''}
                                         >
-                                            {formatNa(row.baseOrderNo)}
+                                            {formatNa(row.displayOrderNo)}
                                         </td>
                                     )
                                 )}
 
-                                {drillDownState.level > 1 && (
+                                {drillDownState.level === 2 && (
                                      <td className={`order-no-cell ${row.hasTracking ? 'clickable' : ''}`}
                                          onClick={(e) => {
                                              if (row.hasTracking) {
@@ -1660,16 +1699,24 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                              }
                                          }}
                                      >
-                                        {formatNa(row.orderNo)}
+                                        {formatNa(row.displayOrderNo)}
                                      </td>
                                 )}
 
-                                {drillDownState.level > 1 && (
+                                {drillDownState.level === 3 && (
+                                     <td className="order-no-cell">
+                                        {formatNa(row.commercialInvoiceNo)}
+                                     </td>
+                                )}
+
+                                {/* Image Column for Layers 2 & 3 */}
+                                {(drillDownState.level === 2 || drillDownState.level === 3) && (
                                      <td className="product-image-cell">
                                         {row.imageLink && row.imageLink.toLowerCase() !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
                                     </td>
                                 )}
 
+                                {/* Product details for Layer 3 */}
                                 {drillDownState.level === 3 && (
                                     <>
                                         <td>{formatNa(row.productCode)}</td>
@@ -1678,8 +1725,8 @@ const DataTable = ({ data, currentUser, authenticatedUser, onShowTracking, stepD
                                     </>
                                 )}
 
-                                {currentUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
-                                {currentUser === 'admin' && <td>{formatNa(row.country)}</td>}
+                                <td>{formatNa(row.customerName)}</td>
+                                <td>{formatNa(row.country)}</td>
                                 
                                 <td className="text-right">{formatNumber(row.totalQty ?? row.qty)}</td>
                                 
@@ -1962,7 +2009,7 @@ You are integrated into a specific dashboard with the following components. Use 
 
 3. **Table Structure (3 Layers):**
    - **Layer 1 (Main): "All Orders"**
-     - Headers: Status, Shipped Date, Order No, Customer, Country, Qty, Shipped Qty, Balance Qty, Order Value, Shipped Value, Balance Value.
+     - Headers: Status, Shipped Date, Order / Invoice No, Customer, Country, Qty, Shipped Qty, Balance Qty, Order Value, Shipped Value, Balance Value.
    - **Layer 2 (Drill-down): "Sub-Orders"**
      - Headers: Status, Shipped Date, Order No, Image, Customer, Country, Qty, Shipped Qty, Balance Qty, Order Value, Shipped Value, Balance Value.
    - **Layer 3 (Detail): "Products for Sub-Order"**
@@ -2280,7 +2327,6 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initi
             <div className="filters">
                 <div className="search-bar-container">
                     {Icons.search}
-                    {/* Fixed type for onChange handler: replaced ChangeEvent<HTMLSelectElement> with ChangeEvent<HTMLInputElement> */}
                     <input
                         type="text"
                         placeholder="Search by Product, Customer, Country..."
@@ -2480,7 +2526,6 @@ const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: Br
 
     const totalFilteredCount = filtered.length;
 
-    // Use specific date headers as requested
     const dateHeader = useMemo(() => {
         const lowerTitle = title.toLowerCase();
         if (lowerTitle.includes('shipped') || lowerTitle.includes('shipment')) {
@@ -2592,7 +2637,6 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
     const handleClick = (payload: any) => {
         if (!payload || !payload.name) return;
         const countryName = payload.name;
-        // Trigger table update by updating filter
         onFilter({ type: 'country', value: countryName, source: 'countryChart' });
     };
 
@@ -2638,12 +2682,20 @@ const SalesByCountryChart = ({ data, onFilter, activeFilters }: { data: OrderDat
     )
 };
 
-const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear, selectedMonth }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null, selectedYear: string, selectedMonth?: string }) => {
+const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedPeriod }: { data: OrderData[], onFilter: (filter: Filter) => void, activeFilters: Filter[] | null, selectedPeriod: string }) => {
     const chartData = useMemo(() => {
         const monthData = Array.from({ length: 12 }, () => ({ value: 0, orders: new Set<string>() }));
         
-        const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
-        const targetMM = (selectedMonth && selectedMonth !== 'All') ? selectedMonth : null;
+        let targetYY: string | null = null;
+        if (selectedPeriod !== 'All') {
+            const match = selectedPeriod.match(/Dec-(\d{2})/);
+            if (match) {
+                targetYY = match[1];
+            }
+        }
+
+        const statusFilter = activeFilters.find(f => f.type === 'status');
+        const isShippedFiltered = statusFilter && statusFilter.value.toUpperCase() === 'SHIPPED';
 
         for (const item of data) {
             const status = (item.originalStatus || item.status || '').toUpperCase();
@@ -2652,17 +2704,12 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear, sele
             
             if (!isPlan && !isShipped) continue;
 
-            if (item.orderDate) {
-                const date = parseDate(item.orderDate);
+            const dateToBucket = isShippedFiltered ? item.stuffingMonth : item.orderDate;
+            if (dateToBucket) {
+                const date = parseDate(dateToBucket);
                 if (date) {
-                    if (targetYY) {
-                        const itemYY = String(date.getFullYear()).slice(-2);
-                        if (itemYY !== targetYY) continue;
-                    }
-
-                    const itemMM = date.toLocaleString('en-US', { month: 'short' });
-                    // CRITICAL FIX: If a global month filter is active, only include the month that matches the filter.
-                    if (targetMM && itemMM !== targetMM) continue;
+                    const itemYY = getYY(date);
+                    if (targetYY && itemYY !== targetYY) continue;
 
                     const monthIndex = date.getMonth();
                     monthData[monthIndex].value += item.exportValue > 0 ? item.exportValue : 0;
@@ -2679,7 +2726,7 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedYear, sele
             value: monthData[index].value,
             orderCount: monthData[index].orders.size,
         }));
-    }, [data, selectedYear, selectedMonth]);
+    }, [data, selectedPeriod, activeFilters]);
 
     const handleDotClickAction = (payload: any) => {
         if (!payload || !payload.name || payload.value === 0) return;
@@ -2870,7 +2917,6 @@ const UserManagement = ({ allClientNames, currentCredentials, onClose, onCredent
                     <h1>User &amp; API Key Management</h1>
                 </div>
                 <div className="user-management-actions">
-                     {/* Fixed: onClose is not a valid button prop, changed to onClick */}
                      <button className="back-button" onClick={onClose} disabled={saveStatus === 'saving'}>
                         {Icons.prevArrow} Back to Dashboard
                     </button>
@@ -3025,7 +3071,7 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [selectedYear, setSelectedYear] = useState(getCurrentFiscalYear());
+  const [selectedPeriod, setSelectedPeriod] = useState('All');
   const [selectedMonth, setSelectedMonth] = useState('All');
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'table'>('dashboard');
   const [mainViewMode, setMainViewMode] = useState<'dashboard' | 'calendar'>('dashboard');
@@ -3036,10 +3082,13 @@ const App = () => {
   const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
   const announcementsButtonRef = useRef<HTMLButtonElement>(null);
   
-  // Drill-down specific state
   const [valueBreakdown, setValueBreakdown] = useState<{ title: string, data: BreakdownItem[] } | null>(null);
 
-  // Defined aiData for consistency
+  const clientFilteredData = useMemo(() => {
+    let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
+    return filtered;
+  }, [data, currentUser]);
+
   const aiData = useMemo(() => {
     if (authenticatedUser === 'admin') {
         if (currentUser === 'admin') return data;
@@ -3199,12 +3248,12 @@ const App = () => {
       const accountSheetId = '1t4c9J8fjecI7XzbHRsKGDA54CJsa8ynrrvIu4COvcP4';
       const liveQuery = encodeURIComponent("SELECT *");
       
-      const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Live&tq=${liveQuery}`;
+      const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Live&range=A1:W&tq=${liveQuery}`;
       const masterSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=MASTER`;
       const apiKeySheetGid = '817322209';
       const apiKeySheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${apiKeySheetGid}`;
       const stepSheetGid = '2023445010';
-      const stepSheetRange = 'A2:M';
+      const stepSheetRange = 'A1:M';
       const stepQuery = encodeURIComponent('SELECT *');
       const stepSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${stepSheetGid}&range=${stepSheetRange}&tq=${stepQuery}`;
       
@@ -3235,7 +3284,8 @@ const App = () => {
             'Fob Price': 'fobPrice', 'MOQ': 'moq', 'Month': 'forwardingMonth', 'FY': 'fy',
             'Stuffing Date': 'stuffingDate',
             'ETD/ SOB': 'etd',
-            'ETA': 'eta'
+            'ETA': 'eta',
+            'Commercial Invoice No': 'commercialInvoiceNo'
         };
         const parsedLiveDataWithoutFyFallback: OrderData[] = parseGvizResponse(liveText, liveHeaderMapping, ['orderNo']);
 
@@ -3394,7 +3444,7 @@ const App = () => {
         } else {
             errorMessage = String(e);
         }
-        setError(`Failed to load live data. Please check sheet permissions and column headers. Error: ${errorMessage}`);
+        setError(`Failed to load live data. Error: ${errorMessage}`);
       } finally {
         setLoading(false);
       }
@@ -3444,24 +3494,25 @@ const App = () => {
 
   const clientList = useMemo(() => ['admin', ...new Set(data.map(d => d.customerName).filter(name => name && name.trim()))], [data]);
 
-  const yearList = useMemo(() => {
-    const years = new Set(data.map(d => d.fy).filter(Boolean));
-    return ['All', ...Array.from(years).sort((a: string, b: string) => b.localeCompare(a))];
+  const periodOptions = useMemo(() => {
+    const years = new Set<number>();
+    data.forEach(d => {
+        [d.orderDate, d.stuffingMonth].forEach(dateStr => {
+            const date = parseDate(dateStr);
+            if (date) {
+                years.add(date.getFullYear());
+            }
+        });
+    });
+
+    const sortedYears = Array.from(years).sort((a, b) => b - a);
+    const options = sortedYears.map(year => {
+        const yy = String(year).slice(-2);
+        return `Jan to Dec-${yy}`;
+    });
+
+    return ['All', ...options];
   }, [data]);
-  
-  const clientFilteredData = useMemo(() => {
-    let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
-
-    const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
-
-    if (selectedYear !== 'All') {
-        filtered = filtered.filter(d => d.fy === selectedYear);
-    }
-
-    // BASE filtered data should ideally be everything for the year,
-    // so KPIs can pull from either forwarding or stuffing dates properly.
-    return filtered;
-  }, [data, currentUser, selectedYear]);
   
   const searchedData = useMemo(() => {
     if (!searchQuery.trim()) return clientFilteredData;
@@ -3499,22 +3550,18 @@ const App = () => {
     });
   }, [clientFilteredData, searchQuery, currentUser]);
 
-  // Derived KPI Data with helper function for breakdowns
   const getOrderContextForKPI = useCallback((type: 'received' | 'shipped') => {
     let baseData = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
 
-    // Apply active country filters to KPI counts to ensure consistency
     const countryFilter = activeFilters.find(f => f.type === 'country');
     if (countryFilter) {
         baseData = baseData.filter(d => d.country?.trim().toLowerCase() === countryFilter.value.trim().toLowerCase());
     }
 
-    // CRITICAL: Apply active status filter to the context so other cards update
     const statusFilter = activeFilters.find(f => f.type === 'status');
     if (statusFilter) {
         const val = statusFilter.value.toUpperCase();
         baseData = baseData.filter(item => {
-            // Check both original and computed status to be safe
             if (statusFilter.source === 'kpi') {
                 return item.originalStatus?.toUpperCase() === val;
             }
@@ -3534,46 +3581,48 @@ const App = () => {
          return (!sDate || d >= sDate) && (!eDate || d <= eDate);
     };
 
-    const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
+    let targetYY: string | null = null;
+    if (selectedPeriod !== 'All') {
+        const match = selectedPeriod.match(/Dec-(\d{2})/);
+        if (match) {
+            targetYY = match[1];
+        }
+    }
+
+    const isTimeFiltered = selectedPeriod !== 'All' || hasDateRange || selectedMonth !== 'All';
 
     return baseData.filter(row => {
         const status = (row.originalStatus || '').toUpperCase();
-        const isPlan = status === 'PLAN';
         const isActuallyShipped = status === 'SHIPPED' || status === 'COMPLETE';
 
-        const orderDateObj = parseDate(row.orderDate);
-        const stuffingDateObj = parseDate(row.stuffingMonth);
+        const dateToUse = type === 'received' ? row.orderDate : row.stuffingMonth;
+        const dateObj = parseDate(dateToUse);
         
-        if (type === 'received') {
-            // Forwarding context logic
-            if (!orderDateObj) return false;
-            const orderYY = getYY(orderDateObj);
-            const matchesFY = !targetYY || orderYY === targetYY;
-            const matchesMonth = selectedMonth === 'All' || (orderDateObj.toLocaleString('en-US', { month: 'short' }) === selectedMonth);
-            
-            if (hasDateRange) {
-                return isinRange(row.orderDate) && (isPlan || isActuallyShipped);
-            } else {
-                return matchesFY && matchesMonth && (isPlan || isActuallyShipped);
-            }
-        } else {
-            // Shipped context logic
-            if (!stuffingDateObj) return false;
-            const stuffingYY = getYY(stuffingDateObj);
-            const matchesFY = !targetYY || stuffingYY === targetYY;
-            const matchesMonth = selectedMonth === 'All' || (stuffingDateObj.toLocaleString('en-US', { month: 'short' }) === selectedMonth);
+        if (!isTimeFiltered) {
+            if (type === 'received') return true;
+            return isActuallyShipped;
+        }
 
-            if (hasDateRange) {
-                return isinRange(row.stuffingMonth) && isActuallyShipped;
-            } else {
-                return matchesFY && matchesMonth && isActuallyShipped;
-            }
+        if (!dateObj) return false;
+
+        const itemYY = getYY(dateObj);
+        const matchesYear = !targetYY || itemYY === targetYY;
+        
+        let matchesMonth = true;
+        if (selectedMonth !== 'All') {
+            matchesMonth = dateObj.getMonth() === MONTH_NAMES_SHORT.indexOf(selectedMonth);
+        }
+        
+        const inStatusScope = (type === 'received') ? true : isActuallyShipped;
+
+        if (hasDateRange) {
+            return isinRange(dateToUse) && inStatusScope && matchesMonth;
+        } else {
+            return matchesYear && inStatusScope && matchesMonth;
         }
     });
-  }, [data, currentUser, selectedYear, selectedMonth, startDate, endDate, activeFilters]);
+  }, [data, currentUser, selectedPeriod, selectedMonth, startDate, endDate, activeFilters]);
 
-  // CONSISTENT DATA for charts and the table
-  // This logic must exactly match what the selected KPI is showing temporally
   const kpiConsistentData = useMemo(() => {
     let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
 
@@ -3586,40 +3635,41 @@ const App = () => {
     if (sDate) sDate.setHours(0, 0, 0, 0);
     if (eDate) eDate.setHours(23, 59, 59, 999);
 
-    const targetYY = (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
+    let targetYY: string | null = null;
+    if (selectedPeriod !== 'All') {
+        const match = selectedPeriod.match(/Dec-(\d{2})/);
+        if (match) {
+            targetYY = match[1];
+        }
+    }
+
+    const isTimeFiltered = selectedPeriod !== 'All' || hasDateRange || selectedMonth !== 'All';
 
     filtered = filtered.filter(d => {
-        const status = (d.originalStatus || d.status || '').toUpperCase();
-        const isPlan = status === 'PLAN';
-        const isActuallyShipped = status === 'SHIPPED' || status === 'COMPLETE';
-
-        // SYNC LOGIC: If looking at shipped view, use stuffingMonth. Otherwise use orderDate.
         const dateToValidate = isShippedFiltered ? d.stuffingMonth : d.orderDate;
         const dateObj = parseDate(dateToValidate);
-        if (!dateObj) return false;
 
-        const itemYY = getYY(dateObj);
-        const itemMonth = dateObj.toLocaleString('en-US', { month: 'short' });
+        if (isTimeFiltered) {
+            if (!dateObj) return false;
+            const itemYY = getYY(dateObj);
+            const matchesYear = !targetYY || itemYY === targetYY;
+            const inDateRange = !hasDateRange || ( (!sDate || dateObj >= sDate) && (!eDate || dateObj <= eDate) );
+            let matchesMonth = true;
+            if (selectedMonth !== 'All') {
+                matchesMonth = dateObj.getMonth() === MONTH_NAMES_SHORT.indexOf(selectedMonth);
+            }
+            if (!matchesYear || !inDateRange || !matchesMonth) return false;
+        }
 
-        const matchesYear = !targetYY || itemYY === targetYY;
-        const matchesMonth = selectedMonth === 'All' || itemMonth === selectedMonth;
-
-        const inDateRange = !hasDateRange || ( (!sDate || dateObj >= sDate) && (!eDate || dateObj <= eDate) );
-
-        // If status is filtered, we only care about that status.
-        // If no status is filtered (Dashboard Overview), we default to Forwarding context 
-        // to show "All Received Orders" for the selected period.
         if (statusFilter) {
             const val = statusFilter.value.toUpperCase();
             const matchesStatus = statusFilter.source === 'kpi' 
                 ? d.originalStatus?.toUpperCase() === val 
                 : d.status.toUpperCase().startsWith(val);
-            
-            return matchesStatus && matchesYear && matchesMonth && inDateRange;
+            if (!matchesStatus) return false;
         }
 
-        // Default Dashboard View: Show everything received in forwarding month
-        return (isPlan || isActuallyShipped) && matchesYear && matchesMonth && inDateRange;
+        return true;
     });
 
     const countryFilter = activeFilters.find(f => f.type === 'country');
@@ -3628,7 +3678,7 @@ const App = () => {
     }
     
     return filtered;
-  }, [data, currentUser, activeFilters, startDate, endDate, selectedYear, selectedMonth]);
+  }, [data, currentUser, activeFilters, startDate, endDate, selectedPeriod, selectedMonth]);
 
     const finalFilteredData = useMemo(() => {
         const lowercasedQuery = searchQuery.toLowerCase().trim();
@@ -3679,41 +3729,45 @@ const App = () => {
   const kpis = useMemo(() => {
     const forwardingOrdersData = getOrderContextForKPI('received');
     const shippedOrdersData = getOrderContextForKPI('shipped');
+    const planOrdersData = forwardingOrdersData.filter(d => (d.originalStatus || '').toUpperCase() === 'PLAN');
 
-    // Count unique orders in the currently filtered contexts
     const receivedOrdersSet = new Set(forwardingOrdersData.map(d => d.orderNo.toUpperCase()));
-    const inProcessOrdersSet = new Set(forwardingOrdersData.filter(d => (d.originalStatus || '').toUpperCase() === 'PLAN').map(d => d.orderNo.toUpperCase()));
+    const inProcessOrdersSet = new Set(planOrdersData.map(d => d.orderNo.toUpperCase()));
     const shippedOrdersSet = new Set(shippedOrdersData.map(d => d.orderNo.toUpperCase()));
     
-    // Values strictly follow the filtered data from getOrderContextForKPI
     const totalOrderValue = forwardingOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
     const totalShipmentValue = shippedOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
+    const totalPlanValue = planOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
     
-    // Summary metrics
     const boughtProductsSet = new Set(forwardingOrdersData.map(d => d.productCode));
 
     return {
       totalValue: formatCurrencyNoDecimals(totalOrderValue),
       totalShipmentValue: formatCurrencyNoDecimals(totalShipmentValue),
+      totalPlanValue: formatCurrencyNoDecimals(totalPlanValue),
       totalOrders: receivedOrdersSet.size,
       totalInProcess: inProcessOrdersSet.size,
       totalShipped: shippedOrdersSet.size,
       boughtProducts: boughtProductsSet.size,
       activeClients: new Set(forwardingOrdersData.map(item => item.customerName)).size,
       neverBoughtCount: neverBoughtForClientData.length,
-      // Internal raw data for breakdowns
       rawForwarding: forwardingOrdersData,
-      rawShipped: shippedOrdersData
+      rawShipped: shippedOrdersData,
+      rawPlan: planOrdersData
     };
   }, [getOrderContextForKPI, neverBoughtForClientData]);
 
-  const handleKpiBreakdown = (type: 'forwarding' | 'shipment' | 'received') => {
-      const sourceData = (type === 'forwarding' || type === 'received') ? kpis.rawForwarding : kpis.rawShipped;
+  const handleKpiBreakdown = (type: 'forwarding' | 'shipment' | 'received' | 'plan') => {
+      let sourceData;
+      if (type === 'forwarding' || type === 'received') sourceData = kpis.rawForwarding;
+      else if (type === 'shipment') sourceData = kpis.rawShipped;
+      else sourceData = kpis.rawPlan;
+
       const resultsMap = new Map<string, BreakdownItem>();
       
       sourceData.forEach(curr => {
           const uniqueKey = curr.orderNo.toUpperCase();
-          const dateSource = (type === 'forwarding' || type === 'received') ? curr.orderDate : curr.stuffingMonth;
+          const dateSource = (type === 'forwarding' || type === 'received' || type === 'plan') ? curr.orderDate : curr.stuffingMonth;
           
           if (!resultsMap.has(uniqueKey)) {
               resultsMap.set(uniqueKey, {
@@ -3734,6 +3788,7 @@ const App = () => {
       if (type === 'forwarding') modalTitle = 'Order Forwarding Value';
       else if (type === 'shipment') modalTitle = 'Shipment Order Value';
       else if (type === 'received') modalTitle = 'Total Orders Received';
+      else if (type === 'plan') modalTitle = 'In Process Value';
 
       setValueBreakdown({
           title: modalTitle,
@@ -3743,7 +3798,6 @@ const App = () => {
 
   const handleKpiStatusFilter = (status: 'PLAN' | 'SHIPPED' | 'RECEIVED') => {
       if (status === 'RECEIVED') {
-          // Effectively clears status filter but keeps others
           setActiveFilters(prev => prev.filter(f => f.type !== 'status'));
           return;
       }
@@ -3769,24 +3823,17 @@ const App = () => {
         }
         return acc;
     }, {});
-    return Object.values(countryData)
-        .sort((a, b) => b.value - a.value);
+    return Object.values(countryData).sort((a, b) => b.value - a.value);
   }, [kpiConsistentData]);
 
   const monthlyChartData = useMemo(() => {
         const monthData = Array.from({ length: 12 }, () => ({ orders: new Set<string>(), value: 0, qty: 0 }));
-
         const statusFilter = activeFilters.find(f => f.type === 'status');
         const isShippedFiltered = statusFilter && statusFilter.value.toUpperCase() === 'SHIPPED';
 
         for (const item of kpiConsistentData) {
              const status = (item.originalStatus || item.status || '').toUpperCase();
-             const isPlan = status === 'PLAN';
-             const isActuallyShipped = status === 'SHIPPED' || status === 'COMPLETE';
              
-             if (!isPlan && !isActuallyShipped) continue;
-
-             // SYNC LOGIC: If looking at shipped view, use stuffingMonth. Otherwise use orderDate.
              const dateToValidate = isShippedFiltered ? item.stuffingMonth : item.orderDate;
              const date = parseDate(dateToValidate);
              if (date) {
@@ -3806,7 +3853,14 @@ const App = () => {
         }));
   }, [kpiConsistentData, activeFilters]);
 
-    const financialYearDisplay = selectedYear === 'All' ? 'FY:- 18-19 to 25-26' : `FY:- ${selectedYear}`;
+    const financialYearDisplay = useMemo(() => {
+        if (selectedPeriod === 'All') return 'FY:- 18-19 to 25-26';
+        let display = `Period:- ${selectedPeriod}`;
+        if (selectedMonth !== 'All') {
+            display += ` (${selectedMonth})`;
+        }
+        return display;
+    }, [selectedPeriod, selectedMonth]);
 
     const handleFilter = (filter: Filter) => {
         setActiveFilters(prevFilters => {
@@ -3819,12 +3873,10 @@ const App = () => {
                     f => !(f.type === filter.type && f.value === filter.value)
                 );
             } else {
-                // If it's a status filter from KPI, clear existing status filters
                 if (filter.source === 'kpi') {
                     const cleaned = prevFilters.filter(f => f.type !== 'status');
                     return [...cleaned, filter];
                 }
-                // If it's a source filter like country chart, clear other country filters first to avoid confusion
                 if (filter.source === 'countryChart') {
                     const cleaned = prevFilters.filter(f => f.type !== 'country');
                     return [...cleaned, filter];
@@ -3868,7 +3920,6 @@ const App = () => {
             <div className="login-video-container">
                 <video autoPlay muted loop playsInline id="background-video">
                   <source src="https://bonhoeffermachines.com/en/public/images/brand-video-updated.mp4" type="video/mp4"/>
-                  Your browser does not support the video tag.
                 </video>
             </div>
         </div>
@@ -3884,10 +3935,10 @@ const App = () => {
         onClose={() => setMainViewMode('dashboard')}
         authenticatedUser={authenticatedUser}
         initialClientName={currentUser}
-        initialYear={selectedYear}
-        onYearChange={setSelectedYear}
-        selectedMonth={selectedMonth}
-        onMonthChange={setSelectedMonth}
+        initialYear={getCurrentFiscalYear()} 
+        onYearChange={() => {}} 
+        selectedMonth={'All'} 
+        onMonthChange={() => {}} 
       />
   }
 
@@ -4024,25 +4075,29 @@ const App = () => {
               </div>
               <label className="view-switcher-label" htmlFor="view-switcher">Current View:</label>
                <div className="select-container">
-                  <select id="view-switcher" value={currentUser} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setCurrentUser(e.target.value); setActiveFilters([]); setDrillDownState({level: 1, baseOrder: null, subOrder: null, hasSubOrders: false}); setSearchQuery(''); setStartDate(''); setEndDate(''); setAdminViewMode('dashboard'); setSelectedYear(getCurrentFiscalYear()); setSelectedMonth('All');}} disabled={authenticatedUser !== 'admin'}>
+                  <select id="view-switcher" value={currentUser} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setCurrentUser(e.target.value); setActiveFilters([]); setDrillDownState({level: 1, baseOrder: null, subOrder: null, hasSubOrders: false}); setSearchQuery(''); setStartDate(''); setEndDate(''); setAdminViewMode('dashboard'); setSelectedPeriod('All'); setSelectedMonth('All');}} disabled={authenticatedUser !== 'admin'}>
                     {authenticatedUser === 'admin' ?
                       clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)
                       : <option value={authenticatedUser}>{authenticatedUser}</option>
                     }
                   </select>
                </div>
-                <label className="view-switcher-label" htmlFor="year-switcher">Year:</label>
+                <label className="view-switcher-label" htmlFor="period-switcher">Period:</label>
                 <div className="select-container">
-                  <select id="year-switcher" value={selectedYear} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedYear(e.target.value)}>
-                    {yearList.map(year => <option key={year} value={year}>{year === 'All' ? 'All Years' : year}</option>)}
+                  <select id="period-switcher" value={selectedPeriod} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setSelectedPeriod(e.target.value); setSelectedMonth('All');}}>
+                    {periodOptions.map(period => <option key={period} value={period}>{period}</option>)}
                   </select>
                 </div>
-                <label className="view-switcher-label" htmlFor="month-switcher">Month:</label>
-                <div className="select-container">
-                  <select id="month-switcher" value={selectedMonth} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedMonth(e.target.value)}>
-                    {['All', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => <option key={m} value={m}>{m}</option>)}
-                  </select>
-                </div>
+                {selectedPeriod !== 'All' && (
+                    <>
+                        <label className="view-switcher-label" htmlFor="month-switcher">Month:</label>
+                        <div className="select-container">
+                            <select id="month-switcher" value={selectedMonth} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedMonth(e.target.value)}>
+                                {['All', ...MONTH_NAMES_SHORT].map(m => <option key={m} value={m}>{m}</option>)}
+                            </select>
+                        </div>
+                    </>
+                )}
                 <button className="calendar-view-button" onClick={() => setMainViewMode('calendar')}>
                     {Icons.calendar} Calendar View
                 </button>
@@ -4069,6 +4124,13 @@ const App = () => {
                 icon="revenue" 
                 activeFilters={activeFilters} 
                 onDoubleClick={() => handleKpiBreakdown('shipment')}
+              />
+              <KpiCard 
+                title="In Process Value" 
+                value={kpis.totalPlanValue} 
+                icon="revenue" 
+                activeFilters={activeFilters} 
+                onDoubleClick={() => handleKpiBreakdown('plan')}
               />
               <KpiCard 
                 title={authenticatedUser === 'admin' ? "Total Orders Received" : "Total Orders Placed"} 
@@ -4118,14 +4180,12 @@ const App = () => {
                   <button 
                       className={adminViewMode === 'dashboard' ? 'active' : ''}
                       onClick={() => setAdminViewMode('dashboard')}
-                      aria-label="Switch to Dashboard View"
                   >
                       {Icons.dashboard} Dashboard
                   </button>
                   <button 
                       className={adminViewMode === 'table' ? 'active' : ''}
                       onClick={() => setAdminViewMode('table')}
-                      aria-label="Switch to Table View"
                     >
                       {Icons.table} Table
                   </button>
@@ -4146,14 +4206,14 @@ const App = () => {
                                 data={kpiConsistentData} 
                                 onFilter={handleFilter} 
                                 activeFilters={activeFilters} 
-                                selectedYear={startDate || endDate ? 'All' : selectedYear} 
-                                selectedMonth={selectedMonth}
+                                selectedPeriod={selectedPeriod}
                             />
                         </div>
                     </div>
                 )}
                 <DataTable 
                     data={finalFilteredData} 
+                    globalData={clientFilteredData}
                     currentUser={currentUser}
                     authenticatedUser={authenticatedUser}
                     onShowTracking={setSelectedOrderForTracking}
@@ -4162,12 +4222,14 @@ const App = () => {
                     onRowDoubleClick={handleRowDoubleClick}
                     onDrillUp={handleDrillUp}
                     baseOrderHasSubOrders={baseOrderHasSubOrders}
+                    activeFilters={activeFilters}
                 />
              </div>
           ) : (
             <div className={`main-content ${currentUser !== 'admin' ? 'client-view' : 'table-only-view'}`}>
                 <DataTable 
                     data={finalFilteredData} 
+                    globalData={clientFilteredData}
                     currentUser={currentUser}
                     authenticatedUser={authenticatedUser}
                     onShowTracking={setSelectedOrderForTracking}
@@ -4176,6 +4238,7 @@ const App = () => {
                     onRowDoubleClick={handleRowDoubleClick}
                     onDrillUp={handleDrillUp}
                     baseOrderHasSubOrders={baseOrderHasSubOrders}
+                    activeFilters={activeFilters}
                 />
             </div>
           )}
