@@ -46,7 +46,7 @@ const Icons = {
   chat: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.76 9.76 0 0 1-2.53-.388A5.864 5.864 0 0 1 5.4 12.006c.482.55.994.995 1.524 1.372a11.942 11.942 0 0 0 7.26-1.742 1.25 1.25 0 0 0 .332-.307 12.448 12.448 0 0 0-1.618-1.579 11.912 11.912 0 0 0-6.064-1.785 1.25 1.25 0 0 0-.97.242 12.45 12.45 0 0 0-1.328 1.28c-.318.332-.637.672-.94 1.018a5.864 5.864 0 0 1-.42-2.32C3 7.444 7.03 3.75 12 3.75s9 3.694 9 8.25z" /></svg>,
   robot: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H13.5" /><path strokeLinecap="round" strokeLinejoin="round" d="M5.25 4.5h13.5A2.25 2.25 0 0 1 21 6.75v10.5A2.25 2.25 0 0 1 18.75 19.5H5.25A2.25 2.25 0 0 1 3 17.25V6.75A2.25 2.25 0 0 1 5.25 4.5z" /><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 12h7.5" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 16.5h6" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 9.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 9.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0z" /></svg>,
   plan: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" /></svg>,
-  shipped: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>,
+  shipped: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125-1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>,
   shoppingCart: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c.51 0 .962-.343 1.087-.835l1.823-6.836a.75.75 0 0 0-.44-.898l-7.458-2.61a.75.75 0 0 0-.915.658l-1.006 5.031c-.12.603-.635 1.036-1.254 1.036H3.75" /></svg>,
   search: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>,
   dashboard: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" /></svg>,
@@ -65,7 +65,7 @@ const Icons = {
   bell: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>,
   calendar: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0h18M-4.5 12h28.5" /></svg>,
   box: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>,
-  truck: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>,
+  truck: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125-1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>,
   bank: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" /></svg>
 };
 
@@ -202,39 +202,6 @@ const formatDateDDMMMYY = (dateString: string): string => {
     const month = date.toLocaleString('en-US', { month: 'short' });
     const year = String(date.getFullYear()).slice(-2);
     return `${day}-${month}-${year}`;
-};
-
-const summarizeCatalogData = (data: (MasterProductData | OrderData)[]): string => {
-    if (!data || data.length === 0) return "No product catalog data available.";
-    const uniqueProducts = new Map(data.map(p => [p.productCode, p]));
-    const uniqueData = Array.from(uniqueProducts.values());
-
-    const categories = [...new Set(uniqueData.map(p => p.category))].filter(Boolean);
-    const segments = [...new Set(uniqueData.map(p => p.segment))].filter(Boolean);
-
-    return `Total Unique Products: ${uniqueData.length}. Product Categories: ${categories.slice(0, 15).join(', ')}. Product Segments: ${segments.slice(0, 15).join(', ')}.`;
-};
-
-const getCurrentFiscalYear = (): string => {
-    const now = new Date();
-    const currentMonth = now.getMonth(); 
-    const currentYear = now.getFullYear();
-    const startYear = currentMonth >= 3 ? currentYear : currentYear - 1;
-    const startYearShort = String(startYear).slice(-2);
-    const endYearShort = String(startYear + 1).slice(-2);
-    return `${startYearShort}-${endYearShort}`;
-};
-
-const getFiscalYearFromDate = (date: Date | null): string | null => {
-    if (!date || isNaN(date.getTime())) {
-        return null;
-    }
-    const month = date.getMonth();
-    const year = date.getFullYear();
-    const startYear = month >= 3 ? year : year - 1;
-    const startYearShort = String(startYear).slice(-2);
-    const endYearShort = String(startYear + 1).slice(-2);
-    return `${startYearShort}-${endYearShort}`;
 };
 
 const getBaseOrderNo = (orderNo: string): string => {
@@ -477,28 +444,16 @@ interface CalendarViewDashboardProps {
     onClose: () => void;
     authenticatedUser: string | null;
     initialClientName: string;
-    initialYear: string;
-    onYearChange: (year: string) => void;
+    selectedPeriod: string;
+    onPeriodChange: (period: string) => void;
+    periodOptions: string[];
     selectedMonth: string;
     onMonthChange: (month: string) => void;
 }
 
-const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clientList, onClose, authenticatedUser, initialClientName, initialYear, onYearChange, selectedMonth, onMonthChange }: CalendarViewDashboardProps) => {
+const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clientList, onClose, authenticatedUser, initialClientName, selectedPeriod, onPeriodChange, periodOptions, selectedMonth, onMonthChange }: CalendarViewDashboardProps) => {
     const monthNames = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], []);
     
-    const years = useMemo(() => {
-        const yearSet = new Set<string>(allOrderData.map(d => d.fy).filter(Boolean));
-        return Array.from(yearSet).sort((a: string, b: string) => b.localeCompare(a));
-    }, [allOrderData]);
-
-    const getEffectiveYear = (year: string) => {
-        if (year !== 'All' && years.includes(year)) {
-            return year;
-        }
-        return years.length > 0 ? years[0] : new Date().getFullYear().toString();
-    };
-
-    const [selectedYear, setSelectedYear] = useState<string>(() => getEffectiveYear(initialYear));
     const [selectedCountry, setSelectedCountry] = useState('All');
     const [selectedClient, setSelectedClient] = useState(initialClientName === 'admin' ? 'All' : initialClientName);
     const [startDate, setStartDate] = useState('');
@@ -541,69 +496,50 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     }, [sDate, eDate]);
 
 
-    useEffect(() => {
-        const effectiveYear = getEffectiveYear(initialYear);
-        if (selectedYear !== effectiveYear) {
-            setSelectedYear(effectiveYear);
-        }
-    }, [initialYear, years]);
-    
-    const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newYear = e.target.value;
-        setSelectedYear(newYear);
-        onYearChange(newYear);
-        onMonthChange('All');
-    };
-
-    const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        onMonthChange(e.target.value);
-    };
-
     const handleKpiClick = (metric: 'received' | 'planned' | 'shipped') => {
         setActiveMetric(prev => prev === metric ? null : metric);
     };
 
-    const targetYY = useMemo(() => {
-        return (selectedYear && selectedYear !== 'All') ? selectedYear.substring(0, 2) : null;
-    }, [selectedYear]);
+    const targetYearSuffix = useMemo(() => {
+        if (selectedPeriod === 'All') return null;
+        const match = selectedPeriod.match(/Dec-(.*)/);
+        return match ? match[1] : null;
+    }, [selectedPeriod]);
 
     const fullYearForDate = useMemo(() => {
-        if (!targetYY) return new Date().getFullYear();
-        return 2000 + parseInt(targetYY, 10);
-    }, [targetYY]);
+        if (!targetYearSuffix) return new Date().getFullYear();
+        return 2000 + parseInt(targetYearSuffix, 10);
+    }, [targetYearSuffix]);
     
     const baseFilteredData = useMemo(() => {
         return allOrderData.filter(d => {
             const countryMatch = selectedCountry === 'All' || d.country === selectedCountry;
             const clientMatch = selectedClient === 'All' || d.customerName === selectedClient;
+            
+            if (targetYearSuffix) {
+                const orderDate = parseDate(d.orderDate);
+                const stuffingMonth = parseDate(d.stuffingMonth);
+                const orderYear = orderDate ? orderDate.getFullYear() : null;
+                const stuffingYear = stuffingMonth ? stuffingMonth.getFullYear() : null;
+                const targetYearNum = 2000 + parseInt(targetYearSuffix, 10);
+
+                const fyMatch = (orderYear === targetYearNum || stuffingYear === targetYearNum);
+                return countryMatch && clientMatch && fyMatch;
+            }
             return countryMatch && clientMatch;
         });
-    }, [allOrderData, selectedCountry, selectedClient]);
+    }, [allOrderData, selectedCountry, selectedClient, targetYearSuffix]);
 
     const dataForYear = useMemo(() => {
-        return baseFilteredData.filter(d => {
-            if (!targetYY) return true;
-            
-            const status = (d.originalStatus || d.status || '').toUpperCase();
-            const isPlan = status === 'PLAN';
-            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
-            
-            const orderDate = parseDate(d.orderDate);
-            const stuffingDate = parseDate(d.stuffingMonth);
-            const orderYY = getYY(orderDate);
-            const stuffingYY = getYY(stuffingDate);
-            
-            const matchesOrder = (isPlan || isShipped) && orderDate && (!targetYY || orderYY === targetYY);
-            const matchesStuffing = isShipped && stuffingDate && (!targetYY || stuffingYY === targetYY);
-            
-            return matchesOrder || matchesStuffing;
-        });
-    }, [baseFilteredData, targetYY]);
+        return baseFilteredData;
+    }, [baseFilteredData]);
 
     const getBreakdownData = useCallback((metric: 'received' | 'planned' | 'shipped' | 'all', monthIdx: number | null = null): BreakdownItem[] => {
         const resultsMap = new Map<string, BreakdownItem>();
         const metricsToProcess: ('received' | 'planned' | 'shipped')[] = 
             metric === 'all' ? ['received', 'shipped'] : [metric];
+
+        const targetYearNum = targetYearSuffix ? 2000 + parseInt(targetYearSuffix, 10) : null;
 
         metricsToProcess.forEach(m => {
             dataForYear.forEach(d => {
@@ -613,28 +549,29 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
 
                 const orderDate = parseDate(d.orderDate);
                 const stuffingDate = parseDate(d.stuffingMonth);
-                const orderYY = getYY(orderDate);
-                const stuffingYY = getYY(stuffingDate);
 
                 let match = false;
                 let dateToUse = '';
 
                 if (m === 'received') {
-                    if ((isPlan || isShipped) && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
+                    if ((isPlan || isShipped) && orderDate && isDateInRange(orderDate)) {
+                        if (targetYearNum && orderDate.getFullYear() !== targetYearNum) return;
                         if (monthIdx === null || orderDate.getMonth() === monthIdx) {
                             match = true;
                             dateToUse = d.orderDate;
                         }
                     }
                 } else if (m === 'planned') {
-                    if (isPlan && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
+                    if (isPlan && orderDate && isDateInRange(orderDate)) {
+                        if (targetYearNum && orderDate.getFullYear() !== targetYearNum) return;
                         if (monthIdx === null || orderDate.getMonth() === monthIdx) {
                             match = true;
                             dateToUse = d.orderDate;
                         }
                     }
                 } else if (m === 'shipped') {
-                    if (isShipped && stuffingDate && (!targetYY || stuffingYY === targetYY) && isDateInRange(stuffingDate)) {
+                    if (isShipped && stuffingDate && isDateInRange(stuffingDate)) {
+                        if (targetYearNum && stuffingDate.getFullYear() !== targetYearNum) return;
                         if (monthIdx === null || stuffingDate.getMonth() === monthIdx) {
                             match = true;
                             dateToUse = d.stuffingMonth;
@@ -662,7 +599,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         });
 
         return Array.from(resultsMap.values()).sort((a, b) => b.value - a.value);
-    }, [dataForYear, targetYY, isDateInRange]);
+    }, [dataForYear, isDateInRange, targetYearSuffix]);
 
     const handleKpiDoubleClick = (metric: 'received' | 'planned' | 'shipped') => {
         const titleMap = {
@@ -681,7 +618,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         const monthName = monthNames[monthIdx];
         const breakdown = getBreakdownData(activeMetric || 'all', monthIdx);
         setValueBreakdown({
-            title: `Orders for ${monthName} ${selectedYear} (${activeMetric || 'Combined'})`,
+            title: `Orders for ${monthName} ${selectedPeriod === 'All' ? '' : selectedPeriod} (${activeMetric || 'Combined'})`,
             data: breakdown
         });
     };
@@ -691,16 +628,19 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         if (authenticatedUser !== 'admin') {
             dataForCountryList = allOrderData.filter(d => d.customerName === authenticatedUser);
         }
-        return ['All', ...new Set(dataForCountryList.filter(d => d.fy === selectedYear).map(d => d.country).filter(Boolean).sort())];
-    }, [allOrderData, selectedYear, authenticatedUser]);
+        return ['All', ...new Set(dataForCountryList.map(d => d.country).filter(Boolean).sort())];
+    }, [allOrderData, authenticatedUser]);
 
 
-    const clientsForYear = useMemo(() => ['All', ...new Set(allOrderData.filter(d => d.fy === selectedYear).map(d => d.customerName).filter(Boolean).sort())], [allOrderData, selectedYear]);
+    const clientsForPeriod = useMemo(() => {
+        return ['All', ...new Set(allOrderData.map(d => d.customerName).filter(Boolean).sort())];
+    }, [allOrderData]);
 
     const calendarData = useMemo(() => {
         const receivedOrdersByMonth: Set<string>[] = Array.from({ length: 12 }, () => new Set());
         const plannedOrdersByMonth: Set<string>[] = Array.from({ length: 12 }, () => new Set());
         const shippedOrdersByMonth: Set<string>[] = Array.from({ length: 12 }, () => new Set());
+        const targetYearNum = targetYearSuffix ? 2000 + parseInt(targetYearSuffix, 10) : null;
 
         dataForYear.forEach(d => {
             const status = (d.originalStatus || d.status || '').toUpperCase();
@@ -709,20 +649,24 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
 
             const orderDate = parseDate(d.orderDate);
             const stuffingDate = parseDate(d.stuffingMonth);
-            const orderYY = getYY(orderDate);
-            const stuffingYY = getYY(stuffingDate);
             const orderNo = d.orderNo.toUpperCase();
 
-            if ((isPlan || isShipped) && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
-                receivedOrdersByMonth[orderDate.getMonth()].add(orderNo);
+            if ((isPlan || isShipped) && orderDate && isDateInRange(orderDate)) {
+                if (!targetYearNum || orderDate.getFullYear() === targetYearNum) {
+                    receivedOrdersByMonth[orderDate.getMonth()].add(orderNo);
+                }
             }
 
-            if (isPlan && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
-                 plannedOrdersByMonth[orderDate.getMonth()].add(orderNo);
+            if (isPlan && orderDate && isDateInRange(orderDate)) {
+                if (!targetYearNum || orderDate.getFullYear() === targetYearNum) {
+                    plannedOrdersByMonth[orderDate.getMonth()].add(orderNo);
+                }
             }
 
-            if (isShipped && stuffingDate && (!targetYY || stuffingYY === targetYY) && isDateInRange(stuffingDate)) {
-                 shippedOrdersByMonth[stuffingDate.getMonth()].add(orderNo);
+            if (isShipped && stuffingDate && isDateInRange(stuffingDate)) {
+                if (!targetYearNum || stuffingDate.getFullYear() === targetYearNum) {
+                    shippedOrdersByMonth[stuffingDate.getMonth()].add(orderNo);
+                }
             }
         });
 
@@ -733,12 +677,13 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             shipped: shippedOrdersByMonth[index].size,
             receivedOrderNumbers: Array.from(receivedOrdersByMonth[index]),
         }));
-    }, [dataForYear, monthNames, isDateInRange, targetYY]);
+    }, [dataForYear, monthNames, isDateInRange, targetYearSuffix]);
 
     const yearlyKpis = useMemo(() => {
         const received = new Set<string>();
         const planned = new Set<string>();
         const shipped = new Set<string>();
+        const targetYearNum = targetYearSuffix ? 2000 + parseInt(targetYearSuffix, 10) : null;
 
         dataForYear.forEach(d => {
             const status = (d.originalStatus || d.status || '').toUpperCase();
@@ -747,20 +692,24 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
 
             const orderDate = parseDate(d.orderDate);
             const stuffingDate = parseDate(d.stuffingMonth);
-            const orderYY = getYY(orderDate);
-            const stuffingYY = getYY(stuffingDate);
             const orderNo = d.orderNo.toUpperCase();
 
-            if ((isPlan || isShipped) && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
-                received.add(orderNo);
+            if ((isPlan || isShipped) && orderDate && isDateInRange(orderDate)) {
+                if (!targetYearNum || orderDate.getFullYear() === targetYearNum) {
+                    received.add(orderNo);
+                }
             }
 
-            if (isPlan && orderDate && (!targetYY || orderYY === targetYY) && isDateInRange(orderDate)) {
-                 planned.add(orderNo);
+            if (isPlan && orderDate && isDateInRange(orderDate)) {
+                if (!targetYearNum || orderDate.getFullYear() === targetYearNum) {
+                    planned.add(orderNo);
+                }
             }
 
-            if (isShipped && stuffingDate && (!targetYY || stuffingYY === targetYY) && isDateInRange(stuffingDate)) {
-                 shipped.add(orderNo);
+            if (isShipped && stuffingDate && isDateInRange(stuffingDate)) {
+                if (!targetYearNum || stuffingDate.getFullYear() === targetYearNum) {
+                    shipped.add(orderNo);
+                }
             }
         });
 
@@ -769,7 +718,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             planned: planned.size,
             shipped: shipped.size,
         };
-    }, [dataForYear, isDateInRange, targetYY]);
+    }, [dataForYear, isDateInRange, targetYearSuffix]);
 
     const monthlyKpis = useMemo(() => {
         if (numericSelectedMonthIndex === null) {
@@ -788,6 +737,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             plannedValue: 0, plannedQty: 0,
             shippedValue: 0, shippedQty: 0 
         }));
+        const targetYearNum = targetYearSuffix ? 2000 + parseInt(targetYearSuffix, 10) : null;
         
         dataForYear.forEach(d => {
              const status = (d.originalStatus || d.status || '').toUpperCase();
@@ -796,8 +746,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
              
              const orderDate = parseDate(d.orderDate);
              if ((isPlan || isShipped) && orderDate && isDateInRange(orderDate)) {
-                 const orderYY = getYY(orderDate);
-                 if (!targetYY || orderYY === targetYY) {
+                if (!targetYearNum || orderDate.getFullYear() === targetYearNum) {
                     const monthIdx = orderDate.getMonth();
                     totals[monthIdx].totalValue += d.exportValue;
                     totals[monthIdx].totalQty += d.qty;
@@ -806,21 +755,20 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                         totals[monthIdx].plannedValue += d.exportValue;
                         totals[monthIdx].plannedQty += d.qty;
                     }
-                 }
+                }
              }
 
              const stuffingDate = parseDate(d.stuffingMonth);
              if (isShipped && stuffingDate && isDateInRange(stuffingDate)) {
-                 const stuffingYY = getYY(stuffingDate);
-                 if (!targetYY || stuffingYY === targetYY) {
+                if (!targetYearNum || stuffingDate.getFullYear() === targetYearNum) {
                      const monthIdx = stuffingDate.getMonth();
                      totals[monthIdx].shippedValue += d.exportValue;
                      totals[monthIdx].shippedQty += d.qty;
-                 }
+                }
              }
         });
         return totals;
-    }, [dataForYear, isDateInRange, targetYY]);
+    }, [dataForYear, isDateInRange, targetYearSuffix]);
 
     const monthlyTrendChartData = monthNames.map((name, index) => ({
         name,
@@ -830,15 +778,17 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     
     const monthOrders = useMemo(() => {
         if (numericSelectedMonthIndex === null) return [];
+        const targetYearNum = targetYearSuffix ? 2000 + parseInt(targetYearSuffix, 10) : null;
         return dataForYear.filter(d => {
             const orderDate = parseDate(d.orderDate);
             if (orderDate && orderDate.getMonth() === numericSelectedMonthIndex && isDateInRange(orderDate)) {
-                const orderYY = getYY(orderDate);
-                return (!targetYY || orderYY === targetYY);
+                if (!targetYearNum || orderDate.getFullYear() === targetYearNum) {
+                    return true;
+                }
             }
             return false;
         });
-    }, [dataForYear, numericSelectedMonthIndex, isDateInRange, targetYY]);
+    }, [dataForYear, numericSelectedMonthIndex, isDateInRange, targetYearSuffix]);
 
     const dailyChartData = useMemo(() => {
         if (numericSelectedMonthIndex === null) return [];
@@ -853,6 +803,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             receivedOrders: new Set<string>(),
             plannedOrders: new Set<string>(),
         }));
+        const targetYearNum = targetYearSuffix ? 2000 + parseInt(targetYearSuffix, 10) : null;
 
         dataForYear.forEach(d => {
             const status = (d.originalStatus || d.status || '').toUpperCase();
@@ -861,21 +812,19 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
 
             const stuffingDate = parseDate(d.stuffingMonth);
             if (isShipped && stuffingDate && stuffingDate.getMonth() === numericSelectedMonthIndex && isDateInRange(stuffingDate)) {
-                 const stuffingYY = getYY(stuffingDate);
-                 if (!targetYY || stuffingYY === targetYY) {
+                if (!targetYearNum || stuffingDate.getFullYear() === targetYearNum) {
                      const dayIndex = stuffingDate.getDate() - 1;
                      if (dailyData[dayIndex]) {
                          dailyData[dayIndex].shippedOrders.add(d.orderNo.toUpperCase());
                          dailyData[dayIndex].shippedValue += d.exportValue;
                          dailyData[dayIndex].shippedQty += d.qty;
                      }
-                 }
+                }
             }
             
             const orderDate = parseDate(d.orderDate);
             if ((isPlan || isShipped) && orderDate && orderDate.getMonth() === numericSelectedMonthIndex && isDateInRange(orderDate)) {
-                const orderYY = getYY(orderDate);
-                if (!targetYY || orderYY === targetYY) {
+                if (!targetYearNum || orderDate.getFullYear() === targetYearNum) {
                     const dayIndex = orderDate.getDate() - 1;
                     if (dailyData[dayIndex]) {
                          dailyData[dayIndex].receivedOrders.add(d.orderNo.toUpperCase());
@@ -907,7 +856,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             receivedOrderNumbers: Array.from(data.receivedOrders),
             plannedOrderNumbers: Array.from(data.plannedOrders),
         }));
-    }, [dataForYear, numericSelectedMonthIndex, fullYearForDate, isDateInRange, targetYY]);
+    }, [dataForYear, numericSelectedMonthIndex, fullYearForDate, isDateInRange, targetYearSuffix]);
 
     const topClients = useMemo(() => {
         const dataToProcess = numericSelectedMonthIndex !== null ? monthOrders : dataForYear;
@@ -924,13 +873,11 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             const orderDate = parseDate(d.orderDate);
             if (numericSelectedMonthIndex === null) {
                 if (!orderDate || !isDateInRange(orderDate)) return;
-                const orderYY = getYY(orderDate);
-                if (targetYY && orderYY !== targetYY) return;
             }
 
             if (!clientData[d.customerName]) {
                 clientData[d.customerName] = {
-                    name: clientData[d.customerName]?.name || d.customerName,
+                    name: d.customerName,
                     value: 0,
                     qty: 0,
                     orders: new Set(),
@@ -950,7 +897,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             }))
             .sort((a, b) => b.value - a.value)
             .slice(0, 5);
-    }, [dataForYear, monthOrders, numericSelectedMonthIndex, isDateInRange, targetYY]);
+    }, [dataForYear, monthOrders, numericSelectedMonthIndex, isDateInRange]);
 
     const countryChartDataForChat = useMemo(() => {
         const countryData = baseFilteredData.reduce<Record<string, { name: string; value: number, qty: number }>>((acc, curr) => {
@@ -991,6 +938,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         return masterProductList.filter(p => p.customerName === selectedClient);
     }, [masterProductList, selectedClient]);
 
+    const showTopClients = authenticatedUser === 'admin' && selectedClient === 'All' && selectedCountry === 'All';
 
     return (
         <>
@@ -1032,16 +980,22 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                                 </button>
                             )}
                         </div>
+                        <label className="view-switcher-label" htmlFor="calendar-period-switcher">Period:</label>
                         <div className="select-container">
-                            <select value={selectedYear} onChange={handleYearChange}>
-                                {years.map(year => <option key={year} value={year}>{year}</option>)}
+                            <select id="calendar-period-switcher" value={selectedPeriod} onChange={(e) => { onPeriodChange(e.target.value); onMonthChange('All'); }}>
+                                {periodOptions.map(p => <option key={p} value={p}>{p}</option>)}
                             </select>
                         </div>
-                        <div className="select-container">
-                            <select value={selectedMonth} onChange={handleMonthChange}>
-                                {['All', ...monthNames].map(m => <option key={m} value={m}>{m}</option>)}
-                            </select>
-                        </div>
+                        {selectedPeriod !== 'All' && (
+                            <>
+                                <label className="view-switcher-label" htmlFor="calendar-month-switcher">Month:</label>
+                                <div className="select-container">
+                                    <select id="calendar-month-switcher" value={selectedMonth} onChange={(e) => onMonthChange(e.target.value)}>
+                                        {['All', ...monthNames].map(m => <option key={m} value={m}>{m}</option>)}
+                                    </select>
+                                </div>
+                            </>
+                        )}
                         <div className="select-container">
                             <select value={selectedCountry} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedCountry(e.target.value)}>
                                 {countries.map(c => <option key={c} value={c}>{c === 'All' ? 'All Countries' : c}</option>)}
@@ -1050,7 +1004,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                         <div className="select-container">
                             <select value={selectedClient} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedClient(e.target.value)} disabled={authenticatedUser !== 'admin'}>
                                 {authenticatedUser === 'admin' ? 
-                                    clientsForYear.map(c => <option key={c} value={c}>{c}</option>) :
+                                    clientsForPeriod.map(c => <option key={c} value={c}>{c}</option>) :
                                     <option value={authenticatedUser}>{authenticatedUser}</option>
                                 }
                             </select>
@@ -1123,7 +1077,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                                             )}
                                         </div>
                                         <div className="calendar-month-tooltip">
-                                            <strong>{month} {selectedYear}</strong>
+                                            <strong>{month} {targetYearSuffix ? `FY-${targetYearSuffix}` : ''}</strong>
                                             {(activeMetric === null || activeMetric === 'received') && <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>}
                                             {(activeMetric === null || activeMetric === 'planned') && <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>}
                                             {(activeMetric === null || activeMetric === 'shipped') && <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>}
@@ -1134,7 +1088,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                         </div>
                     )}
 
-                    <div className={`calendar-charts-section ${authenticatedUser !== 'admin' ? 'single-column' : ''}`}>
+                    <div className={`calendar-charts-section ${!showTopClients ? 'single-column' : ''}`}>
                         {numericSelectedMonthIndex === null ? (
                             <div className="chart-container">
                                 <h3>Monthly Order Volume</h3>
@@ -1151,7 +1105,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                                 <MonthlyTrendChart data={dailyChartData} xAxisDataKey="day" selectedMonth={numericSelectedMonthIndex} selectedYear={fullYearForDate.toString()} activeMetric={activeMetric} />
                             </div>
                         )}
-                        {authenticatedUser === 'admin' && <TopClientsList data={topClients} />}
+                        {showTopClients && <TopClientsList data={topClients} />}
                     </div>
                 </div>
             </div>
@@ -1169,6 +1123,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                     title={valueBreakdown.title} 
                     data={valueBreakdown.data} 
                     onClose={() => setValueBreakdown(null)}
+                    currentUser={selectedClient}
                 />
             }
         </>
@@ -1431,7 +1386,7 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
         }
 
         if (drillDownState.level === 2) {
-            // FIXED: Identify all Order Numbers associated with this Layer 1 Invoice/Parent
+            // Identify all Order Numbers associated with this Layer 1 Invoice/Parent
             const parentKey = drillDownState.baseOrder?.toUpperCase();
             
             // Look up Order Numbers linked to this key in global client data (to be period/kpi agnostic)
@@ -1444,7 +1399,7 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
             });
             const linkedOrderNos = new Set(parentItems.map(r => r.orderNo.toUpperCase()));
 
-            // Now, get EVERY row in global client data matching those Order Numbers to ensure totals like 630 show correctly
+            // Now, get EVERY row in global client data matching those Order Numbers to ensure totals show correctly
             const orderItems = globalData.filter(row => linkedOrderNos.has(row.orderNo.toUpperCase()));
 
             const subGroups: { [key: string]: OrderData[] } = orderItems.reduce((acc, row) => {
@@ -1526,7 +1481,6 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
         }
 
         if (drillDownState.level === 3) {
-            // FIXED: Use global context to itemize all associated items
             return globalData.filter(row => row.orderNo.toUpperCase() === drillDownState.subOrder?.toUpperCase()).map(row => ({ 
                 ...row, 
                 level: 3,
@@ -1631,8 +1585,8 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                                 </>
                             )}
 
-                            <th>Customer</th>
-                            <th>Country</th>
+                            {currentUser === 'admin' && <th>Customer</th>}
+                            {currentUser === 'admin' && <th>Country</th>}
                             <th className="text-right">{drillDownState.level === 1 ? 'Total Qty' : 'Qty'}</th>
                             <th className="text-right">Shipped Qty</th>
                             
@@ -1651,7 +1605,7 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                                 <>
                                     <th className="text-right">Order Value</th>
                                     <th className="text-right">Shipped Value</th>
-                                    <th className="text-right">Balance Value</th>
+                                    <th className="text-right">Balance Order Value</th>
                                 </>
                             )}
                         </tr>
@@ -1725,8 +1679,8 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                                     </>
                                 )}
 
-                                <td>{formatNa(row.customerName)}</td>
-                                <td>{formatNa(row.country)}</td>
+                                {currentUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
+                                {currentUser === 'admin' && <td>{formatNa(row.country)}</td>}
                                 
                                 <td className="text-right">{formatNumber(row.totalQty ?? row.qty)}</td>
                                 
@@ -1792,7 +1746,6 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
               <th className="text-center">Image</th>
               <th>Product Code</th>
               <th>Category</th>
-              <th>Segment</th>
               <th>Product</th>
               {currentUser === 'admin' && <th>Customer</th>}
               {currentUser === 'admin' && <th>Country</th>}
@@ -1807,7 +1760,6 @@ const NeverBoughtDataTable = ({ data, currentUser, authenticatedUser }: { data: 
                 </td>
                 <td>{formatNa(row.productCode)}</td>
                 <td>{formatNa(row.category)}</td>
-                <td>{formatNa(row.segment)}</td>
                 <td>{formatNa(row.product)}</td>
                 {currentUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
                 {currentUser === 'admin' && <td>{formatNa(row.country)}</td>}
@@ -2293,7 +2245,6 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initi
     return catalogForUser.filter(p =>
       (p.productCode && p.productCode.toLowerCase().includes(lowercasedQuery)) ||
       (p.category && p.category.toLowerCase().includes(lowercasedQuery)) ||
-      (p.segment && p.segment.toLowerCase().includes(lowercasedQuery)) ||
       (p.product && p.product.toLowerCase().includes(lowercasedQuery)) ||
       (p.customerName && p.customerName.toLowerCase().includes(lowercasedQuery)) ||
       (p.country && p.country.toLowerCase().includes(lowercasedQuery))
@@ -2304,7 +2255,7 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initi
     return filteredCatalogData.map(p => ({
         status: 'CATALOG', orderDate: '', stuffingMonth: '', orderNo: 'N/A',
         customerName: p.customerName, country: p.country, productCode: p.productCode,
-        qty: 0, exportValue: 0, logoUrl: '', category: p.category, segment: p.segment,
+        qty: 0, exportValue: 0, logoUrl: '', category: p.category, segment: '',
         product: p.product, imageLink: p.imageLink, unitPrice: 0, fobPrice: p.fobPrice,
         moq: p.moq,
     } as OrderData));
@@ -2340,7 +2291,7 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initi
                       {authenticatedUser === 'admin' ? 
                           clientList.map(client => <option key={client} value={client}>{client === 'admin' ? 'Admin' : client}</option>)
                           : <option value={authenticatedUser}>{authenticatedUser}</option>
-                      }
+                    }
                     </select>
                  </div>
                 <button className="back-button" onClick={onClose}>
@@ -2511,7 +2462,7 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
     );
 };
 
-const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: BreakdownItem[], onClose: () => void }) => {
+const ValueBreakdownModal = ({ title, data, onClose, currentUser }: { title: string, data: BreakdownItem[], onClose: () => void, currentUser: string }) => {
     const [searchTerm, setSearchTerm] = useState('');
     
     const filtered = useMemo(() => 
@@ -2566,8 +2517,8 @@ const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: Br
                                     <th>#</th>
                                     <th>Order No</th>
                                     <th>{dateHeader}</th>
-                                    <th>Clients Name</th>
-                                    <th>Country</th>
+                                    {currentUser === 'admin' && <th>Clients Name</th>}
+                                    {currentUser === 'admin' && <th>Country</th>}
                                     <th className="text-right">Qty</th>
                                     <th className="text-right">Export Value</th>
                                 </tr>
@@ -2581,8 +2532,8 @@ const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: Br
                                                 <span className="order-pill">{row.orderNo}</span>
                                             </td>
                                             <td className="text-color-muted">{formatDateDDMMMYY(row.date)}</td>
-                                            <td className="font-medium">{row.customer}</td>
-                                            <td className="text-color-muted">{row.country}</td>
+                                            {currentUser === 'admin' && <td className="font-medium">{row.customer}</td>}
+                                            {currentUser === 'admin' && <td className="text-color-muted">{row.country}</td>}
                                             <td className="text-right font-medium">{formatNumber(row.qty)}</td>
                                             <td className="text-right font-bold value-highlight">
                                                 {formatCurrency(row.value)}
@@ -2591,7 +2542,7 @@ const ValueBreakdownModal = ({ title, data, onClose }: { title: string, data: Br
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={7} className="text-center no-results">
+                                        <td colSpan={currentUser === 'admin' ? 7 : 5} className="text-center no-results">
                                             No matching orders found for "{searchTerm}"
                                         </td>
                                     </tr>
@@ -2686,11 +2637,11 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedPeriod }: 
     const chartData = useMemo(() => {
         const monthData = Array.from({ length: 12 }, () => ({ value: 0, orders: new Set<string>() }));
         
-        let targetYY: string | null = null;
+        let targetYearSuffix: string | null = null;
         if (selectedPeriod !== 'All') {
-            const match = selectedPeriod.match(/Dec-(\d{2})/);
+            const match = selectedPeriod.match(/Dec-(.*)/);
             if (match) {
-                targetYY = match[1];
+                targetYearSuffix = match[1];
             }
         }
 
@@ -2708,8 +2659,8 @@ const OrdersOverTimeChart = ({ data, onFilter, activeFilters, selectedPeriod }: 
             if (dateToBucket) {
                 const date = parseDate(dateToBucket);
                 if (date) {
-                    const itemYY = getYY(date);
-                    if (targetYY && itemYY !== targetYY) continue;
+                    const matchesYear = !targetYearSuffix || date.getFullYear() === (2000 + parseInt(targetYearSuffix, 10));
+                    if (!matchesYear) continue;
 
                     const monthIndex = date.getMonth();
                     monthData[monthIndex].value += item.exportValue > 0 ? item.exportValue : 0;
@@ -3495,21 +3446,16 @@ const App = () => {
   const clientList = useMemo(() => ['admin', ...new Set(data.map(d => d.customerName).filter(name => name && name.trim()))], [data]);
 
   const periodOptions = useMemo(() => {
-    const years = new Set<number>();
+    const fySet = new Set<string>();
     data.forEach(d => {
-        [d.orderDate, d.stuffingMonth].forEach(dateStr => {
-            const date = parseDate(dateStr);
-            if (date) {
-                years.add(date.getFullYear());
-            }
-        });
+        if (d.fy) fySet.add(d.fy);
     });
 
-    const sortedYears = Array.from(years).sort((a, b) => b - a);
-    const options = sortedYears.map(year => {
-        const yy = String(year).slice(-2);
-        return `Jan to Dec-${yy}`;
-    });
+    const sortedFYs = Array.from(fySet).sort((a, b) => b.localeCompare(a));
+    const options = sortedFYs.map(fy => {
+        const displayYear = fy.includes('-') ? fy.split('-')[1] : fy;
+        return `Jan to Dec-${displayYear}`;
+    }).filter(opt => !opt.endsWith('-27')); // Specifically remove Dec-27 as requested
 
     return ['All', ...options];
   }, [data]);
@@ -3550,7 +3496,7 @@ const App = () => {
     });
   }, [clientFilteredData, searchQuery, currentUser]);
 
-  const getOrderContextForKPI = useCallback((type: 'received' | 'shipped') => {
+  const getOrderContextForKPI = useCallback((type: 'received' | 'shipped', ignoreStatus: boolean = false) => {
     let baseData = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
 
     const countryFilter = activeFilters.find(f => f.type === 'country');
@@ -3558,15 +3504,17 @@ const App = () => {
         baseData = baseData.filter(d => d.country?.trim().toLowerCase() === countryFilter.value.trim().toLowerCase());
     }
 
-    const statusFilter = activeFilters.find(f => f.type === 'status');
-    if (statusFilter) {
-        const val = statusFilter.value.toUpperCase();
-        baseData = baseData.filter(item => {
-            if (statusFilter.source === 'kpi') {
-                return item.originalStatus?.toUpperCase() === val;
-            }
-            return item.status.toUpperCase().startsWith(val);
-        });
+    if (!ignoreStatus) {
+        const statusFilter = activeFilters.find(f => f.type === 'status');
+        if (statusFilter) {
+            const val = statusFilter.value.toUpperCase();
+            baseData = baseData.filter(item => {
+                if (statusFilter.source === 'kpi') {
+                    return item.originalStatus?.toUpperCase() === val;
+                }
+                return item.status.toUpperCase().startsWith(val);
+            });
+        }
     }
 
     const sDate = startDate ? parseDate(startDate) : null;
@@ -3581,11 +3529,11 @@ const App = () => {
          return (!sDate || d >= sDate) && (!eDate || d <= eDate);
     };
 
-    let targetYY: string | null = null;
+    let targetYearSuffix: string | null = null;
     if (selectedPeriod !== 'All') {
-        const match = selectedPeriod.match(/Dec-(\d{2})/);
+        const match = selectedPeriod.match(/Dec-(.*)/);
         if (match) {
-            targetYY = match[1];
+            targetYearSuffix = match[1];
         }
     }
 
@@ -3595,7 +3543,8 @@ const App = () => {
         const status = (row.originalStatus || '').toUpperCase();
         const isActuallyShipped = status === 'SHIPPED' || status === 'COMPLETE';
 
-        const dateToUse = type === 'received' ? row.orderDate : row.stuffingMonth;
+        // Select correct column strictly based on context. 
+        const dateToUse = type === 'shipped' ? row.stuffingMonth : row.orderDate;
         const dateObj = parseDate(dateToUse);
         
         if (!isTimeFiltered) {
@@ -3605,8 +3554,7 @@ const App = () => {
 
         if (!dateObj) return false;
 
-        const itemYY = getYY(dateObj);
-        const matchesYear = !targetYY || itemYY === targetYY;
+        const matchesYear = !targetYearSuffix || dateObj.getFullYear() === (2000 + parseInt(targetYearSuffix, 10));
         
         let matchesMonth = true;
         if (selectedMonth !== 'All') {
@@ -3627,7 +3575,6 @@ const App = () => {
     let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
 
     const statusFilter = activeFilters.find(f => f.type === 'status');
-    const isShippedFiltered = statusFilter && statusFilter.value.toUpperCase() === 'SHIPPED';
     
     const sDate = startDate ? parseDate(startDate) : null;
     const eDate = endDate ? parseDate(endDate) : null;
@@ -3635,24 +3582,25 @@ const App = () => {
     if (sDate) sDate.setHours(0, 0, 0, 0);
     if (eDate) eDate.setHours(23, 59, 59, 999);
 
-    let targetYY: string | null = null;
+    let targetYearSuffix: string | null = null;
     if (selectedPeriod !== 'All') {
-        const match = selectedPeriod.match(/Dec-(\d{2})/);
+        const match = selectedPeriod.match(/Dec-(.*)/);
         if (match) {
-            targetYY = match[1];
+            targetYearSuffix = match[1];
         }
     }
 
     const isTimeFiltered = selectedPeriod !== 'All' || hasDateRange || selectedMonth !== 'All';
 
     filtered = filtered.filter(d => {
-        const dateToValidate = isShippedFiltered ? d.stuffingMonth : d.orderDate;
+        const status = (d.originalStatus || '').toUpperCase();
+        const isActuallyShipped = status === 'SHIPPED' || status === 'COMPLETE';
+        const dateToValidate = isActuallyShipped ? d.stuffingMonth : d.orderDate;
         const dateObj = parseDate(dateToValidate);
 
         if (isTimeFiltered) {
             if (!dateObj) return false;
-            const itemYY = getYY(dateObj);
-            const matchesYear = !targetYY || itemYY === targetYY;
+            const matchesYear = !targetYearSuffix || dateObj.getFullYear() === (2000 + parseInt(targetYearSuffix, 10));
             const inDateRange = !hasDateRange || ( (!sDate || dateObj >= sDate) && (!eDate || dateObj <= eDate) );
             let matchesMonth = true;
             if (selectedMonth !== 'All') {
@@ -3727,19 +3675,29 @@ const App = () => {
 
 
   const kpis = useMemo(() => {
-    const forwardingOrdersData = getOrderContextForKPI('received');
-    const shippedOrdersData = getOrderContextForKPI('shipped');
-    const planOrdersData = forwardingOrdersData.filter(d => (d.originalStatus || '').toUpperCase() === 'PLAN');
+    // Independent context fetching for core KPI cards to maintain stable counts
+    const receivedOrdersData = getOrderContextForKPI('received', true);
+    const shippedOrdersData = getOrderContextForKPI('shipped', true);
+    const planOrdersData = receivedOrdersData.filter(d => (d.originalStatus || '').toUpperCase() === 'PLAN');
 
-    const receivedOrdersSet = new Set(forwardingOrdersData.map(d => d.orderNo.toUpperCase()));
+    const receivedOrdersSet = new Set(receivedOrdersData.map(d => d.orderNo.toUpperCase()));
     const inProcessOrdersSet = new Set(planOrdersData.map(d => d.orderNo.toUpperCase()));
     const shippedOrdersSet = new Set(shippedOrdersData.map(d => d.orderNo.toUpperCase()));
     
-    const totalOrderValue = forwardingOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
+    const totalOrderValue = receivedOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
     const totalShipmentValue = shippedOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
     const totalPlanValue = planOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
     
-    const boughtProductsSet = new Set(forwardingOrdersData.map(d => d.productCode));
+    // Dynamic Unit Count based on Active Status Selection
+    const statusFilter = activeFilters.find(f => f.type === 'status');
+    let unitsDataForTotal = receivedOrdersData;
+    if (statusFilter) {
+        const val = statusFilter.value.toUpperCase();
+        if (val === 'SHIPPED') unitsDataForTotal = shippedOrdersData;
+        else if (val === 'PLAN') unitsDataForTotal = planOrdersData;
+    }
+    // Correctly perform unique count of Product Codes as requested (~8.7k in Live)
+    const totalUnits = new Set(unitsDataForTotal.map(d => d.productCode).filter(Boolean)).size;
 
     return {
       totalValue: formatCurrencyNoDecimals(totalOrderValue),
@@ -3748,14 +3706,14 @@ const App = () => {
       totalOrders: receivedOrdersSet.size,
       totalInProcess: inProcessOrdersSet.size,
       totalShipped: shippedOrdersSet.size,
-      boughtProducts: boughtProductsSet.size,
-      activeClients: new Set(forwardingOrdersData.map(item => item.customerName)).size,
+      boughtProducts: totalUnits, // Maps to "Total No of Units"
+      activeClients: new Set(receivedOrdersData.map(item => item.customerName)).size,
       neverBoughtCount: neverBoughtForClientData.length,
-      rawForwarding: forwardingOrdersData,
+      rawForwarding: receivedOrdersData,
       rawShipped: shippedOrdersData,
       rawPlan: planOrdersData
     };
-  }, [getOrderContextForKPI, neverBoughtForClientData]);
+  }, [getOrderContextForKPI, neverBoughtForClientData, activeFilters]);
 
   const handleKpiBreakdown = (type: 'forwarding' | 'shipment' | 'received' | 'plan') => {
       let sourceData;
@@ -3828,13 +3786,11 @@ const App = () => {
 
   const monthlyChartData = useMemo(() => {
         const monthData = Array.from({ length: 12 }, () => ({ orders: new Set<string>(), value: 0, qty: 0 }));
-        const statusFilter = activeFilters.find(f => f.type === 'status');
-        const isShippedFiltered = statusFilter && statusFilter.value.toUpperCase() === 'SHIPPED';
-
+        
         for (const item of kpiConsistentData) {
-             const status = (item.originalStatus || item.status || '').toUpperCase();
-             
-             const dateToValidate = isShippedFiltered ? item.stuffingMonth : item.orderDate;
+             const status = (item.originalStatus || '').toUpperCase();
+             const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+             const dateToValidate = isShipped ? item.stuffingMonth : item.orderDate;
              const date = parseDate(dateToValidate);
              if (date) {
                  const monthIndex = date.getMonth();
@@ -3851,7 +3807,7 @@ const App = () => {
             value: monthData[index].value,
             qty: monthData[index].qty
         }));
-  }, [kpiConsistentData, activeFilters]);
+  }, [kpiConsistentData]);
 
     const financialYearDisplay = useMemo(() => {
         if (selectedPeriod === 'All') return 'FY:- 18-19 to 25-26';
@@ -3935,10 +3891,11 @@ const App = () => {
         onClose={() => setMainViewMode('dashboard')}
         authenticatedUser={authenticatedUser}
         initialClientName={currentUser}
-        initialYear={getCurrentFiscalYear()} 
-        onYearChange={() => {}} 
-        selectedMonth={'All'} 
-        onMonthChange={() => {}} 
+        selectedPeriod={selectedPeriod}
+        onPeriodChange={setSelectedPeriod}
+        periodOptions={periodOptions}
+        selectedMonth={selectedMonth} 
+        onMonthChange={setSelectedMonth} 
       />
   }
 
@@ -3974,6 +3931,9 @@ const App = () => {
   const searchPlaceholder = currentUser === 'admin'
     ? "Search Status, Date, Order, Client, Country, Product, Code, Category..."
     : "Search Status, Date, Order, Product, Code, Category...";
+
+  // Logic: Show admin full dashboard only if authenticated as admin AND currently viewing "admin"
+  const showAdminInterface = authenticatedUser === 'admin' && currentUser === 'admin' && adminViewMode === 'dashboard';
 
   return (
     <>
@@ -4175,7 +4135,7 @@ const App = () => {
                 className="never-bought-kpi"
               />
           </div>
-          {authenticatedUser === 'admin' && (
+          {authenticatedUser === 'admin' && currentUser === 'admin' && (
               <div className="view-toggle-buttons">
                   <button 
                       className={adminViewMode === 'dashboard' ? 'active' : ''}
@@ -4192,7 +4152,7 @@ const App = () => {
               </div>
           )}
 
-          {authenticatedUser === 'admin' && adminViewMode === 'dashboard' ? (
+          {showAdminInterface ? (
              <div className={`main-content ${drillDownState.level > 1 ? 'table-only-view' : 'dashboard-view'}`}>
                 {drillDownState.level === 1 && (
                     <div className="charts-container">
@@ -4213,7 +4173,7 @@ const App = () => {
                 )}
                 <DataTable 
                     data={finalFilteredData} 
-                    globalData={clientFilteredData}
+                    globalData={kpiConsistentData}
                     currentUser={currentUser}
                     authenticatedUser={authenticatedUser}
                     onShowTracking={setSelectedOrderForTracking}
@@ -4226,10 +4186,10 @@ const App = () => {
                 />
              </div>
           ) : (
-            <div className={`main-content ${currentUser !== 'admin' ? 'client-view' : 'table-only-view'}`}>
+            <div className={`main-content ${currentUser !== 'admin' ? 'client-view' : 'table-only-view'}`} style={{marginTop: '1.5rem'}}>
                 <DataTable 
                     data={finalFilteredData} 
-                    globalData={clientFilteredData}
+                    globalData={kpiConsistentData}
                     currentUser={currentUser}
                     authenticatedUser={authenticatedUser}
                     onShowTracking={setSelectedOrderForTracking}
@@ -4267,6 +4227,7 @@ const App = () => {
             title={valueBreakdown.title} 
             data={valueBreakdown.data} 
             onClose={() => setValueBreakdown(null)}
+            currentUser={currentUser}
         />
       }
     </>
