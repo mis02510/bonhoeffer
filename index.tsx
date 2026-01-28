@@ -103,28 +103,6 @@ interface OrderData {
   commercialInvoiceNo?: string; 
 }
 
-interface AccountData {
-  sNo: string;
-  orderDate: string;
-  country: string;
-  company: string;
-  orderNo: string;
-  product: string;
-  productCode: string;
-  port: string;
-  shippingMonth: string;
-  sob: string;
-  totalOrderValue: number;
-  creditNote: string;
-  marketBudget: string;
-  paymentReceived: number;
-  balancePayment: number;
-  eta: string;
-  paymentDueDate: string;
-  status: string;
-  comment: string;
-}
-
 interface MasterProductData {
   category: string;
   segment: string;
@@ -2153,165 +2131,6 @@ User Question: "${userMessage.text}"`;
 };
 
 
-// --- New Account Dashboard Component ---
-const AccountDashboard = ({ accountData, onClose, currentUser }: { accountData: AccountData[], onClose: () => void, currentUser: string }) => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCountry, setSelectedCountry] = useState('All');
-    const [selectedClient, setSelectedClient] = useState('All');
-    const [currentPage, setCurrentPage] = useState(1);
-    const rowsPerPage = 10;
-
-    const baseData = useMemo(() => {
-        if (currentUser === 'admin') return accountData;
-        return accountData.filter(item => item.company.toLowerCase() === currentUser.toLowerCase());
-    }, [accountData, currentUser]);
-
-    const countries = useMemo(() => {
-        const uniqueCountries = new Set(baseData.map(item => item.country).filter(Boolean));
-        return ['All', ...Array.from(uniqueCountries).sort()];
-    }, [baseData]);
-
-    const clients = useMemo(() => {
-        let filtered = baseData;
-        if (selectedCountry !== 'All') {
-            filtered = filtered.filter(item => item.country === selectedCountry);
-        }
-        const uniqueClients = new Set(filtered.map(item => item.company).filter(Boolean));
-        return ['All', ...Array.from(uniqueClients).sort()];
-    }, [baseData, selectedCountry]);
-
-    const filteredData = useMemo(() => {
-        let data = baseData;
-
-        if (selectedCountry !== 'All') {
-            data = data.filter(item => item.country === selectedCountry);
-        }
-
-        if (selectedClient !== 'All') {
-            data = data.filter(item => item.company === selectedClient);
-        }
-
-        const lowerSearch = searchTerm.toLowerCase();
-        if (lowerSearch) {
-            data = data.filter(item => 
-                (item.orderNo && item.orderNo.toLowerCase().includes(lowerSearch)) ||
-                (item.company && item.company.toLowerCase().includes(lowerSearch)) ||
-                (item.country && item.country.toLowerCase().includes(lowerSearch))
-            );
-        }
-        return data;
-    }, [baseData, selectedCountry, selectedClient, searchTerm]);
-
-    const kpis = useMemo(() => {
-        return filteredData.reduce((acc, curr) => ({
-            totalValue: acc.totalValue + curr.totalOrderValue,
-            totalReceived: acc.totalReceived + curr.paymentReceived,
-            totalBalance: acc.totalBalance + curr.balancePayment
-        }), { totalValue: 0, totalReceived: 0, totalBalance: 0 });
-    }, [filteredData]);
-
-    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-    const paginatedData = filteredData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
-
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [selectedCountry, selectedClient, searchTerm]);
-
-    return (
-        <div className="dashboard-container account-dashboard">
-            <header>
-                <div className="header-title">
-                    <h1>Shipment & Account Status</h1>
-                </div>
-                <div className="filters">
-                    <div className="select-container">
-                        <select value={selectedCountry} onChange={(e) => { setSelectedCountry(e.target.value); setSelectedClient('All'); }}>
-                            {countries.map(c => <option key={c} value={c}>{c === 'All' ? 'All Countries' : c}</option>)}
-                        </select>
-                    </div>
-                    <div className="select-container">
-                        <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)} disabled={currentUser !== 'admin'}>
-                            {clients.map(c => <option key={c} value={c}>{c === 'All' ? 'All Clients' : c}</option>)}
-                        </select>
-                    </div>
-                    <div className="search-bar-container">
-                        {Icons.search}
-                        <input 
-                            type="text" 
-                            placeholder="Search Order No..." 
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
-                    <button className="back-button" onClick={onClose}>
-                        {Icons.prevArrow} Back to Dashboard
-                    </button>
-                </div>
-            </header>
-            <main>
-                <div className="kpi-container">
-                    <div className="account-kpi-card">
-                        <h3>Total Order Value</h3>
-                        <p>{formatCurrencyNoDecimals(kpis.totalValue)}</p>
-                    </div>
-                    <div className="account-kpi-card positive">
-                        <h3>Total Received</h3>
-                        <p>{formatCurrencyNoDecimals(kpis.totalReceived)}</p>
-                    </div>
-                    <div className="account-kpi-card negative">
-                        <h3>Total Balance</h3>
-                        <p>{formatCurrencyNoDecimals(kpis.totalBalance)}</p>
-                    </div>
-                </div>
-                <div className="data-table-container">
-                    <div className="table-wrapper">
-                        <table className="account-table">
-                            <thead>
-                                <tr>
-                                    <th>Order No</th>
-                                    <th>Date</th>
-                                    <th>Customer</th>
-                                    <th>Country</th>
-                                    <th className="text-right">Total Value</th>
-                                    <th className="text-right">Received</th>
-                                    <th className="text-right">Balance</th>
-                                    <th>Status</th>
-                                    <th>Due Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {paginatedData.map((row, index) => (
-                                    <tr key={`${row.orderNo}-${index}`}>
-                                        <td className="font-medium">{row.orderNo}</td>
-                                        <td>{row.orderDate ? formatDateDDMMMYY(row.orderDate) : '-'}</td>
-                                        <td>{row.company}</td>
-                                        <td>{row.country}</td>
-                                        <td className="text-right font-medium">{formatCurrency(row.totalOrderValue)}</td>
-                                        <td className="text-right text-positive">{formatCurrency(row.paymentReceived)}</td>
-                                        <td className="text-right text-negative">{formatCurrency(row.balancePayment)}</td>
-                                        <td>
-                                            <span className={`status-badge ${row.status.toLowerCase().replace(/\s+/g, '-')}`}>
-                                                {row.status || 'Pending'}
-                                            </span>
-                                        </td>
-                                        <td>{row.paymentDueDate ? formatDateDDMMMYY(row.paymentDueDate) : '-'}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div className="pagination">
-                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>{Icons.prevArrow} Previous</button>
-                        <span>Page {currentPage} of {totalPages || 1}</span>
-                        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages || totalPages === 0}>Next {Icons.nextArrow}</button>
-                    </div>
-                </div>
-            </main>
-        </div>
-    );
-};
-
-
 const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initialClientName, clientList, onClose, authenticatedUser }: { allOrderData: OrderData[], masterProductList: MasterProductData[], stepData: StepData[], initialClientName: string, clientList: string[], onClose: () => void, authenticatedUser: string }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState(initialClientName);
@@ -2399,7 +2218,7 @@ const NeverBoughtDashboard = ({ allOrderData, masterProductList, stepData, initi
   );
 };
 
-const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSummary }: { orderNo: string, stepData: StepData | undefined, orderDate?: string, onClose: () => void, financialSummary?: {orderQty: number, orderValue: number, received: number, balance: number} }) => {
+const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSummary }: { orderNo: string, stepData: StepData | undefined, orderDate?: string, onClose: () => void, financialSummary?: {orderQty: number, orderValue: number} }) => {
     useEffect(() => {
         const handleEsc = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
@@ -2479,8 +2298,6 @@ const OrderTrackingModal = ({ orderNo, stepData, orderDate, onClose, financialSu
                         <div className="financial-summary-section">
                             <FinancialCard title="Order Qty" value={formatNumber(financialSummary.orderQty)} colorClass="neutral" />
                             <FinancialCard title="Order Value" value={formatCurrency(financialSummary.orderValue)} colorClass="neutral" />
-                            <FinancialCard title="Payment Received" value={formatCurrency(financialSummary.received)} colorClass="positive" />
-                            <FinancialCard title="Balance Payment" value={formatCurrency(financialSummary.balance)} colorClass="negative" />
                         </div>
                     )}
                     <ul className="tracking-timeline">
@@ -3085,7 +2902,6 @@ const App = () => {
   const [data, setData] = useState<OrderData[]>([]);
   const [masterProductList, setMasterProductList] = useState<MasterProductData[]>([]);
   const [stepData, setStepData] = useState<StepData[]>([]);
-  const [accountData, setAccountData] = useState<AccountData[]>([]); 
   const [paymentTerms, setPaymentTerms] = useState<PaymentTermData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -3102,7 +2918,6 @@ const App = () => {
   const [selectedOrderForTracking, setSelectedOrderForTracking] = useState<string | null>(null);
   const [showNeverBought, setShowNeverBought] = useState(false);
   const [showUserManagement, setShowUserManagement] = useState(false);
-  const [showAccountDashboard, setShowAccountDashboard] = useState(false); 
   const [searchQuery, setSearchQuery] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -3226,7 +3041,6 @@ const App = () => {
 
     const fetchData = async () => {
       const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
-      const accountSheetId = '1t4c9J8fjecI7XzbHRsKGDA54CJsa8ynrrvIu4COvcP4';
       const liveQuery = encodeURIComponent("SELECT *");
       
       const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Live&range=A1:W&tq=${liveQuery}`;
@@ -3237,19 +3051,14 @@ const App = () => {
       const stepSheetRange = 'A1:M';
       const stepQuery = encodeURIComponent('SELECT *');
       const stepSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${stepSheetGid}&range=${stepSheetRange}&tq=${stepQuery}`;
-      
-      const accountSheetGid = '596654536';
-      const accountSheetUrl = `https://docs.google.com/spreadsheets/d/${accountSheetId}/gviz/tq?gid=${accountSheetGid}`;
-
       const paymentTermsSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Payments%20Terms&range=A2:D`;
 
       try {
-        const [liveResponse, masterResponse, apiKeyResponse, stepResponse, accountResponse, pTermsResponse] = await Promise.all([
+        const [liveResponse, masterResponse, apiKeyResponse, stepResponse, pTermsResponse] = await Promise.all([
           fetch(liveSheetUrl),
           fetch(masterSheetUrl),
           fetch(apiKeySheetUrl).catch(e => { console.warn("API Key sheet fetch failed, proceeding without it."); return null; }),
           fetch(stepSheetUrl).catch(e => { console.warn("Step sheet fetch failed, proceeding without it."); return null; }),
-          fetch(accountSheetUrl).catch(e => { console.warn("Account sheet fetch failed"); return null; }),
           fetch(paymentTermsSheetUrl).catch(e => { console.warn("Payment Terms fetch failed"); return null; }),
         ]);
 
@@ -3314,37 +3123,6 @@ const App = () => {
             }
         }
         
-        let parsedAccountData: AccountData[] = [];
-        if (accountResponse && accountResponse.ok) {
-            const accountText = await accountResponse.text();
-            const accountHeaderMapping = {
-                'S.NO': 'sNo',
-                'fecha de envío del pedido': 'orderDate',
-                'COUNTRY': 'country',
-                'COMPANY': 'company',
-                'ORDER NO': 'orderNo',
-                'PRODUCT': 'product',
-                'PRODUCT CODE': 'productCode',
-                'PORT': 'port',
-                'SHIPPING MONTH/ PRODUCTION FINISH DATE': 'shippingMonth',
-                'SOB': 'sob',
-                'TOTAL ORDER VALUE': 'totalOrderValue',
-                'CREDIT NOTE': 'creditNote',
-                'MARKET BUDGET': 'marketBudget',
-                'PAYMENT RECEIVED': 'paymentReceived',
-                'BALANCE PAYMENT': 'balancePayment',
-                'ETA': 'eta',
-                'PAYMENT DUE DATE': 'paymentDueDate',
-                'STATUS': 'status',
-                'COMMENT': 'comment'
-            };
-            try {
-                parsedAccountData = parseGvizResponse(accountText, accountHeaderMapping, ['orderNo']);
-            } catch (err) {
-                console.warn("Failed to parse account data", err);
-            }
-        }
-
         let parsedPTerms: PaymentTermData[] = [];
         if (pTermsResponse && pTermsResponse.ok) {
             const pText = await pTermsResponse.text();
@@ -3394,7 +3172,6 @@ const App = () => {
         setData(processedLiveData);
         setMasterProductList(parsedMasterData);
         setStepData(parsedStepData);
-        setAccountData(parsedAccountData);
         setLastUpdateTime(new Date()); 
 
         const fetchedCredentials: Record<string, string> = {};
@@ -3897,14 +3674,11 @@ const App = () => {
   
   const getFinancialSummaryForTracking = (orderNo: string | null) => {
       if (!orderNo) return undefined;
-      const accountRow = accountData.find(acc => acc.orderNo.includes(orderNo));
       const relatedLiveRows = data.filter(d => d.orderNo === orderNo);
       const orderQty = relatedLiveRows.reduce((sum, r) => sum + r.qty, 0);
-      const orderValue = accountRow ? accountRow.totalOrderValue : relatedLiveRows.reduce((sum, r) => sum + r.exportValue, 0);
-      const received = accountRow ? accountRow.paymentReceived : 0;
-      const balance = accountRow ? accountRow.balancePayment : 0;
+      const orderValue = relatedLiveRows.reduce((sum, r) => sum + r.exportValue, 0);
 
-      return { orderQty, orderValue, received, balance };
+      return { orderQty, orderValue };
   };
 
   if (loading) return <SkeletonLoader />;
@@ -3953,14 +3727,6 @@ const App = () => {
         onClose={() => setShowUserManagement(false)}
         onCredentialsUpdate={refetchCredentials}
       />
-  }
-
-  if (showAccountDashboard) {
-      return <AccountDashboard 
-        accountData={accountData}
-        currentUser={currentUser}
-        onClose={() => setShowAccountDashboard(false)}
-      />;
   }
 
   if (showNeverBought) {
@@ -4106,9 +3872,6 @@ const App = () => {
                 )}
                 <button className="calendar-view-button" onClick={() => setMainViewMode('calendar')}>
                     {Icons.calendar} Calendar View
-                </button>
-                <button className="calendar-view-button" onClick={() => setShowAccountDashboard(true)}>
-                    {Icons.bank} Account
                 </button>
                <button className="never-bought-button" onClick={() => setShowNeverBought(true)}>
                   {Icons.placeholder} Never Bought Products
