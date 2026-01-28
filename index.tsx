@@ -59,10 +59,10 @@ const Icons = {
   clock: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   circle: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   sun: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>,
-  moon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" /></svg>,
+  moon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 0 0 0 9.002-5.998Z" /></svg>,
   eye: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>,
   bell: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>,
-  calendar: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0h18M-4.5 12h28.5" /></svg>,
+  calendar: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0h18" /></svg>,
   box: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>,
   truck: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125-1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>,
   bank: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" /></svg>
@@ -329,7 +329,7 @@ const CalendarKpiCard = ({ title, value, icon, variant, onClick, onDoubleClick, 
     </div>
 );
 
-const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selectedYear, activeMetric, isAggregateView }: { data: any[], xAxisDataKey?: string, selectedMonth?: number | null, selectedYear?: string, activeMetric?: string | null, isAggregateView?: boolean }) => {
+const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selectedYear, activeMetric, isAggregateView, stacked }: { data: any[], xAxisDataKey?: string, selectedMonth?: number | null, selectedYear?: string, activeMetric?: string | null, isAggregateView?: boolean, stacked?: boolean }) => {
     const barLabelFormatter = (value: number) => (value > 0 ? value : '');
 
     const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: any; }) => {
@@ -339,18 +339,18 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
             let displayLabel = label;
     
             if (isDailyView && selectedMonth !== null) {
+                const dayVal = String(dataPoint.day || label).padStart(2, '0');
+                const mmm = MONTH_NAMES_SHORT[selectedMonth];
                 if (isAggregateView) {
-                    const dayVal = String(dataPoint.day || label).padStart(2, '0');
-                    const mmm = MONTH_NAMES_SHORT[selectedMonth];
                     displayLabel = `${dayVal}-${mmm}`;
                 } else {
                     const year = selectedYear && selectedYear.length >= 2 ? parseInt(selectedYear, 10) : new Date().getFullYear();
                     const dayValue = dataPoint.day || label;
                     const date = new Date(year, selectedMonth, dayValue);
                     const dd = String(date.getDate()).padStart(2, '0');
-                    const mmm = date.toLocaleString('en-US', { month: 'short' });
+                    const mmmLabel = date.toLocaleString('en-US', { month: 'short' });
                     const yy = String(date.getFullYear()).slice(-2);
-                    displayLabel = `${dd}-${mmm}-${yy}`;
+                    displayLabel = `${dd}-${mmmLabel}-${yy}`;
                 }
             }
     
@@ -378,19 +378,23 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                            let orderItems: any[] = [];
                            let val = 0;
                            let qty = 0;
+                           let customLabel = p.name;
 
                            if (p.dataKey === 'received') {
                                orderItems = dataPoint.receivedOrderDetails || [];
                                val = dataPoint.totalValue || 0;
                                qty = dataPoint.totalQty || 0;
+                               customLabel = "Received";
                            } else if (p.dataKey === 'planned') {
                                orderItems = dataPoint.plannedOrderDetails || [];
                                val = dataPoint.plannedValue || 0;
                                qty = dataPoint.plannedQty || 0;
+                               customLabel = "In Process";
                            } else if (p.dataKey === 'shipped') {
                                orderItems = dataPoint.shippedOrderDetails || [];
                                val = dataPoint.shippedValue || 0;
                                qty = dataPoint.shippedQty || 0;
+                               customLabel = "Shipped";
                            }
 
                            if (p.value === 0 && val === 0) return null;
@@ -401,7 +405,7 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
 
                            return (
                                <div key={p.dataKey} style={{ marginBottom: '0.75rem' }}>
-                                   <p style={{ margin: 0, color: p.fill, fontWeight: 700, fontSize: '0.95rem' }}>{`${p.name}:- ${p.value}`}</p>
+                                   <p style={{ margin: 0, color: p.fill, fontWeight: 700, fontSize: '0.95rem' }}>{`${customLabel}:- ${p.value}`}</p>
                                    {orderItems.length > 0 && (
                                        <div style={{ margin: '0.1rem 0 0.2rem 0.5rem', color: p.fill, wordBreak: 'break-word', whiteSpace: 'normal', fontSize: '0.82em', lineHeight: '1.4' }}>
                                            <strong>Order Details: </strong>
@@ -428,6 +432,9 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
         return null;
     };
     
+    const stackId = stacked ? "yearlyStack" : undefined;
+    const labelPosition = stacked ? "inside" : "top";
+
     return (
         <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
@@ -443,28 +450,31 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
                     dataKey="received" 
                     fill="var(--calendar-received-color)" 
                     name="Received" 
-                    radius={[4, 4, 0, 0]} 
+                    stackId={stackId}
+                    radius={stacked ? [0, 0, 0, 0] : [4, 4, 0, 0]} 
                     opacity={activeMetric === null || activeMetric === 'received' ? 1 : 0.2}
                 >
-                    <LabelList dataKey="received" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                    <LabelList dataKey="received" position={labelPosition} formatter={barLabelFormatter} style={{ fontSize: '10px', fill: stacked ? '#fff' : 'var(--text-color-muted)', fontWeight: stacked ? 'bold' : 'normal' }} />
                 </Bar>
                 <Bar 
                     dataKey="planned" 
                     fill="var(--calendar-planned-color)" 
                     name="In Process" 
-                    radius={[4, 4, 0, 0]}
+                    stackId={stackId}
+                    radius={stacked ? [0, 0, 0, 0] : [4, 4, 0, 0]}
                     opacity={activeMetric === null || activeMetric === 'planned' ? 1 : 0.2}
                 >
-                    <LabelList dataKey="planned" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                    <LabelList dataKey="planned" position={labelPosition} formatter={barLabelFormatter} style={{ fontSize: '10px', fill: stacked ? '#fff' : 'var(--text-color-muted)', fontWeight: stacked ? 'bold' : 'normal' }} />
                 </Bar>
                 <Bar 
                     dataKey="shipped" 
                     fill="var(--calendar-shipped-color)" 
                     name="Shipped" 
-                    radius={[4, 4, 0, 0]}
+                    stackId={stackId}
+                    radius={stacked ? [4, 4, 0, 0] : [4, 4, 0, 0]}
                     opacity={activeMetric === null || activeMetric === 'shipped' ? 1 : 0.2}
                 >
-                    <LabelList dataKey="shipped" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                    <LabelList dataKey="shipped" position={labelPosition} formatter={barLabelFormatter} style={{ fontSize: '10px', fill: stacked ? '#fff' : 'var(--text-color-muted)', fontWeight: stacked ? 'bold' : 'normal' }} />
                 </Bar>
             </BarChart>
         </ResponsiveContainer>
@@ -839,6 +849,61 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
         return totals;
     }, [dataForYear, isDateInRange, targetYearSuffix]);
 
+    const yearlyTrendChartData = useMemo(() => {
+        const yearGroups: Record<string, { received: Set<string>, planned: Set<string>, shipped: Set<string>, totalValue: number, totalQty: number, plannedValue: number, plannedQty: number, shippedValue: number, shippedQty: number }> = {};
+        
+        dataForYear.forEach(d => {
+            const status = (d.originalStatus || d.status || '').toUpperCase();
+            const isPlan = status === 'PLAN';
+            const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
+
+            const orderDate = parseDate(d.orderDate);
+            const stuffingDate = parseDate(d.stuffingMonth);
+            
+            // Received & In Process year based on Order Date
+            if (orderDate && isDateInRange(orderDate)) {
+                const year = orderDate.getFullYear().toString();
+                if (!yearGroups[year]) {
+                    yearGroups[year] = { received: new Set(), planned: new Set(), shipped: new Set(), totalValue: 0, totalQty: 0, plannedValue: 0, plannedQty: 0, shippedValue: 0, shippedQty: 0 };
+                }
+                if (isPlan || isShipped) {
+                    yearGroups[year].received.add(d.orderNo.toUpperCase());
+                    yearGroups[year].totalValue += d.exportValue;
+                    yearGroups[year].totalQty += d.qty;
+                }
+                if (isPlan) {
+                    yearGroups[year].planned.add(d.orderNo.toUpperCase());
+                    yearGroups[year].plannedValue += d.exportValue;
+                    yearGroups[year].plannedQty += d.qty;
+                }
+            }
+
+            // Shipped year based on Stuffing Date
+            if (isShipped && stuffingDate && isDateInRange(stuffingDate)) {
+                const year = stuffingDate.getFullYear().toString();
+                if (!yearGroups[year]) {
+                    yearGroups[year] = { received: new Set(), planned: new Set(), shipped: new Set(), totalValue: 0, totalQty: 0, plannedValue: 0, plannedQty: 0, shippedValue: 0, shippedQty: 0 };
+                }
+                yearGroups[year].shipped.add(d.orderNo.toUpperCase());
+                yearGroups[year].shippedValue += d.exportValue;
+                yearGroups[year].shippedQty += d.qty;
+            }
+        });
+
+        return Object.keys(yearGroups).sort().map(year => ({
+            name: year,
+            received: yearGroups[year].received.size,
+            planned: yearGroups[year].planned.size,
+            shipped: yearGroups[year].shipped.size,
+            totalValue: yearGroups[year].totalValue,
+            totalQty: yearGroups[year].totalQty,
+            plannedValue: yearGroups[year].plannedValue,
+            plannedQty: yearGroups[year].plannedQty,
+            shippedValue: yearGroups[year].shippedValue,
+            shippedQty: yearGroups[year].shippedQty
+        }));
+    }, [dataForYear, isDateInRange]);
+
     const monthlyTrendChartData = monthNames.map((name, index) => ({
         name,
         ...calendarData[index],
@@ -1146,48 +1211,55 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                         />
                     </div>
                     
-                    {/* Month Grid - Always Visible */}
-                    <div className="calendar-grid-container">
-                        <div className="calendar-grid">
-                            {monthNames.map((month, index) => (
-                                <div 
-                                    key={month} 
-                                    className={`calendar-month-cell ${numericSelectedMonthIndex === index ? 'active' : ''}`}
-                                    onClick={() => onMonthChange(month)}
-                                    onDoubleClick={(e) => {
-                                        e.stopPropagation();
-                                        handleMonthDoubleClick(index);
-                                    }}
-                                    title="Single-click to view daily chart, Double-click for breakdown"
-                                >
-                                    <h3>{month}</h3>
-                                    <div className="month-bars-container">
-                                        <div className="month-bar received" style={{ height: `${(calendarData[index].received / (maxMonthlyValue || 1)) * 100}%`, opacity: activeMetric === null || activeMetric === 'received' ? 1 : 0.2 }}>
-                                            {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
+                    {/* Month Grid - Only visible for specific periods */}
+                    {selectedPeriod !== 'All' && (
+                        <div className="calendar-grid-container">
+                            <div className="calendar-grid">
+                                {monthNames.map((month, index) => (
+                                    <div 
+                                        key={month} 
+                                        className={`calendar-month-cell ${numericSelectedMonthIndex === index ? 'active' : ''}`}
+                                        onClick={() => onMonthChange(month)}
+                                        onDoubleClick={(e) => {
+                                            e.stopPropagation();
+                                            handleMonthDoubleClick(index);
+                                        }}
+                                        title="Single-click to view daily chart, Double-click for breakdown"
+                                    >
+                                        <h3>{month}</h3>
+                                        <div className="month-bars-container">
+                                            <div className="month-bar received" style={{ height: `${(calendarData[index].received / (maxMonthlyValue || 1)) * 100}%`, opacity: activeMetric === null || activeMetric === 'received' ? 1 : 0.2 }}>
+                                                {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
+                                            </div>
+                                            <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / (maxMonthlyValue || 1)) * 100}%`, opacity: activeMetric === null || activeMetric === 'received' ? 1 : 0.2 }}>
+                                                {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
+                                            </div>
+                                            <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / (maxMonthlyValue || 1)) * 100}%`, opacity: activeMetric === null || activeMetric === 'received' ? 1 : 0.2 }}>
+                                                {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
+                                            </div>
                                         </div>
-                                        <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / (maxMonthlyValue || 1)) * 100}%`, opacity: activeMetric === null || activeMetric === 'planned' ? 1 : 0.2 }}>
-                                            {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
-                                        </div>
-                                        <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / (maxMonthlyValue || 1)) * 100}%`, opacity: activeMetric === null || activeMetric === 'shipped' ? 1 : 0.2 }}>
-                                            {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
+                                        <div className="calendar-month-tooltip">
+                                            <strong>{month} {targetYearSuffix ? `FY-${targetYearSuffix}` : ''}</strong>
+                                            {(activeMetric === null || activeMetric === 'received') && <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>}
+                                            {(activeMetric === null || activeMetric === 'planned') && <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>}
+                                            {(activeMetric === null || activeMetric === 'shipped') && <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>}
+                                            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '4px', paddingTop: '4px' }}>
+                                                <p style={{margin:0, fontSize:'0.7rem', opacity:0.8}}>Total Value: {formatCurrencyNoDecimals(monthlyTotals[index].totalValue)}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="calendar-month-tooltip">
-                                        <strong>{month} {targetYearSuffix ? `FY-${targetYearSuffix}` : ''}</strong>
-                                        {(activeMetric === null || activeMetric === 'received') && <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>}
-                                        {(activeMetric === null || activeMetric === 'planned') && <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>}
-                                        {(activeMetric === null || activeMetric === 'shipped') && <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>}
-                                        <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '4px', paddingTop: '4px' }}>
-                                            <p style={{margin:0, fontSize:'0.7rem', opacity:0.8}}>Total Value: {formatCurrencyNoDecimals(monthlyTotals[index].totalValue)}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     <div className={`calendar-charts-section ${!showTopClients ? 'single-column' : ''}`}>
-                        {numericSelectedMonthIndex === null ? (
+                        {selectedPeriod === 'All' ? (
+                            <div className="chart-container">
+                                <h3>Yearly Order Volume</h3>
+                                <MonthlyTrendChart data={yearlyTrendChartData} activeMetric={activeMetric} stacked={true} />
+                            </div>
+                        ) : numericSelectedMonthIndex === null ? (
                             <div className="chart-container">
                                 <h3>Monthly Order Volume</h3>
                                 <MonthlyTrendChart data={monthlyTrendChartData} selectedYear={fullYearForDate.toString()} activeMetric={activeMetric}/>
@@ -1557,7 +1629,7 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                     shippedValue,
                     balanceValue: totalExportValue - shippedValue,
                     hasTracking: products.some(p => stepDataOrderNos.has(p.orderNo)),
-                    commercialInvoiceNo: firstProduct.commercialInvoiceNo
+                    commercialInvoiceNo: products[0].commercialInvoiceNo
                 };
             }).sort((a, b) => {
                 const dateA = parseDate(a.stuffingMonth);
@@ -1616,7 +1688,7 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
         if (drillDownState.level === 1) {
             const visibleStatuses = new Set(paginatedData.map(d => d.originalStatus?.toUpperCase()));
             const isShippedOnly = (visibleStatuses.has('SHIPPED') || visibleStatuses.has('COMPLETE')) && !visibleStatuses.has('PLAN');
-            return isShippedOnly ? 'Commercial Invoice No' : 'Order / Invoice No';
+            return isShippedOnly ? 'Commercial Invoice No' : 'Order No';
         }
         return drillDownState.level === 3 ? 'Commercial Invoice No' : 'Order No';
     }, [drillDownState.level, paginatedData]);
@@ -1686,7 +1758,7 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                                     {drillDownState.level < 3 && <th className="text-right">Balance Qty</th>}
                                     <th className="text-right">Order Value</th>
                                     <th className="text-right">Shipped Value</th>
-                                    <th className="text-right">Balance Value</th>
+                                    <th className="text-right">Balance Order Value</th>
                                 </>
                             )}
                         </tr>
@@ -4131,6 +4203,12 @@ const App = () => {
                   onClick={() => window.open('https://query-bon.vercel.app/', '_blank')}
               >
                   {Icons.search} Query Portal
+              </button>
+              <button 
+                  className="query-button-global" 
+                  onClick={() => window.open('https://top-pro-eight.vercel.app/', '_blank')}
+              >
+                  {Icons.box} Top Products
               </button>
           </div>
 
