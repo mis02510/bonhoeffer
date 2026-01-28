@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -35,10 +34,10 @@ const ANNOUNCEMENTS = [
 
 // --- SVG Icons ---
 const Icons = {
-  revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
+  revenue: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125-1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   orders: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25l3.807-3.262a4.502 4.502 0 0 1 6.384 0L20.25 18" /></svg>,
   clients: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 0L5 11.529m10.232 2.234a3.75 3.75 0 0 0-4.493 0L10.5 11.529m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 16.25m10.232-2.234a3.75 3.75 0 0 1-4.493 0L7.5 13.763m7.5-4.515a3.753 3.753 0 0 0-4.493 0L10.5 6.5m-2.258 4.515a3.753 3.753 0 0 1-4.493 0L3 11.25m10.232-2.234a3.75 3.75 0 0 0-4.493 0L7.5 8.763m7.5 4.515a3.75 3.75 0 1 1-4.493 0L10.5 13.75m5.007-4.515a3.75 3.75 0 0 0-4.493 0L13.5 8.763" /></svg>,
-  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252 2.252 0 0 1 .421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252 2.252 0 0 1 .421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h-1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252 2.252 0 0 1-.421-.585l-1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
+  countries: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M20.893 13.393l-1.135-1.135a2.252-.421-.585l-1.08-2.16a2.25 2.25 0 0 0-1.898-1.302h-1.148a2.25 2.25 0 0 0-1.898 1.302l-1.08 2.16a2.252.421.585l-1.135 1.135a2.25 2.25 0 0 0 0 3.182l1.135 1.135a2.252.421.585l1.08 2.16a2.25 2.25 0 0 0 1.898 1.302h-1.148a2.25 2.25 0 0 0 1.898-1.302l1.08-2.16a2.252-.421-.585l-1.135-1.135a2.25 2.25 0 0 0 0-3.182zM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" /></svg>,
   placeholder: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M9 21v-3.375c0-.621.504-1.125 1.125 1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>,
   prevArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>,
   nextArrow: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>,
@@ -53,7 +52,7 @@ const Icons = {
   table: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M2.25 8.25h19.5M2.25 12h19.5m-19.5 3.75h19.5M4.5 4.5h15a2.25 2.25 0 0 1 2.25 2.25v10.5A2.25 2.25 0 0 1 19.5 19.5h-15A2.25 2.25 0 0 1 2.25 17.25V6.75A2.25 2.25 0 0 1 4.5 4.5Z" /></svg>,
   user: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>,
   key: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 1 1 21.75 8.25Z" /></svg>,
-  copy: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H9.75" /></svg>,
+  copy: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125-1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H9.75" /></svg>,
   logout: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3h12" /></svg>,
   checkCircle: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>,
   checkCircleFilled: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25z" clipRule="evenodd" /></svg>,
@@ -70,6 +69,13 @@ const Icons = {
 };
 
 // --- Data Types ---
+interface PaymentTermData {
+    client: string;
+    country: string;
+    paymentTerm: string;
+    dueDateRule: string;
+}
+
 interface OrderData {
   status: string;
   originalStatus?: string;
@@ -170,7 +176,7 @@ const formatCurrency = (value: number) => new Intl.NumberFormat('en-US', { style
 const formatCurrencyNoDecimals = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
 const formatCompactNumber = (value: number) => new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value);
 const formatNumber = (value: number) => new Intl.NumberFormat('en-US').format(value);
-const formatNa = (value: string) => (value && value.toLowerCase() !== '#n/a' ? value : '~');
+const formatNa = (value: string | undefined) => (value && value.toLowerCase() !== '#n/a' && value.trim() !== '' ? value : '~');
 
 const parseDate = (dateString: string): Date | null => {
     if (!dateString || typeof dateString !== 'string' || dateString.toLowerCase() === '#n/a' || dateString.trim() === '') {
@@ -193,8 +199,13 @@ const parseDate = (dateString: string): Date | null => {
     return null;
 };
 
-const formatDateDDMMMYY = (dateString: string): string => {
-    const date = parseDate(dateString);
+const formatDateDDMMMYY = (dateString: string | Date): string => {
+    let date: Date | null;
+    if (dateString instanceof Date) {
+        date = dateString;
+    } else {
+        date = parseDate(dateString);
+    }
     if (!date) {
         return '~';
     }
@@ -214,19 +225,99 @@ const getBaseOrderNo = (orderNo: string): string => {
     return upperOrderNo;
 };
 
-const getYY = (date: Date | null) => date ? String(date.getFullYear()).slice(-2) : null;
+// Helper to parse Google Visualization API response
+const parseGvizResponse = (text: string, headerMapping: Record<string, string>, requiredFields: string[] = []): any[] => {
+    const match = text.match(/{.*}/s);
+    if (!match) return [];
+    try {
+        const json = JSON.parse(match[0]);
+        if (json.status !== 'ok') {
+            console.error("GViz response status not ok:", json.status);
+            return [];
+        }
+        const labelToIndex = new Map<string, number>(json.table.cols.map((col: any, i: number) => [String(col.label || '').trim(), i]));
+        
+        return json.table.rows.map((r: any) => {
+            const row: any = {};
+            for (const [header, key] of Object.entries(headerMapping)) {
+                const index = labelToIndex.get(header);
+                if (index !== undefined) {
+                    const cell = r.c[index];
+                    const value = cell ? cell.v : null;
 
-// ### calendar view
-const CalendarKpiCard = ({ title, value, icon, variant, onClick, onDoubleClick, isDimmed }: any) => (
+                    if (['qty', 'moq'].includes(key)) {
+                        row[key] = parseInt(String(value || '0').replace(/,/g, ''), 10) || 0;
+                    } else if (['exportValue', 'unitPrice', 'fobPrice', 'totalOrderValue', 'paymentReceived', 'balancePayment'].includes(key)) {
+                        row[key] = parseFloat(String(value || '0').replace(/[$,]/g, '')) || 0;
+                    } else {
+                        row[key] = value !== null ? String(value).trim() : '';
+                    }
+                } else {
+                    row[key] = '';
+                }
+            }
+            return row;
+        }).filter((row: any) => 
+            requiredFields.every(f => row[f] !== null && row[f] !== undefined && String(row[f]).trim() !== '')
+        );
+    } catch (e) {
+        console.error("Error parsing GViz response:", e);
+        return [];
+    }
+};
+
+// --- Payment Due Date Calculation ---
+const calculateDueDate = (rule: string, sobDateStr?: string, etaDateStr?: string): Date | null => {
+    if (!rule) return null;
+    
+    const sobDate = sobDateStr ? parseDate(sobDateStr) : null;
+    const etaDate = etaDateStr ? parseDate(etaDateStr) : null;
+
+    const lowerRule = rule.toLowerCase();
+
+    // "within X days from the date of SOB"
+    const withinDaysSobMatch = lowerRule.match(/within (\d+) days from the date of sob/);
+    if (withinDaysSobMatch && sobDate) {
+        const days = parseInt(withinDaysSobMatch[1], 10);
+        const due = new Date(sobDate);
+        due.setDate(due.getDate() + days);
+        return due;
+    }
+
+    // "within X days"
+    const genericWithinMatch = lowerRule.match(/within (\d+) days/);
+    if (genericWithinMatch && sobDate) {
+         const days = parseInt(genericWithinMatch[1], 10);
+         const due = new Date(sobDate);
+         due.setDate(due.getDate() + days);
+         return due;
+    }
+
+    // "X days before ETA"
+    const daysBeforeEtaMatch = lowerRule.match(/(\d+) days before eta/);
+    if (daysBeforeEtaMatch && etaDate) {
+        const days = parseInt(daysBeforeEtaMatch[1], 10);
+        const due = new Date(etaDate);
+        due.setDate(due.getDate() - days);
+        return due;
+    }
+
+    return null;
+};
+
+// ### calendar view components
+const CalendarKpiCard = ({ title, value, icon, variant, onClick, onDoubleClick, isDimmed, isActive }: any) => (
     <div 
-        className={`calendar-kpi-card variant-${variant}`} 
+        className={`calendar-kpi-card variant-${variant} ${isActive ? 'is-active-highlight' : ''}`} 
         onClick={onClick}
         onDoubleClick={onDoubleClick}
         style={{ 
             cursor: 'pointer', 
-            opacity: isDimmed ? 0.4 : 1,
-            transition: 'all 0.3s ease',
-            transform: isDimmed ? 'scale(0.98)' : 'scale(1)'
+            opacity: isDimmed ? 0.35 : 1,
+            transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            transform: isActive ? 'scale(1.05)' : (isDimmed ? 'scale(0.96)' : 'scale(1)'),
+            boxShadow: isActive ? '0 12px 24px -8px rgba(0,0,0,0.3), 0 0 20px -2px currentColor' : 'none',
+            zIndex: isActive ? 10 : 1
         }}
         title="Double-click for details"
     >
@@ -238,132 +329,99 @@ const CalendarKpiCard = ({ title, value, icon, variant, onClick, onDoubleClick, 
     </div>
 );
 
-const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selectedYear, activeMetric }: { data: any[], xAxisDataKey?: string, selectedMonth?: number | null, selectedYear?: string, activeMetric?: string | null }) => {
+const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selectedYear, activeMetric, isAggregateView }: { data: any[], xAxisDataKey?: string, selectedMonth?: number | null, selectedYear?: string, activeMetric?: string | null, isAggregateView?: boolean }) => {
     const barLabelFormatter = (value: number) => (value > 0 ? value : '');
 
     const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: any; }) => {
         if (active && payload && payload.length) {
-            let displayLabel = label;
             const isDailyView = xAxisDataKey === 'day';
+            const dataPoint = payload[0].payload;
+            let displayLabel = label;
     
-            if (isDailyView && selectedMonth !== null && selectedYear) {
-                const year = selectedYear && selectedYear.length === 4 ? parseInt(selectedYear, 10) : new Date().getFullYear();
-                const date = new Date(year, selectedMonth, label);
-                displayLabel = formatDateDDMMMYY(date.toISOString());
+            if (isDailyView && selectedMonth !== null) {
+                if (isAggregateView) {
+                    const dayVal = String(dataPoint.day || label).padStart(2, '0');
+                    const mmm = MONTH_NAMES_SHORT[selectedMonth];
+                    displayLabel = `${dayVal}-${mmm}`;
+                } else {
+                    const year = selectedYear && selectedYear.length >= 2 ? parseInt(selectedYear, 10) : new Date().getFullYear();
+                    const dayValue = dataPoint.day || label;
+                    const date = new Date(year, selectedMonth, dayValue);
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    const mmm = date.toLocaleString('en-US', { month: 'short' });
+                    const yy = String(date.getFullYear()).slice(-2);
+                    displayLabel = `${dd}-${mmm}-${yy}`;
+                }
             }
     
-            const dataPoint = payload[0].payload;
-            const hasMetrics = payload.some((p: any) => p.value > 0);
-            
             const showReceived = activeMetric === 'received' || activeMetric === null;
             const showPlanned = activeMetric === 'planned' || activeMetric === null;
             const showShipped = activeMetric === 'shipped' || activeMetric === null;
 
-            const hasReceivedTotals = showReceived && (dataPoint.totalValue > 0 || dataPoint.totalQty > 0);
-            const hasPlannedTotals = showPlanned && (dataPoint.plannedValue > 0 || dataPoint.plannedQty > 0);
-            const hasShippedTotals = showShipped && (dataPoint.shippedValue > 0 || dataPoint.shippedQty > 0);
+            const hasReceivedTotals = showReceived && (dataPoint.totalValue > 0 || dataPoint.totalQty > 0 || dataPoint.received > 0);
+            const hasPlannedTotals = showPlanned && (dataPoint.plannedValue > 0 || dataPoint.plannedQty > 0 || dataPoint.planned > 0);
+            const hasShippedTotals = showShipped && (dataPoint.shippedValue > 0 || dataPoint.shippedQty > 0 || dataPoint.shipped > 0);
             
             const hasAnyTotals = hasReceivedTotals || hasPlannedTotals || hasShippedTotals;
 
-            if (!hasMetrics && !(isDailyView && hasAnyTotals)) return null;
+            if (!hasAnyTotals) return null;
 
             return (
-                <div className="recharts-default-tooltip" style={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)', borderRadius: '8px', padding: '0.5rem 1rem', maxWidth: '350px' }}>
-                    <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>{displayLabel}</p>
+                <div className="recharts-default-tooltip" style={{ backgroundColor: 'var(--card-background)', border: '1px solid var(--card-border)', borderRadius: '8px', padding: '0.8rem 1.2rem', maxWidth: '350px', boxShadow: '0 8px 16px rgba(0,0,0,0.3)' }}>
+                    <p style={{ margin: '0 0 0.6rem 0', fontWeight: 'bold', fontSize: '1rem', color: 'var(--primary-accent)', borderBottom: '1px solid var(--grid-stroke)', paddingBottom: '4px' }}>{displayLabel}</p>
                     {payload.map((p: any) => {
-                       if (p.value > 0) {
+                       if (p.value > 0 || (isDailyView && p.value >= 0)) {
+                           if (p.dataKey === 'received' && !showReceived) return null;
+                           if (p.dataKey === 'planned' && !showPlanned) return null;
+                           if (p.dataKey === 'shipped' && !showShipped) return null;
+
+                           let orderItems: any[] = [];
+                           let val = 0;
+                           let qty = 0;
+
                            if (p.dataKey === 'received') {
-                                if (!showReceived && activeMetric !== null) return null;
-                                const orderNumbers = dataPoint.receivedOrderNumbers || [];
-                                const maxOrdersToShow = 15;
-                                const displayOrders = orderNumbers.slice(0, maxOrdersToShow);
-                                const remaining = orderNumbers.length - maxOrdersToShow;
-
-                                return (
-                                    <div key={p.dataKey} style={{ marginBottom: isDailyView ? 0 : '0.5rem' }}>
-                                        <p style={{ margin: 0, color: p.fill }}>{`Received:-${p.value}`}</p>
-                                        {orderNumbers.length > 0 && (
-                                            <p style={{ margin: '0.1rem 0 0.2rem 0.5rem', color: p.fill, wordBreak: 'break-word', whiteSpace: 'normal', fontSize: '0.85em', lineHeight: '1.4' }}>
-                                                <strong>Order NO:-</strong>{displayOrders.join(', ')}
-                                                {remaining > 0 && <span>{`, +${remaining} etc`}</span>}
-                                            </p>
-                                        )}
-                                        {!isDailyView && (
-                                            <>
-                                                <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.totalValue)}`}</p>
-                                                <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.totalQty)}`}</p>
-                                            </>
-                                        )}
-                                    </div>
-                                );
+                               orderItems = dataPoint.receivedOrderDetails || [];
+                               val = dataPoint.totalValue || 0;
+                               qty = dataPoint.totalQty || 0;
+                           } else if (p.dataKey === 'planned') {
+                               orderItems = dataPoint.plannedOrderDetails || [];
+                               val = dataPoint.plannedValue || 0;
+                               qty = dataPoint.plannedQty || 0;
+                           } else if (p.dataKey === 'shipped') {
+                               orderItems = dataPoint.shippedOrderDetails || [];
+                               val = dataPoint.shippedValue || 0;
+                               qty = dataPoint.shippedQty || 0;
                            }
 
-                           if (p.dataKey === 'planned') {
-                               if (!showPlanned && activeMetric !== null) return null;
-                           }
-                           if (p.dataKey === 'shipped') {
-                               if (!showShipped && activeMetric !== null) return null;
-                           }
-
-                           let orderNumbers: string[] = [];
-                           if (isDailyView) {
-                               if (p.dataKey === 'planned') orderNumbers = dataPoint.plannedOrderNumbers || [];
-                               else if (p.dataKey === 'shipped') orderNumbers = dataPoint.shippedOrderNumbers || [];
-                           }
+                           if (p.value === 0 && val === 0) return null;
 
                            const maxOrdersToShow = 15;
-                           const displayOrders = orderNumbers.slice(0, maxOrdersToShow);
-                           const remaining = orderNumbers.length - maxOrdersToShow;
+                           const displayItems = orderItems.slice(0, maxOrdersToShow);
+                           const remaining = orderItems.length - maxOrdersToShow;
 
                            return (
-                               <div key={p.dataKey}>
-                                   <p style={{ margin: 0, color: p.fill }}>{`${p.name}:- ${p.value}`}</p>
-                                   {isDailyView && orderNumbers.length > 0 && (
-                                       <p style={{ margin: '0.1rem 0 0.5rem 0.5rem', color: p.fill, wordBreak: 'break-word', whiteSpace: 'normal', fontSize: '0.85em', lineHeight: '1.4' }}>
-                                           <strong>Order No:</strong> {displayOrders.join(', ')}
-                                           {remaining > 0 && <span>{`, +${remaining} more`}</span>}
-                                       </p>
+                               <div key={p.dataKey} style={{ marginBottom: '0.75rem' }}>
+                                   <p style={{ margin: 0, color: p.fill, fontWeight: 700, fontSize: '0.95rem' }}>{`${p.name}:- ${p.value}`}</p>
+                                   {orderItems.length > 0 && (
+                                       <div style={{ margin: '0.1rem 0 0.2rem 0.5rem', color: p.fill, wordBreak: 'break-word', whiteSpace: 'normal', fontSize: '0.82em', lineHeight: '1.4' }}>
+                                           <strong>Order Details: </strong>
+                                           {displayItems.map((item, idx) => (
+                                               <div key={idx}>
+                                                   {item.no} {isAggregateView ? `(${formatDateDDMMMYY(item.date)})` : ''}
+                                               </div>
+                                           ))}
+                                           {remaining > 0 && <div>{`+${remaining} more`}</div>}
+                                       </div>
                                    )}
-                                   {!isDailyView && p.dataKey === 'planned' && (
-                                       <>
-                                           <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.plannedValue)}`}</p>
-                                           <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.plannedQty)}`}</p>
-                                       </>
-                                   )}
-                                   {!isDailyView && p.dataKey === 'shipped' && (
-                                       <>
-                                           <p style={{ margin: '0 0 0 0.5rem', color: p.fill }}>{`Value:-${formatCurrency(dataPoint.shippedValue)}`}</p>
-                                           <p style={{ margin: '0 0 0.5rem 0.5rem', color: p.fill }}>{`Qty:-${formatNumber(dataPoint.shippedQty)}`}</p>
-                                       </>
-                                   )}
+                                   <div style={{ marginLeft: '0.5rem', opacity: 0.9 }}>
+                                       <p style={{ margin: 0, color: p.fill, fontSize: '0.85em' }}>{`Value: ${formatCurrency(val)}`}</p>
+                                       <p style={{ margin: 0, color: p.fill, fontSize: '0.85em' }}>{`Qty: ${formatNumber(qty)}`}</p>
+                                   </div>
                                </div>
-                           )
+                           );
                        }
                        return null;
                     })}
-    
-                    {isDailyView && hasAnyTotals && (
-                      <div style={{marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--grid-stroke)'}}>
-                        {hasReceivedTotals && (
-                            <div style={{ marginBottom: (hasPlannedTotals || hasShippedTotals) ? '0.5rem' : 0 }}>
-                                {dataPoint.totalValue > 0 && <p style={{ margin: 0, color: 'var(--calendar-received-color)' }}>{`Total Order Value: ${formatCurrency(dataPoint.totalValue)}`}</p>}
-                                {dataPoint.totalQty > 0 && <p style={{ margin: 0, color: 'var(--calendar-received-color)' }}>{`Total Order Qty: ${formatNumber(dataPoint.totalQty)}`}</p>}
-                            </div>
-                        )}
-                        {hasPlannedTotals && (
-                             <div style={{ marginBottom: hasShippedTotals ? '0.5rem' : 0 }}>
-                                {dataPoint.plannedValue > 0 && <p style={{ margin: 0, color: 'var(--calendar-planned-color)' }}>{`In Process Value: ${formatCurrency(dataPoint.plannedValue)}`}</p>}
-                                {dataPoint.plannedQty > 0 && <p style={{ margin: 0, color: 'var(--calendar-planned-color)' }}>{`In Process Qty: ${formatNumber(dataPoint.plannedQty)}`}</p>}
-                            </div>
-                        )}
-                        {hasShippedTotals && (
-                            <div>
-                                {dataPoint.shippedValue > 0 && <p style={{ margin: 0, color: 'var(--calendar-shipped-color)' }}>{`Shipped Order Value: ${formatCurrency(dataPoint.shippedValue)}`}</p>}
-                                {dataPoint.shippedQty > 0 && <p style={{ margin: 0, color: 'var(--calendar-shipped-color)' }}>{`Shipped Order Qty: ${formatNumber(dataPoint.shippedQty)}`}</p>}
-                            </div>
-                        )}
-                      </div>
-                    )}
                 </div>
             );
         }
@@ -374,28 +432,40 @@ const MonthlyTrendChart = ({ data, xAxisDataKey = 'name', selectedMonth, selecte
         <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--grid-stroke)" />
-                <XAxis dataKey="name" stroke={'var(--text-color-muted)'} interval={xAxisDataKey === 'day' ? 4 : 'preserveStartEnd'} />
+                <XAxis dataKey={xAxisDataKey} stroke={'var(--text-color-muted)'} interval={xAxisDataKey === 'day' ? 4 : 'preserveStartEnd'} />
                 <YAxis stroke={'var(--text-color-muted)'} allowDecimals={false} />
                 <Tooltip 
                     content={<CustomTooltip />} 
                     cursor={{fill: 'var(--tooltip-cursor)'}}
                 />
-                <Legend wrapperStyle={{fontSize: '0.8rem'}} />
-                {(activeMetric === null || activeMetric === 'received') && (
-                    <Bar dataKey="received" fill="var(--calendar-received-color)" name="Received" radius={[4, 4, 0, 0]}>
-                        <LabelList dataKey="received" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
-                    </Bar>
-                )}
-                {(activeMetric === null || activeMetric === 'planned') && (
-                    <Bar dataKey="planned" fill="var(--calendar-planned-color)" name="In Process" radius={[4, 4, 0, 0]}>
-                        <LabelList dataKey="planned" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
-                    </Bar>
-                )}
-                {(activeMetric === null || activeMetric === 'shipped') && (
-                    <Bar dataKey="shipped" fill="var(--calendar-shipped-color)" name="Shipped" radius={[4, 4, 0, 0]}>
-                        <LabelList dataKey="shipped" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
-                    </Bar>
-                )}
+                <Legend wrapperStyle={{fontSize: '0.8rem', paddingTop: '10px'}} />
+                <Bar 
+                    dataKey="received" 
+                    fill="var(--calendar-received-color)" 
+                    name="Received" 
+                    radius={[4, 4, 0, 0]} 
+                    opacity={activeMetric === null || activeMetric === 'received' ? 1 : 0.2}
+                >
+                    <LabelList dataKey="received" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                </Bar>
+                <Bar 
+                    dataKey="planned" 
+                    fill="var(--calendar-planned-color)" 
+                    name="In Process" 
+                    radius={[4, 4, 0, 0]}
+                    opacity={activeMetric === null || activeMetric === 'planned' ? 1 : 0.2}
+                >
+                    <LabelList dataKey="planned" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                </Bar>
+                <Bar 
+                    dataKey="shipped" 
+                    fill="var(--calendar-shipped-color)" 
+                    name="Shipped" 
+                    radius={[4, 4, 0, 0]}
+                    opacity={activeMetric === null || activeMetric === 'shipped' ? 1 : 0.2}
+                >
+                    <LabelList dataKey="shipped" position="top" formatter={barLabelFormatter} style={{ fontSize: '10px', fill: 'var(--text-color-muted)' }} />
+                </Bar>
             </BarChart>
         </ResponsiveContainer>
     );
@@ -434,7 +504,6 @@ const TopClientsList = ({ data }) => (
         )}
     </div>
 );
-
 
 interface CalendarViewDashboardProps {
     allOrderData: OrderData[];
@@ -507,8 +576,8 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
     }, [selectedPeriod]);
 
     const fullYearForDate = useMemo(() => {
-        if (!targetYearSuffix) return new Date().getFullYear();
-        return 2000 + parseInt(targetYearSuffix, 10);
+        if (targetYearSuffix) return 2000 + parseInt(targetYearSuffix, 10);
+        return new Date().getFullYear();
     }, [targetYearSuffix]);
     
     const baseFilteredData = useMemo(() => {
@@ -799,9 +868,12 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
             totalValue: 0, totalQty: 0,
             plannedValue: 0, plannedQty: 0,
             shippedValue: 0, shippedQty: 0,
-            shippedOrders: new Set<string>(),
-            receivedOrders: new Set<string>(),
-            plannedOrders: new Set<string>(),
+            shippedOrderDetails: [] as any[],
+            receivedOrderDetails: [] as any[],
+            plannedOrderDetails: [] as any[],
+            shippedOrdersUnique: new Set<string>(),
+            receivedOrdersUnique: new Set<string>(),
+            plannedOrdersUnique: new Set<string>(),
         }));
         const targetYearNum = targetYearSuffix ? 2000 + parseInt(targetYearSuffix, 10) : null;
 
@@ -815,7 +887,16 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                 if (!targetYearNum || stuffingDate.getFullYear() === targetYearNum) {
                      const dayIndex = stuffingDate.getDate() - 1;
                      if (dailyData[dayIndex]) {
-                         dailyData[dayIndex].shippedOrders.add(d.orderNo.toUpperCase());
+                         const ordKey = d.orderNo.toUpperCase();
+                         if (!dailyData[dayIndex].shippedOrdersUnique.has(ordKey)) {
+                            dailyData[dayIndex].shippedOrdersUnique.add(ordKey);
+                            dailyData[dayIndex].shippedOrderDetails.push({
+                               no: d.orderNo.toUpperCase(),
+                               date: d.stuffingMonth,
+                               val: d.exportValue,
+                               qty: d.qty
+                            });
+                         }
                          dailyData[dayIndex].shippedValue += d.exportValue;
                          dailyData[dayIndex].shippedQty += d.qty;
                      }
@@ -827,12 +908,29 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                 if (!targetYearNum || orderDate.getFullYear() === targetYearNum) {
                     const dayIndex = orderDate.getDate() - 1;
                     if (dailyData[dayIndex]) {
-                         dailyData[dayIndex].receivedOrders.add(d.orderNo.toUpperCase());
+                         const ordKey = d.orderNo.toUpperCase();
+                         if (!dailyData[dayIndex].receivedOrdersUnique.has(ordKey)) {
+                            dailyData[dayIndex].receivedOrdersUnique.add(ordKey);
+                            dailyData[dayIndex].receivedOrderDetails.push({
+                               no: d.orderNo.toUpperCase(),
+                               date: d.orderDate,
+                               val: d.exportValue,
+                               qty: d.qty
+                            });
+                         }
                          dailyData[dayIndex].totalValue += d.exportValue;
                          dailyData[dayIndex].totalQty += d.qty;
 
                          if (isPlan) {
-                             dailyData[dayIndex].plannedOrders.add(d.orderNo.toUpperCase());
+                            if (!dailyData[dayIndex].plannedOrdersUnique.has(ordKey)) {
+                                dailyData[dayIndex].plannedOrdersUnique.add(ordKey);
+                                dailyData[dayIndex].plannedOrderDetails.push({
+                                   no: d.orderNo.toUpperCase(),
+                                   date: d.orderDate,
+                                   val: d.exportValue,
+                                   qty: d.qty
+                                });
+                             }
                              dailyData[dayIndex].plannedValue += d.exportValue;
                              dailyData[dayIndex].plannedQty += d.qty;
                          }
@@ -843,20 +941,20 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
 
         return dailyData.map(data => ({
             day: data.day,
-            received: data.receivedOrders.size,
-            planned: data.plannedOrders.size,
-            shipped: data.shippedOrders.size,
+            received: data.receivedOrdersUnique.size,
+            planned: data.plannedOrdersUnique.size,
+            shipped: data.shippedOrdersUnique.size,
             totalValue: data.totalValue,
             totalQty: data.totalQty,
             plannedValue: data.plannedValue,
             plannedQty: data.plannedQty,
             shippedValue: data.shippedValue,
             shippedQty: data.shippedQty,
-            shippedOrderNumbers: Array.from(data.shippedOrders),
-            receivedOrderNumbers: Array.from(data.receivedOrders),
-            plannedOrderNumbers: Array.from(data.plannedOrders),
+            shippedOrderDetails: data.shippedOrderDetails,
+            receivedOrderDetails: data.receivedOrderDetails,
+            plannedOrderDetails: data.plannedOrderDetails,
         }));
-    }, [dataForYear, numericSelectedMonthIndex, fullYearForDate, isDateInRange, targetYearSuffix]);
+    }, [dataForYear, numericSelectedMonthIndex, isDateInRange, targetYearSuffix, fullYearForDate]);
 
     const topClients = useMemo(() => {
         const dataToProcess = numericSelectedMonthIndex !== null ? monthOrders : dataForYear;
@@ -1024,6 +1122,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                             onClick={() => handleKpiClick('received')}
                             onDoubleClick={() => handleKpiDoubleClick('received')}
                             isDimmed={activeMetric !== null && activeMetric !== 'received'}
+                            isActive={activeMetric === 'received'}
                         />
                         <CalendarKpiCard 
                             title="Total Orders In Process" 
@@ -1033,6 +1132,7 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                             onClick={() => handleKpiClick('planned')}
                             onDoubleClick={() => handleKpiDoubleClick('planned')}
                             isDimmed={activeMetric !== null && activeMetric !== 'planned'}
+                            isActive={activeMetric === 'planned'}
                         />
                         <CalendarKpiCard 
                             title="Total Orders Shipped" 
@@ -1042,51 +1142,49 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                             onClick={() => handleKpiClick('shipped')}
                             onDoubleClick={() => handleKpiDoubleClick('shipped')}
                             isDimmed={activeMetric !== null && activeMetric !== 'shipped'}
+                            isActive={activeMetric === 'shipped'}
                         />
                     </div>
-                    {numericSelectedMonthIndex === null && (
-                        <div className="calendar-grid-container">
-                            <div className="calendar-grid">
-                                {monthNames.map((month, index) => (
-                                    <div 
-                                        key={month} 
-                                        className={`calendar-month-cell ${numericSelectedMonthIndex === index ? 'active' : ''}`}
-                                        onClick={() => onMonthChange(month)}
-                                        onDoubleClick={(e) => {
-                                            e.stopPropagation();
-                                            handleMonthDoubleClick(index);
-                                        }}
-                                        title="Single-click to view daily chart, Double-click for breakdown"
-                                    >
-                                        <h3>{month}</h3>
-                                        <div className="month-bars-container">
-                                            {(activeMetric === null || activeMetric === 'received') && (
-                                                <div className="month-bar received" style={{ height: `${(calendarData[index].received / maxMonthlyValue) * 100}%` }}>
-                                                    {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
-                                                </div>
-                                            )}
-                                            {(activeMetric === null || activeMetric === 'planned') && (
-                                                <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / maxMonthlyValue) * 100}%` }}>
-                                                    {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
-                                                </div>
-                                            )}
-                                            {(activeMetric === null || activeMetric === 'shipped') && (
-                                                <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / maxMonthlyValue) * 100}%` }}>
-                                                    {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
-                                                </div>
-                                            )}
+                    
+                    {/* Month Grid - Always Visible */}
+                    <div className="calendar-grid-container">
+                        <div className="calendar-grid">
+                            {monthNames.map((month, index) => (
+                                <div 
+                                    key={month} 
+                                    className={`calendar-month-cell ${numericSelectedMonthIndex === index ? 'active' : ''}`}
+                                    onClick={() => onMonthChange(month)}
+                                    onDoubleClick={(e) => {
+                                        e.stopPropagation();
+                                        handleMonthDoubleClick(index);
+                                    }}
+                                    title="Single-click to view daily chart, Double-click for breakdown"
+                                >
+                                    <h3>{month}</h3>
+                                    <div className="month-bars-container">
+                                        <div className="month-bar received" style={{ height: `${(calendarData[index].received / (maxMonthlyValue || 1)) * 100}%`, opacity: activeMetric === null || activeMetric === 'received' ? 1 : 0.2 }}>
+                                            {calendarData[index].received > 0 && <span className="month-bar-label">{calendarData[index].received}</span>}
                                         </div>
-                                        <div className="calendar-month-tooltip">
-                                            <strong>{month} {targetYearSuffix ? `FY-${targetYearSuffix}` : ''}</strong>
-                                            {(activeMetric === null || activeMetric === 'received') && <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>}
-                                            {(activeMetric === null || activeMetric === 'planned') && <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>}
-                                            {(activeMetric === null || activeMetric === 'shipped') && <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>}
+                                        <div className="month-bar planned" style={{ height: `${(calendarData[index].planned / (maxMonthlyValue || 1)) * 100}%`, opacity: activeMetric === null || activeMetric === 'planned' ? 1 : 0.2 }}>
+                                            {calendarData[index].planned > 0 && <span className="month-bar-label">{calendarData[index].planned}</span>}
+                                        </div>
+                                        <div className="month-bar shipped" style={{ height: `${(calendarData[index].shipped / (maxMonthlyValue || 1)) * 100}%`, opacity: activeMetric === null || activeMetric === 'shipped' ? 1 : 0.2 }}>
+                                            {calendarData[index].shipped > 0 && <span className="month-bar-label">{calendarData[index].shipped}</span>}
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+                                    <div className="calendar-month-tooltip">
+                                        <strong>{month} {targetYearSuffix ? `FY-${targetYearSuffix}` : ''}</strong>
+                                        {(activeMetric === null || activeMetric === 'received') && <span><i style={{backgroundColor: 'var(--calendar-received-color)'}}></i>Received: {calendarData[index].received}</span>}
+                                        {(activeMetric === null || activeMetric === 'planned') && <span><i style={{backgroundColor: 'var(--calendar-planned-color)'}}></i>In Process: {calendarData[index].planned}</span>}
+                                        {(activeMetric === null || activeMetric === 'shipped') && <span><i style={{backgroundColor: 'var(--calendar-shipped-color)'}}></i>Shipped: {calendarData[index].shipped}</span>}
+                                        <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '4px', paddingTop: '4px' }}>
+                                            <p style={{margin:0, fontSize:'0.7rem', opacity:0.8}}>Total Value: {formatCurrencyNoDecimals(monthlyTotals[index].totalValue)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    )}
+                    </div>
 
                     <div className={`calendar-charts-section ${!showTopClients ? 'single-column' : ''}`}>
                         {numericSelectedMonthIndex === null ? (
@@ -1102,7 +1200,14 @@ const CalendarViewDashboard = ({ allOrderData, masterProductList, stepData, clie
                                         {Icons.prevArrow} Monthly View
                                     </button>
                                 </div>
-                                <MonthlyTrendChart data={dailyChartData} xAxisDataKey="day" selectedMonth={numericSelectedMonthIndex} selectedYear={fullYearForDate.toString()} activeMetric={activeMetric} />
+                                <MonthlyTrendChart 
+                                    data={dailyChartData} 
+                                    xAxisDataKey="day" 
+                                    selectedMonth={numericSelectedMonthIndex} 
+                                    selectedYear={fullYearForDate.toString()} 
+                                    activeMetric={activeMetric} 
+                                    isAggregateView={selectedPeriod === 'All'}
+                                />
                             </div>
                         )}
                         {showTopClients && <TopClientsList data={topClients} />}
@@ -1273,7 +1378,7 @@ const KpiCard = ({ title, value, icon, onFilter = null, filterType = null, filte
     );
 };
 
-const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTracking, stepData, drillDownState, onRowDoubleClick, onDrillUp, baseOrderHasSubOrders, activeFilters }: { data: OrderData[], globalData: OrderData[], currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void, stepData: StepData[], drillDownState: { level: number, baseOrder: string | null, subOrder: string | null }, onRowDoubleClick: (row: any) => void, onDrillUp: () => void, baseOrderHasSubOrders: boolean, activeFilters: Filter[] }) => {
+const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTracking, stepData, drillDownState, onRowDoubleClick, onDrillUp, baseOrderHasSubOrders, activeFilters, paymentTerms }: { data: OrderData[], globalData: OrderData[], currentUser: string, authenticatedUser: string, onShowTracking: (orderNo: string) => void, stepData: StepData[], drillDownState: { level: number, baseOrder: string | null, subOrder: string | null }, onRowDoubleClick: (row: any) => void, onDrillUp: () => void, baseOrderHasSubOrders: boolean, activeFilters: Filter[], paymentTerms: PaymentTermData[] }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
     const tableWrapperRef = useRef<HTMLDivElement>(null);
@@ -1306,7 +1411,6 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                 const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
                 const invoice = (row.commercialInvoiceNo && row.commercialInvoiceNo !== '#N/A' && row.commercialInvoiceNo !== '') ? row.commercialInvoiceNo : null;
                 
-                // Grouping key: Prefer Commercial Invoice No if shipped, otherwise Base Order No
                 const key = (isShipped && invoice) ? invoice : getBaseOrderNo(row.orderNo);
                 
                 if (!acc[key]) {
@@ -1319,14 +1423,20 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
             return Object.entries(groups).map(([groupKey, products]) => {
                 let finalStatus = 'PLAN';
                 let latestShippedDate: Date | null = null;
+                let latestEtaDate: Date | null = null;
                 
                 products.forEach(p => {
                     const status = p.originalStatus?.toUpperCase();
                     const shippedDate = parseDate(p.stuffingMonth);
+                    const etaDate = parseDate(p.eta || '');
+
                     if (status === 'SHIPPED' || status === 'COMPLETE') {
                         finalStatus = 'SHIPPED';
                         if (shippedDate && (!latestShippedDate || shippedDate > latestShippedDate)) {
                             latestShippedDate = shippedDate;
+                        }
+                        if (etaDate && (!latestEtaDate || etaDate > latestEtaDate)) {
+                            latestEtaDate = etaDate;
                         }
                     }
                 });
@@ -1354,7 +1464,13 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                     return sum;
                 }, 0);
                 const balanceQty = totalQty - shippedQty;
-                
+
+                const pt = paymentTerms.find(term => 
+                    term.client.toUpperCase() === firstProduct.customerName.toUpperCase() && 
+                    term.country.toUpperCase() === firstProduct.country.toUpperCase()
+                );
+                const dueDate = pt ? calculateDueDate(pt.dueDateRule, latestShippedDate?.toISOString(), latestEtaDate?.toISOString()) : null;
+
                 return {
                     level: 1,
                     baseOrderNo: groupKey,
@@ -1367,12 +1483,13 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                     totalQty,
                     shippedQty,
                     balanceQty,
-                    totalExportValue: totalExportValue,
-                    shippedValue: shippedValue,
-                    balanceValue: balanceValue,
-                    hasSubOrders: hasSubOrders,
+                    totalExportValue,
+                    shippedValue,
+                    balanceValue,
+                    hasSubOrders,
                     singleOrderNo: uniqueOrderNos.length === 1 ? products[0].orderNo : null,
                     hasTracking: products.some(p => stepDataOrderNos.has(p.orderNo)),
+                    paymentDueDate: dueDate ? dueDate.toISOString() : null,
                     commercialInvoiceNo: products[0].commercialInvoiceNo
                 };
             }).sort((a, b) => {
@@ -1386,10 +1503,7 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
         }
 
         if (drillDownState.level === 2) {
-            // Identify all Order Numbers associated with this Layer 1 Invoice/Parent
             const parentKey = drillDownState.baseOrder?.toUpperCase();
-            
-            // Look up Order Numbers linked to this key in global client data (to be period/kpi agnostic)
             const parentItems = globalData.filter(row => {
                 const status = row.originalStatus?.toUpperCase();
                 const isShipped = status === 'SHIPPED' || status === 'COMPLETE';
@@ -1398,16 +1512,12 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                 return key.toUpperCase() === parentKey;
             });
             const linkedOrderNos = new Set(parentItems.map(r => r.orderNo.toUpperCase()));
-
-            // Now, get EVERY row in global client data matching those Order Numbers to ensure totals show correctly
             const orderItems = globalData.filter(row => linkedOrderNos.has(row.orderNo.toUpperCase()));
 
             const subGroups: { [key: string]: OrderData[] } = orderItems.reduce((acc, row) => {
                 const key = row.orderNo ? row.orderNo.trim().toUpperCase() : ''; 
                 if (!key) return acc; 
-                if (!acc[key]) {
-                    acc[key] = [];
-                }
+                if (!acc[key]) acc[key] = [];
                 acc[key].push(row);
                 return acc;
             }, {} as Record<string, OrderData[]>);
@@ -1415,47 +1525,25 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
             return Object.entries(subGroups).map(([key, products]) => {
                 let finalStatus = 'PLAN';
                 let latestShippedDate: Date | null = null;
-                
                 products.forEach(p => {
                     const status = p.originalStatus?.toUpperCase();
                     const shippedDate = parseDate(p.stuffingMonth);
                     if (status === 'SHIPPED' || status === 'COMPLETE') {
                         finalStatus = 'SHIPPED';
-                        if (shippedDate && (!latestShippedDate || shippedDate > latestShippedDate)) {
-                            latestShippedDate = shippedDate;
-                        }
+                        if (shippedDate && (!latestShippedDate || shippedDate > latestShippedDate)) latestShippedDate = shippedDate;
                     }
                 });
 
                 const firstProduct = products[0];
-                const orderNo = firstProduct.orderNo;
                 const totalQty = products.reduce((sum, p) => sum + p.qty, 0);
                 const totalExportValue = products.reduce((sum, p) => sum + p.exportValue, 0);
+                const shippedValue = products.reduce((sum, p) => (p.originalStatus?.toUpperCase() === 'SHIPPED' || p.originalStatus?.toUpperCase() === 'COMPLETE' ? sum + p.exportValue : sum), 0);
+                const shippedQty = products.reduce((sum, p) => (p.originalStatus?.toUpperCase() === 'SHIPPED' || p.originalStatus?.toUpperCase() === 'COMPLETE' ? sum + p.qty : sum), 0);
 
-                const shippedValue = products.reduce((sum, p) => {
-                    const status = p.originalStatus?.toUpperCase();
-                    if (status === 'SHIPPED' || status === 'COMPLETE') {
-                        return sum + p.exportValue;
-                    }
-                    return sum;
-                }, 0);
-                const balanceValue = totalExportValue - shippedValue;
-
-                const shippedQty = products.reduce((sum, p) => {
-                    const status = p.originalStatus?.toUpperCase();
-                    if (status === 'SHIPPED' || status === 'COMPLETE') {
-                        return sum + p.qty;
-                    }
-                    return sum;
-                }, 0);
-                const balanceQty = totalQty - shippedQty;
-                
-                const hasTracking = products.some(p => stepDataOrderNos.has(p.orderNo));
-                
                 return {
                     level: 2,
-                    orderNo,
-                    displayOrderNo: orderNo,
+                    orderNo: firstProduct.orderNo,
+                    displayOrderNo: firstProduct.orderNo,
                     status: finalStatus,
                     originalStatus: finalStatus,
                     stuffingMonth: latestShippedDate ? latestShippedDate.toISOString() : firstProduct.stuffingMonth,
@@ -1464,18 +1552,17 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                     country: firstProduct.country,
                     totalQty,
                     shippedQty,
-                    balanceQty,
+                    balanceQty: totalQty - shippedQty,
                     totalExportValue,
                     shippedValue,
-                    balanceValue,
-                    hasTracking,
+                    balanceValue: totalExportValue - shippedValue,
+                    hasTracking: products.some(p => stepDataOrderNos.has(p.orderNo)),
+                    commercialInvoiceNo: firstProduct.commercialInvoiceNo
                 };
             }).sort((a, b) => {
                 const dateA = parseDate(a.stuffingMonth);
                 const dateB = parseDate(b.stuffingMonth);
                 if (dateA && dateB) return dateB.getTime() - dateA.getTime();
-                if (dateA) return -1;
-                if (dateB) return 1;
                 return 0;
             });
         }
@@ -1489,53 +1576,50 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                 const dateA = parseDate(a.stuffingMonth);
                 const dateB = parseDate(b.stuffingMonth);
                 if (dateA && dateB) return dateB.getTime() - dateA.getTime();
-                if (dateA) return -1;
-                if (dateB) return 1;
                 return 0;
             });
         }
-
         return [];
-    }, [data, globalData, drillDownState, stepDataOrderNos]);
+    }, [data, globalData, drillDownState, stepDataOrderNos, paymentTerms]);
 
+    const paymentReminders = useMemo(() => {
+        if (drillDownState.level !== 1) return [];
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return (processedData as any[])
+            .filter(d => d.paymentDueDate)
+            .map(d => {
+                const due = new Date(d.paymentDueDate!);
+                const dueCheck = new Date(due);
+                dueCheck.setHours(0, 0, 0, 0);
+                const diffDays = Math.ceil((dueCheck.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                return { 
+                    order: d.displayOrderNo, 
+                    due: d.paymentDueDate!, 
+                    diff: diffDays 
+                };
+            })
+            .filter(rem => rem.diff >= 0 && rem.diff <= 7)
+            .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
+    }, [processedData, drillDownState.level]);
 
     const totalItems = processedData.length;
-    const totalPages = useMemo(() => Math.ceil(totalItems / rowsPerPage), [totalItems, rowsPerPage]);
+    const totalPages = Math.ceil(totalItems / rowsPerPage);
+    const paginatedData = processedData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
 
-    const paginatedData = useMemo(() => {
-        const startIndex = (currentPage - 1) * rowsPerPage;
-        return processedData.slice(startIndex, startIndex + rowsPerPage);
-    }, [processedData, currentPage, rowsPerPage]);
-
-    useEffect(() => {
-        if (currentPage > totalPages && totalPages > 0) {
-            setCurrentPage(totalPages);
-        } else if (totalPages === 0) {
-            setCurrentPage(1);
-        }
-    }, [totalPages, currentPage]);
-    
     useEffect(() => {
         setCurrentPage(1);
-        if (tableWrapperRef.current) tableWrapperRef.current.scrollTop = 0;
     }, [drillDownState]);
 
     const orderNoHeader = useMemo(() => {
         if (drillDownState.level === 1) {
             const visibleStatuses = new Set(paginatedData.map(d => d.originalStatus?.toUpperCase()));
-            const isShippedFiltered = (visibleStatuses.has('SHIPPED') || visibleStatuses.has('COMPLETE')) && !visibleStatuses.has('PLAN');
-            const isPlanFiltered = visibleStatuses.has('PLAN') && !(visibleStatuses.has('SHIPPED') || visibleStatuses.has('COMPLETE'));
-
-            if (isShippedFiltered) return 'Commercial Invoice No';
-            if (isPlanFiltered) return 'Order No';
-            return 'Order / Invoice No';
+            const isShippedOnly = (visibleStatuses.has('SHIPPED') || visibleStatuses.has('COMPLETE')) && !visibleStatuses.has('PLAN');
+            return isShippedOnly ? 'Commercial Invoice No' : 'Order / Invoice No';
         }
-        if (drillDownState.level === 3) {
-            return 'Commercial Invoice No';
-        }
-        return 'Order No';
+        return drillDownState.level === 3 ? 'Commercial Invoice No' : 'Order No';
     }, [drillDownState.level, paginatedData]);
-
 
     const getStatusKeyword = (status: string) => (status.split('(')[0] || '').trim().toLowerCase().replace(/\s+/g, '');
 
@@ -1543,81 +1627,73 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
         <div className="data-table-container">
             <div className="data-table-header">
                 <h3>{tableTitle}</h3>
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                    <button className="calendar-view-button" onClick={() => window.open('https://query-bon.vercel.app/', '_blank')}>
-                        {Icons.search} Query
+                {drillDownState.level > 1 && (
+                    <button className="back-button" onClick={onDrillUp}>
+                        {Icons.prevArrow} {backButtonText}
                     </button>
-                    {drillDownState.level > 1 && (
-                        <button className="back-button" onClick={onDrillUp}>
-                            {Icons.prevArrow} {backButtonText}
-                        </button>
-                    )}
-                </div>
+                )}
             </div>
             {drillDownState.level === 1 && (
                  <div className="instruction-container">
-                    <p>Tip: Double-click an order to see sub-orders. Single-click an Order/Invoice Number to track its progress.</p>
-                </div>
-            )}
-            {drillDownState.level === 2 && (
-                 <div className="instruction-container">
-                    <p>Tip: Double-click a sub-order to see its product details.</p>
+                    <p>
+                        {paymentReminders.length > 0 && (
+                            <span style={{ color: '#36C5F0', fontWeight: 800, marginRight: '40px' }}>
+                                <strong style={{ color: 'var(--text-color)', borderRight: '2px solid var(--card-border)', paddingRight: '12px', marginRight: '12px' }}>WEEKLY PAYMENT REMINDERS:</strong> 
+                                {paymentReminders.map(r => (
+                                    <span key={r.order} style={{ marginRight: '35px' }}>
+                                        Order {r.order} {r.diff === 0 ? 'is due TODAY' : `due in ${r.diff} days`} ({formatDateDDMMMYY(r.due)})
+                                    </span>
+                                ))}
+                            </span>
+                        )}
+                        <span style={{ color: 'var(--text-color-muted)' }}>
+                            Tip: Double-click an order to see sub-orders. Single-click an Order/Invoice Number to track its progress.
+                        </span>
+                    </p>
                 </div>
             )}
             <div className="table-wrapper" ref={tableWrapperRef}>
-                <table className={currentUser !== 'admin' ? 'client-view-table' : ''}>
+                <table>
                     <thead>
                         <tr>
                             <th className="text-center">Status</th>
                             <th>Shipped Date</th>
-                            <th>{orderNoHeader}</th>
                             
-                            {/* Layer 2 specifically requests Image after Order No */}
-                            {drillDownState.level === 2 && <th className="text-center">Image</th>}
-
-                            {/* Layer 3 specific headers after Invoice No */}
-                            {drillDownState.level === 3 && (
+                            {drillDownState.level === 3 ? (
                                 <>
+                                    <th>Commercial Invoice No</th>
                                     <th className="text-center">Image</th>
                                     <th>Product Code</th>
                                     <th>Category</th>
                                     <th>Product</th>
-                                </>
-                            )}
-
-                            {currentUser === 'admin' && <th>Customer</th>}
-                            {currentUser === 'admin' && <th>Country</th>}
-                            <th className="text-right">{drillDownState.level === 1 ? 'Total Qty' : 'Qty'}</th>
-                            <th className="text-right">Shipped Qty</th>
-                            
-                            {/* Balance Qty in Layer 1 & 2 */}
-                            {(drillDownState.level === 1 || drillDownState.level === 2) && <th className="text-right">Balance Qty</th>}
-
-                            {/* Value columns based on Layer */}
-                            {drillDownState.level === 3 ? (
-                                <>
-                                    <th className="text-right">Unit Price</th>
+                                    <th>Customer</th>
+                                    <th>Country</th>
+                                    <th className="text-right">Qty</th>
+                                    <th className="text-right">Shipped Qty</th>
                                     <th className="text-right">Order Value</th>
+                                    <th className="text-right">Unit Price</th>
                                     <th className="text-right">Fob Price</th>
-                                    <th className="text-right">MOQ</th>
                                 </>
                             ) : (
                                 <>
+                                    <th>{orderNoHeader}</th>
+                                    {drillDownState.level === 1 && <th>Payment Due Date</th>}
+                                    {drillDownState.level >= 2 && <th className="text-center">Image</th>}
+                                    {currentUser === 'admin' && <th>Customer</th>}
+                                    {currentUser === 'admin' && <th>Country</th>}
+                                    <th className="text-right">Qty</th>
+                                    <th className="text-right">Shipped Qty</th>
+                                    {drillDownState.level < 3 && <th className="text-right">Balance Qty</th>}
                                     <th className="text-right">Order Value</th>
                                     <th className="text-right">Shipped Value</th>
-                                    <th className="text-right">Balance Order Value</th>
+                                    <th className="text-right">Balance Value</th>
                                 </>
                             )}
                         </tr>
                     </thead>
                     <tbody>
-                        {paginatedData.map((row: any, index: number) => (
-                            <tr 
-                                key={drillDownState.level === 1 ? row.baseOrderNo : `${row.orderNo}-${index}`}
-                                className={`summary-row ${(drillDownState.level === 1 ? (!row.hasSubOrders && row.hasTracking) : row.hasTracking) ? 'has-tracking' : ''}`}
-                                onDoubleClick={() => onRowDoubleClick(row)}
-                                style={{ animationDelay: `${index * 0.05}s` }}
-                            >
+                        {paginatedData.map((row: any, idx: number) => (
+                            <tr key={idx} onDoubleClick={() => onRowDoubleClick(row)} className={row.hasTracking ? 'has-tracking' : ''}>
                                 <td className="text-center">
                                     <div className="status-cell">
                                         <span className={`status-dot ${getStatusKeyword(row.originalStatus || row.status)}`}></span>
@@ -1626,85 +1702,47 @@ const DataTable = ({ data, globalData, currentUser, authenticatedUser, onShowTra
                                 </td>
                                 <td>{formatDateDDMMMYY(row.stuffingMonth)}</td>
                                 
-                                {drillDownState.level === 1 && (
-                                    row.hasSubOrders ? (
-                                        <td className="order-no-cell" title="Double click to view sub-orders">{formatNa(row.displayOrderNo)}</td>
-                                    ) : (
-                                        <td className={`order-no-cell ${row.hasTracking ? 'clickable' : ''}`} 
-                                            onClick={(e) => { 
-                                                if (row.hasTracking) { 
-                                                    e.stopPropagation(); 
-                                                    onShowTracking(row.singleOrderNo || row.baseOrderNo); 
-                                                } 
-                                            }} 
-                                            title={row.hasTracking ? `Track Order` : ''}
-                                        >
-                                            {formatNa(row.displayOrderNo)}
-                                        </td>
-                                    )
-                                )}
-
-                                {drillDownState.level === 2 && (
-                                     <td className={`order-no-cell ${row.hasTracking ? 'clickable' : ''}`}
-                                         onClick={(e) => {
-                                             if (row.hasTracking) {
-                                                 e.stopPropagation();
-                                                 onShowTracking(row.orderNo);
-                                             }
-                                         }}
-                                     >
-                                        {formatNa(row.displayOrderNo)}
-                                     </td>
-                                )}
-
-                                {drillDownState.level === 3 && (
-                                     <td className="order-no-cell">
-                                        {formatNa(row.commercialInvoiceNo)}
-                                     </td>
-                                )}
-
-                                {/* Image Column for Layers 2 & 3 */}
-                                {(drillDownState.level === 2 || drillDownState.level === 3) && (
-                                     <td className="product-image-cell">
-                                        {row.imageLink && row.imageLink.toLowerCase() !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
-                                    </td>
-                                )}
-
-                                {/* Product details for Layer 3 */}
-                                {drillDownState.level === 3 && (
+                                {drillDownState.level === 3 ? (
                                     <>
+                                        <td className="order-no-cell">{formatNa(row.commercialInvoiceNo)}</td>
+                                        <td className="product-image-cell">
+                                            {row.imageLink && row.imageLink !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
+                                        </td>
                                         <td>{formatNa(row.productCode)}</td>
                                         <td>{formatNa(row.category)}</td>
                                         <td>{formatNa(row.product)}</td>
-                                    </>
-                                )}
-
-                                {currentUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
-                                {currentUser === 'admin' && <td>{formatNa(row.country)}</td>}
-                                
-                                <td className="text-right">{formatNumber(row.totalQty ?? row.qty)}</td>
-                                
-                                <td className="text-right">
-                                    {drillDownState.level === 3 
-                                        ? ((row.originalStatus === 'SHIPPED' || row.originalStatus === 'COMPLETE') ? formatNumber(row.qty) : '0')
-                                        : formatNumber(row.shippedQty)
-                                    }
-                                </td>
-                                
-                                {(drillDownState.level === 1 || drillDownState.level === 2) && <td className="text-right">{formatNumber(row.balanceQty)}</td>}
-
-                                {drillDownState.level === 3 ? (
-                                    <>
-                                        <td className="value-text text-right">{row.unitPrice > 0 ? formatCurrency(row.unitPrice) : '-'}</td>
-                                        <td className="value-text text-right">{row.exportValue > 0 ? formatCurrency(row.exportValue) : '-'}</td>
-                                        <td className="value-text text-right">{row.fobPrice > 0 ? formatCurrency(row.fobPrice) : '-'}</td>
-                                        <td className="text-right">{row.moq > 0 ? formatCompactNumber(row.moq) : '-'}</td>
+                                        <td>{formatNa(row.customerName)}</td>
+                                        <td>{formatNa(row.country)}</td>
+                                        <td className="text-right">{formatNumber(row.qty)}</td>
+                                        <td className="text-right">{formatNumber(row.qty)}</td>
+                                        <td className="text-right value-text">{formatCurrency(row.exportValue)}</td>
+                                        <td className="text-right">{formatCurrency(row.unitPrice)}</td>
+                                        <td className="text-right">{formatCurrency(row.fobPrice)}</td>
                                     </>
                                 ) : (
                                     <>
-                                        <td className="value-text text-right">{formatCurrency(row.totalExportValue)}</td>
-                                        <td className="value-text text-right">{formatCurrency(row.shippedValue)}</td>
-                                        <td className="value-text text-right">{formatCurrency(row.balanceValue)}</td>
+                                        <td className={`order-no-cell ${row.hasTracking ? 'clickable' : ''}`} onClick={(e) => { if(row.hasTracking && drillDownState.level < 3) { e.stopPropagation(); onShowTracking(row.singleOrderNo || row.baseOrderNo || row.orderNo); } }}>
+                                            {formatNa(row.displayOrderNo)}
+                                        </td>
+
+                                        {drillDownState.level === 1 && (
+                                            <td className="font-medium" style={{ color: row.paymentDueDate ? 'var(--primary-accent)' : 'inherit' }}>
+                                                {row.paymentDueDate ? formatDateDDMMMYY(row.paymentDueDate) : '~'}
+                                            </td>
+                                        )}
+                                        {drillDownState.level >= 2 && (
+                                            <td className="product-image-cell">
+                                                {row.imageLink && row.imageLink !== '#n/a' ? <img src={row.imageLink} alt={row.product} className="product-image" /> : <div className="product-image-placeholder">No Image</div>}
+                                            </td>
+                                        )}
+                                        {currentUser === 'admin' && <td>{formatNa(row.customerName)}</td>}
+                                        {currentUser === 'admin' && <td>{formatNa(row.country)}</td>}
+                                        <td className="text-right">{formatNumber(row.totalQty ?? row.qty)}</td>
+                                        <td className="text-right">{formatNumber(row.shippedQty ?? (row.originalStatus?.startsWith('SHIPPED') || row.originalStatus?.startsWith('COMPLETE') ? row.qty : 0))}</td>
+                                        {drillDownState.level < 3 && <td className="text-right">{formatNumber(row.balanceQty)}</td>}
+                                        <td className="text-right value-text">{formatCurrency(row.totalExportValue ?? row.exportValue)}</td>
+                                        <td className="text-right value-text">{formatCurrency(row.shippedValue)}</td>
+                                        <td className="text-right value-text">{formatCurrency(row.balanceValue)}</td>
                                     </>
                                 )}
                             </tr>
@@ -1849,6 +1887,7 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
         setIsLoading(true);
 
         try {
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             const stepMap = new Map(stepData.map(s => [s.orderNo, s]));
             
             const simplifyOrders = (rows: OrderData[]) => rows.map(r => {
@@ -1944,52 +1983,25 @@ const ChatAssistant = ({ orderData, catalogData, stepData, clientName, kpis, cou
             const systemInstruction = `You are an expert AI Data Analyst for the "Global Operations Dashboard".
 
 **Dashboard Structure Awareness:**
-You are integrated into a specific dashboard with the following components. Use this structure to navigate user questions:
-
-1. **KPI Cards:**
-   - **Order Forwarding Value**
-   - **Shipment Order Value**
-   - **Total Orders Received**
-   - **In Process**
-   - **Shipped Orders**
-   - **Total No of Units**
-   - **Never Bought Products**
-
-2. **Charts:**
-   - **Order Value by Country** (Reads data labels and tooltips)
-   - **Monthly Order Value** (Reads data labels and tooltips)
-
-3. **Table Structure (3 Layers):**
-   - **Layer 1 (Main): "All Orders"**
-     - Headers: Status, Shipped Date, Order / Invoice No, Customer, Country, Qty, Shipped Qty, Balance Qty, Order Value, Shipped Value, Balance Value.
-   - **Layer 2 (Drill-down): "Sub-Orders"**
-     - Headers: Status, Shipped Date, Order No, Image, Customer, Country, Qty, Shipped Qty, Balance Qty, Order Value, Shipped Value, Balance Value.
-   - **Layer 3 (Detail): "Products for Sub-Order"**
-     - Headers: Status, Shipped Date, Order No, Image, Product Code, Category, Product, Customer, Country, Qty, Shipped Qty, Unit Price, Order Value, Fob Price, MOQ.
-
-**Data Sources Provided:**
-1. **Aggregated Summaries:** Use these for questions about specific Charts or KPIs mentioned above.
-2. **Orders CSV:** Merged view of "Live" (Order Details) and "Step" (Tracking) sheets. Use this for deep dives into Layer 3 data.
-3. **Catalog CSV:** "Master" sheet data.
+You are integrated into a dashboard with the following components:
+1. **KPI Cards** for values and order counts.
+2. **Charts** for global and monthly volume.
+3. **Table Structure (3 Layers):** Layer 1 (Invoices), Layer 2 (Orders), Layer 3 (Product details).
 
 **Rules:**
 1. **Privacy:** ${roleInstructions}
-2. **Accuracy:** Give answers related ONLY to user questions based on the structure above. Do NOT provide unrelated data.
-3. **Context:** You know about all tables, graphs, and KPI cards listed above.
+2. **Accuracy:** Use provided context for analysis.
 
-**Current Dashboard Context:**
+**Current Context:**
 - **KPI Values:** ${JSON.stringify(kpis)}
-- **Chart Data (Country):** [${countryChartSummary}]
-- **Chart Data (Monthly):** [${monthlyChartSummary}]
-
-**Response Style:** Direct, Professional, Accurate.`;
+- **Chart Data:** ${countryChartSummary} / ${monthlyChartSummary}`;
 
             const prompt = `Data Context (CSV):
---- ORDERS START (Top ${truncatedOrders.length} records from Live & Step Sheets) ---
+--- ORDERS START ---
 ${ordersCSV}
 --- ORDERS END ---
 
---- CATALOG START (Top ${truncatedCatalog.length} records from Master Sheet) ---
+--- CATALOG START ---
 ${catalogCSV}
 --- CATALOG END ---
 
@@ -2015,7 +2027,7 @@ User Question: "${userMessage.text}"`;
 
         } catch (error) {
             console.error("Error calling Gemini API:", error);
-            const errorMessage = "I'm having trouble analyzing the data right now. Please try again in a moment.";
+            const errorMessage = "I'm having trouble analyzing the data right now.";
             setMessages(prev => {
                 const newMessages = [...prev];
                 newMessages[newMessages.length - 1].text = errorMessage;
@@ -2049,7 +2061,6 @@ User Question: "${userMessage.text}"`;
                      {messages.map((msg, index) => (
                         <div key={index} className={`chat-message ${msg.role}`}>
                             {msg.role === 'user' ? msg.text : <SimpleMarkdown text={msg.text} />}
-                            {isLoading && msg.role === 'assistant' && index === messages.length - 1 && msg.text.length > 0 && <span className="blinking-cursor"></span>}
                         </div>
                     ))}
                 </div>
@@ -3003,6 +3014,7 @@ const App = () => {
   const [masterProductList, setMasterProductList] = useState<MasterProductData[]>([]);
   const [stepData, setStepData] = useState<StepData[]>([]);
   const [accountData, setAccountData] = useState<AccountData[]>([]); 
+  const [paymentTerms, setPaymentTerms] = useState<PaymentTermData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [authenticatedUser, setAuthenticatedUser] = useState<string | null>(null);
@@ -3034,6 +3046,24 @@ const App = () => {
   const announcementsButtonRef = useRef<HTMLButtonElement>(null);
   
   const [valueBreakdown, setValueBreakdown] = useState<{ title: string, data: BreakdownItem[] } | null>(null);
+
+  const handleThemeChange = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
+
+  const handleEyeProtectionChange = () => {
+    setIsEyeProtection(prev => {
+        const newState = !prev;
+        if (newState) {
+            document.body.classList.add('eye-protection-mode');
+        } else {
+            document.body.classList.remove('eye-protection-mode');
+        }
+        return newState;
+    });
+  };
 
   const clientFilteredData = useMemo(() => {
     let filtered = currentUser === 'admin' ? data : data.filter(d => d.customerName === currentUser);
@@ -3116,78 +3146,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('dashboard-theme');
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
-    setTheme(initialTheme);
-    document.documentElement.setAttribute('data-theme', initialTheme);
-
-    const savedEyeProtection = localStorage.getItem('dashboard-eye-protection') === 'true';
-    setIsEyeProtection(savedEyeProtection);
-    if (savedEyeProtection) {
-        document.body.classList.add('eye-protection-mode');
-    }
-  }, []);
-
-  const handleThemeChange = () => {
-      setTheme(prevTheme => {
-          const newTheme = prevTheme === 'light' ? 'dark' : 'light';
-          localStorage.setItem('dashboard-theme', newTheme);
-          document.documentElement.setAttribute('data-theme', newTheme);
-          return newTheme;
-      });
-  };
-
-  const handleEyeProtectionChange = () => {
-      setIsEyeProtection(prev => {
-          const newState = !prev;
-          localStorage.setItem('dashboard-eye-protection', String(newState));
-          if (newState) {
-              document.body.classList.add('eye-protection-mode');
-          } else {
-              document.body.classList.remove('eye-protection-mode');
-          }
-          return newState;
-      });
-  };
-
-  const parseGvizResponse = (responseText: string, headerMapping: Record<string, string>, requiredFields: string[] = []) => {
-      if (!responseText) return [];
-      const match = responseText.match(/{.*}/s);
-      if (!match) throw new Error("Invalid Gviz response format.");
-      
-      const json: any = JSON.parse(match[0]);
-      if (json.status !== 'ok') {
-        const errorMessages = json.errors?.map((e: any) => e.detailed_message || e.message).join(', ') || 'Unknown error';
-        throw new Error(`Google Sheets API error: ${errorMessages}`);
-      }
-
-      const labelToIndex = new Map<string, number>(json.table.cols.map((col: any, i: number) => [String(col.label || '').trim(), i]));
-
-      return json.table.rows.map((r: { c: ({ v: any } | null)[] }) => {
-          const row: any = {};
-          for (const [header, key] of Object.entries(headerMapping)) {
-              const index = labelToIndex.get(header);
-              if (index !== undefined) {
-                  const cell = r.c[index];
-                  const value = cell ? cell.v : null;
-
-                  if (['qty', 'moq'].includes(key)) {
-                      row[key] = parseInt(String(value || '0').replace(/,/g, ''), 10) || 0;
-                  } else if (['exportValue', 'unitPrice', 'fobPrice', 'totalOrderValue', 'paymentReceived', 'balancePayment'].includes(key)) {
-                      row[key] = parseFloat(String(value || '0').replace(/[$,]/g, '')) || 0;
-                  } else {
-                      row[key] = value !== null ? String(value).trim() : '';
-                  }
-              } else {
-                  row[key] = '';
-              }
-          }
-          return row;
-      }).filter((row: any) => requiredFields.every(field => row[field] && String(row[field]).toLowerCase() !== '#n/a'));
-    };
-
-  useEffect(() => {
     const lastReadId = localStorage.getItem('dashboard_last_announcement_id');
     const latestId = ANNOUNCEMENTS[ANNOUNCEMENTS.length - 1]?.id;
     if (latestId && lastReadId !== latestId) {
@@ -3211,13 +3169,16 @@ const App = () => {
       const accountSheetGid = '596654536';
       const accountSheetUrl = `https://docs.google.com/spreadsheets/d/${accountSheetId}/gviz/tq?gid=${accountSheetGid}`;
 
+      const paymentTermsSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Payments%20Terms&range=A2:D`;
+
       try {
-        const [liveResponse, masterResponse, apiKeyResponse, stepResponse, accountResponse] = await Promise.all([
+        const [liveResponse, masterResponse, apiKeyResponse, stepResponse, accountResponse, pTermsResponse] = await Promise.all([
           fetch(liveSheetUrl),
           fetch(masterSheetUrl),
           fetch(apiKeySheetUrl).catch(e => { console.warn("API Key sheet fetch failed, proceeding without it."); return null; }),
           fetch(stepSheetUrl).catch(e => { console.warn("Step sheet fetch failed, proceeding without it."); return null; }),
-          fetch(accountSheetUrl).catch(e => { console.warn("Account sheet fetch failed, proceeding without it."); return null; }),
+          fetch(accountSheetUrl).catch(e => { console.warn("Account sheet fetch failed"); return null; }),
+          fetch(paymentTermsSheetUrl).catch(e => { console.warn("Payment Terms fetch failed"); return null; }),
         ]);
 
         if (!liveResponse.ok) throw new Error(`HTTP error! status: ${liveResponse.status} on Live sheet`);
@@ -3311,6 +3272,24 @@ const App = () => {
                 console.warn("Failed to parse account data", err);
             }
         }
+
+        let parsedPTerms: PaymentTermData[] = [];
+        if (pTermsResponse && pTermsResponse.ok) {
+            const pText = await pTermsResponse.text();
+            const pMatch = pText.match(/{.*}/s);
+            if (pMatch) {
+                const json: any = JSON.parse(pMatch[0]);
+                if (json.status === 'ok') {
+                    parsedPTerms = json.table.rows.map((r: any) => ({
+                        client: String(r.c?.[0]?.v || '').trim(),
+                        country: String(r.c?.[1]?.v || '').trim(),
+                        paymentTerm: String(r.c?.[2]?.v || '').trim(),
+                        dueDateRule: String(r.c?.[3]?.v || '').trim()
+                    } as PaymentTermData)).filter((row: PaymentTermData) => row.client && row.client.toLowerCase() !== '#n/a');
+                }
+            }
+        }
+        setPaymentTerms(parsedPTerms);
 
         const stepDataMap = new Map<string, StepData>(parsedStepData.map(d => [d.orderNo, d]));
 
@@ -3455,7 +3434,7 @@ const App = () => {
     const options = sortedFYs.map(fy => {
         const displayYear = fy.includes('-') ? fy.split('-')[1] : fy;
         return `Jan to Dec-${displayYear}`;
-    }).filter(opt => !opt.endsWith('-27')); // Specifically remove Dec-27 as requested
+    }).filter(opt => !opt.endsWith('-27'));
 
     return ['All', ...options];
   }, [data]);
@@ -3543,7 +3522,6 @@ const App = () => {
         const status = (row.originalStatus || '').toUpperCase();
         const isActuallyShipped = status === 'SHIPPED' || status === 'COMPLETE';
 
-        // Select correct column strictly based on context. 
         const dateToUse = type === 'shipped' ? row.stuffingMonth : row.orderDate;
         const dateObj = parseDate(dateToUse);
         
@@ -3675,7 +3653,6 @@ const App = () => {
 
 
   const kpis = useMemo(() => {
-    // Independent context fetching for core KPI cards to maintain stable counts
     const receivedOrdersData = getOrderContextForKPI('received', true);
     const shippedOrdersData = getOrderContextForKPI('shipped', true);
     const planOrdersData = receivedOrdersData.filter(d => (d.originalStatus || '').toUpperCase() === 'PLAN');
@@ -3688,7 +3665,6 @@ const App = () => {
     const totalShipmentValue = shippedOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
     const totalPlanValue = planOrdersData.reduce((sum, d) => sum + (d.exportValue || 0), 0);
     
-    // Dynamic Unit Count based on Active Status Selection
     const statusFilter = activeFilters.find(f => f.type === 'status');
     let unitsDataForTotal = receivedOrdersData;
     if (statusFilter) {
@@ -3696,7 +3672,6 @@ const App = () => {
         if (val === 'SHIPPED') unitsDataForTotal = shippedOrdersData;
         else if (val === 'PLAN') unitsDataForTotal = planOrdersData;
     }
-    // Correctly perform unique count of Product Codes as requested (~8.7k in Live)
     const totalUnits = new Set(unitsDataForTotal.map(d => d.productCode).filter(Boolean)).size;
 
     return {
@@ -3706,7 +3681,7 @@ const App = () => {
       totalOrders: receivedOrdersSet.size,
       totalInProcess: inProcessOrdersSet.size,
       totalShipped: shippedOrdersSet.size,
-      boughtProducts: totalUnits, // Maps to "Total No of Units"
+      boughtProducts: totalUnits, 
       activeClients: new Set(receivedOrdersData.map(item => item.customerName)).size,
       neverBoughtCount: neverBoughtForClientData.length,
       rawForwarding: receivedOrdersData,
@@ -3932,8 +3907,7 @@ const App = () => {
     ? "Search Status, Date, Order, Client, Country, Product, Code, Category..."
     : "Search Status, Date, Order, Product, Code, Category...";
 
-  // Logic: Show admin full dashboard only if authenticated as admin AND currently viewing "admin"
-  const showAdminInterface = authenticatedUser === 'admin' && currentUser === 'admin' && adminViewMode === 'dashboard';
+  const showCharts = drillDownState.level === 1 && (currentUser !== 'admin' || adminViewMode === 'dashboard');
 
   return (
     <>
@@ -4135,26 +4109,33 @@ const App = () => {
                 className="never-bought-kpi"
               />
           </div>
-          {authenticatedUser === 'admin' && currentUser === 'admin' && (
-              <div className="view-toggle-buttons">
-                  <button 
-                      className={adminViewMode === 'dashboard' ? 'active' : ''}
-                      onClick={() => setAdminViewMode('dashboard')}
-                  >
-                      {Icons.dashboard} Dashboard
-                  </button>
-                  <button 
-                      className={adminViewMode === 'table' ? 'active' : ''}
-                      onClick={() => setAdminViewMode('table')}
-                    >
-                      {Icons.table} Table
-                  </button>
-              </div>
-          )}
+          <div className="view-toggle-buttons">
+              {authenticatedUser === 'admin' && currentUser === 'admin' && (
+                  <>
+                      <button 
+                          className={adminViewMode === 'dashboard' ? 'active' : ''}
+                          onClick={() => setAdminViewMode('dashboard')}
+                      >
+                          {Icons.dashboard} Dashboard
+                      </button>
+                      <button 
+                          className={adminViewMode === 'table' ? 'active' : ''}
+                          onClick={() => setAdminViewMode('table')}
+                        >
+                          {Icons.table} Table
+                      </button>
+                  </>
+              )}
+              <button 
+                  className="query-button-global" 
+                  onClick={() => window.open('https://query-bon.vercel.app/', '_blank')}
+              >
+                  {Icons.search} Query Portal
+              </button>
+          </div>
 
-          {showAdminInterface ? (
-             <div className={`main-content ${drillDownState.level > 1 ? 'table-only-view' : 'dashboard-view'}`}>
-                {drillDownState.level === 1 && (
+          <div className={`main-content ${!showCharts ? 'table-only-view' : 'dashboard-view'}`}>
+                {showCharts && (
                     <div className="charts-container">
                         <div className={`chart-container ${activeFilters.some(f => f.source === 'countryChart') ? 'active-filter-source' : ''}`}>
                             <h3>Order Value by Country</h3>
@@ -4183,25 +4164,9 @@ const App = () => {
                     onDrillUp={handleDrillUp}
                     baseOrderHasSubOrders={baseOrderHasSubOrders}
                     activeFilters={activeFilters}
+                    paymentTerms={paymentTerms}
                 />
-             </div>
-          ) : (
-            <div className={`main-content ${currentUser !== 'admin' ? 'client-view' : 'table-only-view'}`} style={{marginTop: '1.5rem'}}>
-                <DataTable 
-                    data={finalFilteredData} 
-                    globalData={kpiConsistentData}
-                    currentUser={currentUser}
-                    authenticatedUser={authenticatedUser}
-                    onShowTracking={setSelectedOrderForTracking}
-                    stepData={stepData}
-                    drillDownState={drillDownState}
-                    onRowDoubleClick={handleRowDoubleClick}
-                    onDrillUp={handleDrillUp}
-                    baseOrderHasSubOrders={baseOrderHasSubOrders}
-                    activeFilters={activeFilters}
-                />
-            </div>
-          )}
+          </div>
         </div>
       </div>
       <ChatAssistant 
