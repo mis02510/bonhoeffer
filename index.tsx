@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GoogleGenAI } from "@google/genai";
@@ -3032,168 +3033,167 @@ const App = () => {
     }
   };
 
-  useEffect(() => {
-    const lastReadId = localStorage.getItem('dashboard_last_announcement_id');
-    const latestId = ANNOUNCEMENTS[ANNOUNCEMENTS.length - 1]?.id;
-    if (latestId && lastReadId !== latestId) {
-        setHasUnreadAnnouncements(true);
+  const fetchData = async (isInitial: boolean) => {
+    const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
+    const liveQuery = encodeURIComponent("SELECT *");
+    
+    const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Live&range=A1:W&tq=${liveQuery}`;
+    const masterSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=MASTER`;
+    const apiKeySheetGid = '817322209';
+    const apiKeySheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${apiKeySheetGid}`;
+    const stepSheetGid = '2023445010';
+    const stepSheetRange = 'A1:M';
+    const stepQuery = encodeURIComponent('SELECT *');
+    const stepSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${stepSheetGid}&range=${stepSheetRange}&tq=${stepQuery}`;
+    const paymentTermsSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Payments%20Terms&range=A2:D`;
+
+    if (isInitial) {
+        setLoading(true);
     }
 
-    const fetchData = async () => {
-      const sheetId = '1JbxRqsZTDgmdlJ_3nrumfjPvjGVZdjJe43FPrh9kYw4';
-      const liveQuery = encodeURIComponent("SELECT *");
+    try {
+      const [liveResponse, masterResponse, apiKeyResponse, stepResponse, pTermsResponse] = await Promise.all([
+        fetch(liveSheetUrl),
+        fetch(masterSheetUrl),
+        fetch(apiKeySheetUrl).catch(e => { console.warn("API Key sheet fetch failed, proceeding without it."); return null; }),
+        fetch(stepSheetUrl).catch(e => { console.warn("Step sheet fetch failed, proceeding without it."); return null; }),
+        fetch(paymentTermsSheetUrl).catch(e => { console.warn("Payment Terms fetch failed"); return null; }),
+      ]);
+
+      if (!liveResponse.ok) throw new Error(`HTTP error! status: ${liveResponse.status} on Live sheet`);
+      if (!masterResponse.ok) throw new Error(`HTTP error! status: ${masterResponse.status} on MASTER sheet`);
+
+      const liveText = await liveResponse.text();
+      const masterText = await masterResponse.text();
+
+      const liveHeaderMapping = {
+          'Status': 'status', 'ORDER FORWARDING DATE': 'orderDate', 'Stuffing Month': 'stuffingMonth',
+          'Order Number': 'orderNo', 'Client': 'customerName', 'Country': 'country',
+          'Products Code': 'productCode', 'Qty': 'qty', 'Export Value': 'exportValue',
+          'Logo Image': 'logoUrl', 'Category': 'category', 'Segment': 'segment',
+          'Product': 'product', 'Image Link': 'imageLink', 'Unit Price': 'unitPrice',
+          'Fob Price': 'fobPrice', 'MOQ': 'moq', 'Month': 'forwardingMonth', 'FY': 'fy',
+          'Stuffing Date': 'stuffingDate',
+          'ETD/ SOB': 'etd',
+          'ETA': 'eta',
+          'Commercial Invoice No': 'commercialInvoiceNo'
+      };
+      const parsedLiveDataWithoutFyFallback: OrderData[] = parseGvizResponse(liveText, liveHeaderMapping, ['orderNo']);
+
+      const parsedLiveData = parsedLiveDataWithoutFyFallback.map(order => {
+          let fy = order.fy;
+          if (!fy || fy.toLowerCase() === '#n/a' || fy.trim() === '') {
+               fy = '25-26';
+          }
+          return { ...order, fy };
+      });
+
+      const masterHeaderMapping = {
+          'Category': 'category', 'Segment': 'segment', 'Product': 'product',
+          'Products Code': 'productCode', 'Image Link': 'imageLink', 'Customer Name': 'customerName',
+          'Country': 'country', 'Fob Price': 'fobPrice', 'Moq Qty': 'moq'
+      };
+      const parsedMasterData: MasterProductData[] = parseGvizResponse(masterText, masterHeaderMapping, ['productCode']);
       
-      const liveSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Live&range=A1:W&tq=${liveQuery}`;
-      const masterSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=MASTER`;
-      const apiKeySheetGid = '817322209';
-      const apiKeySheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${apiKeySheetGid}`;
-      const stepSheetGid = '2023445010';
-      const stepSheetRange = 'A1:M';
-      const stepQuery = encodeURIComponent('SELECT *');
-      const stepSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${stepSheetGid}&range=${stepSheetRange}&tq=${stepQuery}`;
-      const paymentTermsSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=Payments%20Terms&range=A2:D`;
+      let parsedStepData: StepData[] = [];
+      if (stepResponse && stepResponse.ok) {
+          const stepText = await stepResponse.text();
+          const match = stepText.match(/{.*}/s);
+          if (match) {
+              const json: any = JSON.parse(match[0]);
+              if (json.status === 'ok') {
+                  parsedStepData = json.table.rows.map((r: any) => ({
+                      orderNo: String(r.c?.[0]?.v || '').trim(),
+                      productionDate: String(r.c?.[1]?.v || '').trim(),
+                      productionStatus: String(r.c?.[2]?.v || '').trim(),
+                      sobDate: String(r.c?.[3]?.v || '').trim(),
+                      sobStatus: String(r.c?.[4]?.v || '').trim(),
+                      paymentPlannedDate: String(r.c?.[5]?.v || '').trim(),
+                      paymentStatus: String(r.c?.[6]?.v || '').trim(),
+                      qualityCheckPlannedDate: String(r.c?.[7]?.v || '').trim(),
+                      qualityCheck1Url: String(r.c?.[8]?.v || '').trim(),
+                      qualityCheck2Url: String(r.c?.[9]?.v || '').trim(),
+                      qualityCheck3Url: String(r.c?.[10]?.v || '').trim(),
+                      qualityCheck4Url: String(r.c?.[11]?.v || '').trim(),
+                      qualityCheckStatus: String(r.c?.[12]?.v || '').trim(),
+                  } as StepData)).filter((row: StepData) => row.orderNo && row.orderNo.toLowerCase() !== '#n/a');
+              }
+          }
+      }
+      
+      let parsedPTerms: PaymentTermData[] = [];
+      if (pTermsResponse && pTermsResponse.ok) {
+          const pText = await pTermsResponse.text();
+          const pMatch = pText.match(/{.*}/s);
+          if (pMatch) {
+              const json: any = JSON.parse(pMatch[0]);
+              if (json.status === 'ok') {
+                  parsedPTerms = json.table.rows.map((r: any) => ({
+                      client: String(r.c?.[0]?.v || '').trim(),
+                      country: String(r.c?.[1]?.v || '').trim(),
+                      paymentTerm: String(r.c?.[2]?.v || '').trim(),
+                      dueDateRule: String(r.c?.[3]?.v || '').trim()
+                  } as PaymentTermData)).filter((row: PaymentTermData) => row.client && row.client.toLowerCase() !== '#n/a');
+              }
+          }
+      }
+      setPaymentTerms(parsedPTerms);
 
-      try {
-        const [liveResponse, masterResponse, apiKeyResponse, stepResponse, pTermsResponse] = await Promise.all([
-          fetch(liveSheetUrl),
-          fetch(masterSheetUrl),
-          fetch(apiKeySheetUrl).catch(e => { console.warn("API Key sheet fetch failed, proceeding without it."); return null; }),
-          fetch(stepSheetUrl).catch(e => { console.warn("Step sheet fetch failed, proceeding without it."); return null; }),
-          fetch(paymentTermsSheetUrl).catch(e => { console.warn("Payment Terms fetch failed"); return null; }),
-        ]);
+      const stepDataMap = new Map<string, StepData>(parsedStepData.map(d => [d.orderNo, d]));
 
-        if (!liveResponse.ok) throw new Error(`HTTP error! status: ${liveResponse.status} on Live sheet`);
-        if (!masterResponse.ok) throw new Error(`HTTP error! status: ${masterResponse.status} on MASTER sheet`);
+      const processedLiveData = parsedLiveData.map(order => {
+          const stepInfo = stepDataMap.get(order.orderNo);
+          let updatedStatus = order.status;
+          const originalStatus = order.status; 
 
-        const liveText = await liveResponse.text();
-        const masterText = await masterResponse.text();
+          if (stepInfo) {
+              const sobDone = (stepInfo.sobStatus?.toLowerCase() === 'yes' || stepInfo.sobStatus?.toLowerCase() === 'done');
+              const qualityDone = (stepInfo.qualityCheckStatus?.toLowerCase() === 'yes' || stepInfo.qualityCheckStatus?.toLowerCase() === 'done');
+              const productionDone = (stepInfo.productionStatus?.toLowerCase() === 'yes' || stepInfo.productionStatus?.toLowerCase() === 'done');
+              const paymentDone = (stepInfo.paymentStatus?.toLowerCase() === 'yes' || stepInfo.paymentStatus?.toLowerCase() === 'done');
+              
+              const isValidDate = (dateStr: string) => dateStr && dateStr.trim().toLowerCase() !== '#n/a' && dateStr.trim() !== '';
 
-        const liveHeaderMapping = {
-            'Status': 'status', 'ORDER FORWARDING DATE': 'orderDate', 'Stuffing Month': 'stuffingMonth',
-            'Order Number': 'orderNo', 'Client': 'customerName', 'Country': 'country',
-            'Products Code': 'productCode', 'Qty': 'qty', 'Export Value': 'exportValue',
-            'Logo Image': 'logoUrl', 'Category': 'category', 'Segment': 'segment',
-            'Product': 'product', 'Image Link': 'imageLink', 'Unit Price': 'unitPrice',
-            'Fob Price': 'fobPrice', 'MOQ': 'moq', 'Month': 'forwardingMonth', 'FY': 'fy',
-            'Stuffing Date': 'stuffingDate',
-            'ETD/ SOB': 'etd',
-            'ETA': 'eta',
-            'Commercial Invoice No': 'commercialInvoiceNo'
-        };
-        const parsedLiveDataWithoutFyFallback: OrderData[] = parseGvizResponse(liveText, liveHeaderMapping, ['orderNo']);
+              if (sobDone && paymentDone && isValidDate(stepInfo.sobDate)) {
+                  updatedStatus = `Complete (${stepInfo.sobDate})`;
+              } else if (sobDone && isValidDate(stepInfo.sobDate)) {
+                  updatedStatus = `Shipped (${stepInfo.sobDate})`;
+              } else if (qualityDone && isValidDate(stepInfo.qualityCheckPlannedDate)) {
+                  updatedStatus = `Quality Check (${stepInfo.qualityCheckPlannedDate})`;
+              } else if (productionDone && isValidDate(stepInfo.productionDate)) {
+                  updatedStatus = `Production (${stepInfo.productionDate})`;
+              }
+          }
+          return { ...order, status: updatedStatus, originalStatus: originalStatus };
+      });
 
-        const parsedLiveData = parsedLiveDataWithoutFyFallback.map(order => {
-            let fy = order.fy;
-            if (!fy || fy.toLowerCase() === '#n/a' || fy.trim() === '') {
-                 fy = '25-26';
-            }
-            return { ...order, fy };
-        });
+      setData(processedLiveData);
+      setMasterProductList(parsedMasterData);
+      setStepData(parsedStepData);
+      setLastUpdateTime(new Date()); 
 
-        const masterHeaderMapping = {
-            'Category': 'category', 'Segment': 'segment', 'Product': 'product',
-            'Products Code': 'productCode', 'Image Link': 'imageLink', 'Customer Name': 'customerName',
-            'Country': 'country', 'Fob Price': 'fobPrice', 'Moq Qty': 'moq'
-        };
-        const parsedMasterData: MasterProductData[] = parseGvizResponse(masterText, masterHeaderMapping, ['productCode']);
-        
-        let parsedStepData: StepData[] = [];
-        if (stepResponse && stepResponse.ok) {
-            const stepText = await stepResponse.text();
-            const match = stepText.match(/{.*}/s);
-            if (match) {
-                const json: any = JSON.parse(match[0]);
-                if (json.status === 'ok') {
-                    parsedStepData = json.table.rows.map((r: any) => ({
-                        orderNo: String(r.c?.[0]?.v || '').trim(),
-                        productionDate: String(r.c?.[1]?.v || '').trim(),
-                        productionStatus: String(r.c?.[2]?.v || '').trim(),
-                        sobDate: String(r.c?.[3]?.v || '').trim(),
-                        sobStatus: String(r.c?.[4]?.v || '').trim(),
-                        paymentPlannedDate: String(r.c?.[5]?.v || '').trim(),
-                        paymentStatus: String(r.c?.[6]?.v || '').trim(),
-                        qualityCheckPlannedDate: String(r.c?.[7]?.v || '').trim(),
-                        qualityCheck1Url: String(r.c?.[8]?.v || '').trim(),
-                        qualityCheck2Url: String(r.c?.[9]?.v || '').trim(),
-                        qualityCheck3Url: String(r.c?.[10]?.v || '').trim(),
-                        qualityCheck4Url: String(r.c?.[11]?.v || '').trim(),
-                        qualityCheckStatus: String(r.c?.[12]?.v || '').trim(),
-                    } as StepData)).filter((row: StepData) => row.orderNo && row.orderNo.toLowerCase() !== '#n/a');
-                }
-            }
-        }
-        
-        let parsedPTerms: PaymentTermData[] = [];
-        if (pTermsResponse && pTermsResponse.ok) {
-            const pText = await pTermsResponse.text();
-            const pMatch = pText.match(/{.*}/s);
-            if (pMatch) {
-                const json: any = JSON.parse(pMatch[0]);
-                if (json.status === 'ok') {
-                    parsedPTerms = json.table.rows.map((r: any) => ({
-                        client: String(r.c?.[0]?.v || '').trim(),
-                        country: String(r.c?.[1]?.v || '').trim(),
-                        paymentTerm: String(r.c?.[2]?.v || '').trim(),
-                        dueDateRule: String(r.c?.[3]?.v || '').trim()
-                    } as PaymentTermData)).filter((row: PaymentTermData) => row.client && row.client.toLowerCase() !== '#n/a');
-                }
-            }
-        }
-        setPaymentTerms(parsedPTerms);
+      const fetchedCredentials: Record<string, string> = {};
+      if (apiKeyResponse && apiKeyResponse.ok) {
+          const apiKeyText = await apiKeyResponse.text();
+          const match = apiKeyText.match(/{.*}/s);
+          if (match) {
+              const json: any = JSON.parse(match[0]);
+              if (json.status === 'ok') {
+                  json.table.rows.forEach((r: any) => {
+                      const name: string = String(r.c?.[0]?.v || '').trim();
+                      const key: string = String(r.c?.[1]?.v || '').trim();
+                      if (name && key) {
+                          fetchedCredentials[name] = key;
+                      }
+                  });
+              }
+          }
+      }
+      
+      const allCredentials: Record<string, string> = { ...fetchedCredentials };
+      setUserCredentials(allCredentials);
 
-        const stepDataMap = new Map<string, StepData>(parsedStepData.map(d => [d.orderNo, d]));
-
-        const processedLiveData = parsedLiveData.map(order => {
-            const stepInfo = stepDataMap.get(order.orderNo);
-            let updatedStatus = order.status;
-            const originalStatus = order.status; 
-
-            if (stepInfo) {
-                const sobDone = (stepInfo.sobStatus?.toLowerCase() === 'yes' || stepInfo.sobStatus?.toLowerCase() === 'done');
-                const qualityDone = (stepInfo.qualityCheckStatus?.toLowerCase() === 'yes' || stepInfo.qualityCheckStatus?.toLowerCase() === 'done');
-                const productionDone = (stepInfo.productionStatus?.toLowerCase() === 'yes' || stepInfo.productionStatus?.toLowerCase() === 'done');
-                const paymentDone = (stepInfo.paymentStatus?.toLowerCase() === 'yes' || stepInfo.paymentStatus?.toLowerCase() === 'done');
-                
-                const isValidDate = (dateStr: string) => dateStr && dateStr.trim().toLowerCase() !== '#n/a' && dateStr.trim() !== '';
-
-                if (sobDone && paymentDone && isValidDate(stepInfo.sobDate)) {
-                    updatedStatus = `Complete (${stepInfo.sobDate})`;
-                } else if (sobDone && isValidDate(stepInfo.sobDate)) {
-                    updatedStatus = `Shipped (${stepInfo.sobDate})`;
-                } else if (qualityDone && isValidDate(stepInfo.qualityCheckPlannedDate)) {
-                    updatedStatus = `Quality Check (${stepInfo.qualityCheckPlannedDate})`;
-                } else if (productionDone && isValidDate(stepInfo.productionDate)) {
-                    updatedStatus = `Production (${stepInfo.productionDate})`;
-                }
-            }
-            return { ...order, status: updatedStatus, originalStatus: originalStatus };
-        });
-
-        setData(processedLiveData);
-        setMasterProductList(parsedMasterData);
-        setStepData(parsedStepData);
-        setLastUpdateTime(new Date()); 
-
-        const fetchedCredentials: Record<string, string> = {};
-        if (apiKeyResponse && apiKeyResponse.ok) {
-            const apiKeyText = await apiKeyResponse.text();
-            const match = apiKeyText.match(/{.*}/s);
-            if (match) {
-                const json: any = JSON.parse(match[0]);
-                if (json.status === 'ok') {
-                    json.table.rows.forEach((r: any) => {
-                        const name: string = String(r.c?.[0]?.v || '').trim();
-                        const key: string = String(r.c?.[1]?.v || '').trim();
-                        if (name && key) {
-                            fetchedCredentials[name] = key;
-                        }
-                    });
-                }
-            }
-        }
-        const allCredentials: Record<string, string> = { ...userCredentials, ...fetchedCredentials };
-        setUserCredentials(allCredentials);
-        
+      if (isInitial) {
         const savedName = localStorage.getItem('dashboard_username');
         const savedKey = localStorage.getItem('dashboard_apikey');
 
@@ -3210,13 +3210,15 @@ const App = () => {
         if (isAutoLoginValid && savedName) {
           setAuthenticatedUser(savedName);
           setCurrentUser(savedName);
-        } else {
+        } else if (savedName) {
           localStorage.removeItem('dashboard_username');
           localStorage.removeItem('dashboard_apikey');
         }
+      }
 
-      } catch (e) {
-        console.error("Failed to fetch or parse sheet data:", e);
+    } catch (e) {
+      console.error("Failed to fetch or parse sheet data:", e);
+      if (isInitial) {
         let errorMessage = 'An unknown error occurred.';
         if (e instanceof Error) {
             errorMessage = e.message;
@@ -3224,11 +3226,30 @@ const App = () => {
             errorMessage = String(e);
         }
         setError(`Failed to load live data. Error: ${errorMessage}`);
-      } finally {
+      }
+    } finally {
+      if (isInitial) {
         setLoading(false);
       }
-    };
-    fetchData();
+    }
+  };
+
+  useEffect(() => {
+    const lastReadId = localStorage.getItem('dashboard_last_announcement_id');
+    const latestId = ANNOUNCEMENTS[ANNOUNCEMENTS.length - 1]?.id;
+    if (latestId && lastReadId !== latestId) {
+        setHasUnreadAnnouncements(true);
+    }
+
+    // Initial load
+    fetchData(true);
+
+    // Setup 60-second background refresh interval
+    const intervalId = setInterval(() => {
+        fetchData(false);
+    }, 60000);
+
+    return () => clearInterval(intervalId);
   }, []);
   
   const handleLogin = (name: string, key: string): boolean => {
